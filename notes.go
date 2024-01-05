@@ -238,12 +238,16 @@ func (this IndexList) Len() int {
 
 func (this IndexList) Less(i, j int) bool {
 	var ti, tj IndexFile = this[i], this[j]
+	var bi, bj byte
 
 	var x, z = 0, len(ti)
-	for ; x < z; x++ {
-		if ti[x] < tj[x] {
 
-			return true
+	for ; x < z; x++ {
+		bi = ti[x]
+		bj = tj[x]
+
+		if bi != bj {
+			return (bi < bj)
 		}
 	}
 	return false
@@ -260,7 +264,10 @@ func (this IndexList) Swap(i, j int) (that IndexList) {
 
 func (this IndexList) Sort() (that IndexList) {
 	var a, b int = 0, this.Len()
-
+	/*
+	 * Partition sort adapted from go/sort for interface
+	 * change.
+	 */
 	for i := a + 1; i < b; i++ {
 
 		for j := i; j > a && this.Less(j, j-1); j-- {
@@ -293,8 +300,6 @@ func (this IndexTarget) IsValid() bool {
 
 func (this IndexTarget) IndexWrite() {
 
-	fmt.Println(this.path)
-
 	var dl []os.DirEntry
 	var er error
 
@@ -320,11 +325,16 @@ func (this IndexTarget) IndexWrite() {
 
 		ordering = ordering.Sort()
 
-		for _, ix := range ordering {
+		fmt.Println("[")
+		for x, ix := range ordering {
 
 			var fx IndexFile = directory[ix]
 
-			fmt.Printf("\t%s\t%s\n",ix,fx)
+			if 0 != x {
+				fmt.Println(",")	
+			}
+			fmt.Printf("    {\n        \"id\": \"%s\",\n        \"embed\": \"https://www.syntelos.io/%s\"\n    }",ix,fx)
 		}
+		fmt.Println("\n]")
 	}
 }
