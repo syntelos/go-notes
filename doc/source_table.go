@@ -63,7 +63,7 @@ func (this Table) read(file *os.File) (that Table, e error) {
 	var reader *bufio.Reader = bufio.NewReader(file)
 
 	var inl []byte
-	var isp, once bool = false, true
+	var isp bool = false
 	var rec Record
 
 	inl, isp, e = reader.ReadLine()
@@ -79,11 +79,9 @@ func (this Table) read(file *os.File) (that Table, e error) {
 		} else if isp {
 			return this, fmt.Errorf("Error reading '%s'.",file.Name())
 		} else {
-			if once {
-				once = false
-			} else {
-				this = append(this,rec.read(inl))
-			}
+
+			this = append(this,rec.read(inl))
+
 			inl, isp, e = reader.ReadLine()
 		}
 	}

@@ -32,14 +32,13 @@ func ListTextFiles(path string) (fileList FileList) {
 				dl, er = os.ReadDir(path)
 
 				for _, de := range dl {
-					nm = FileName(de.Name())
+					nm = MakeFileName(path,de)
 					if nm.IsText() && IsTableName(nm.Base()) {
 						
 						fileList = append(fileList,nm)
 					}
 				}
 				return fileList
-
 			} else {
 				var nm FileName = FileName(path)
 				if nm.IsText() && IsTableName(nm.Base()) {
@@ -52,6 +51,13 @@ func ListTextFiles(path string) (fileList FileList) {
 			}
 		}
 	}
+}
+
+func MakeFileName(p string, de os.DirEntry) (fn FileName) {
+
+	var n string = de.Name()
+
+	return FileName(p+"/"+n)
 }
 
 func (this FileName) IsText() bool {
@@ -83,6 +89,18 @@ func (this FileName) Base() TableName {
 		var head FileName = this[0:first]
 
 		var x, z = 0, len(head)
+
+		for x = (z-1); 0 <= x; x-- {
+
+			if '-' == head[x] {
+
+				head = head[0:x]
+
+				break
+			}
+		}
+
+		z = len(head)
 
 		for x = (z-1); 0 <= x; x-- {
 
