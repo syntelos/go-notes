@@ -1,5 +1,5 @@
 /*
- * Text to SVG
+ * WWWeb Notes
  * Copyright 2024 John Douglas Pritchard, Syntelos
  */
 package main
@@ -28,6 +28,9 @@ Description
 
     Targets are (*.svg) textboxes.
 
+    If a local directory "notes" is found, it is employed as
+    the WWWeb Notes directory target structure.
+
 `)
 	os.Exit(1)
 }
@@ -52,6 +55,8 @@ func operand(idx int) (opd string) {
 }
 
 func main(){
+	notes.Init()
+
 	if 1 < len(os.Args) {
 
 		for _, opd := range os.Args[1:] {

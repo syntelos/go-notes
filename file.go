@@ -153,7 +153,7 @@ func (this FileName) Target() FileName {
 			return this
 		} else {
 
-			return this[0:first]+".svg"
+			return this[0:first]+".svg" // [TODO] NotesTarget
 		}
 	} else {
 		return ""
