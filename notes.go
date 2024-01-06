@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"io/fs"
 	"os"
+	sort "github.com/syntelos/go-sort"
 )
 
 const NotesTarget FileName = FileName("notes")
@@ -232,52 +233,6 @@ func (this IndexFile) Target() (that IndexTarget) {
 	}
 }
 
-func (this IndexList) Len() int {
-	return len(this)
-}
-
-func (this IndexList) Less(i, j int) bool {
-	var ti, tj IndexFile = this[i], this[j]
-	var bi, bj byte
-
-	var x, z = 0, len(ti)
-
-	for ; x < z; x++ {
-		bi = ti[x]
-		bj = tj[x]
-
-		if bi != bj {
-			return (bi < bj)
-		}
-	}
-	return false
-}
-
-func (this IndexList) Swap(i, j int) (that IndexList) {
-	var ti, tj IndexFile = this[i], this[j]
-
-	this[j] = ti
-	this[i] = tj
-
-	return this
-}
-
-func (this IndexList) Sort() (that IndexList) {
-	var a, b int = 0, this.Len()
-	/*
-	 * Partition sort adapted from go/sort for interface
-	 * change.
-	 */
-	for i := a + 1; i < b; i++ {
-
-		for j := i; j > a && this.Less(j, j-1); j-- {
-
-			this = this.Swap(j, j-1)
-		}
-	}
-	return this
-}
-
 type IndexTarget struct {
 	dir IndexFile
 	yyyymmdd_hhmmss IndexFile
@@ -323,7 +278,7 @@ func (this IndexTarget) IndexWrite() {
 			}
 		}
 
-		ordering = ordering.Sort()
+		sort.Sort(ordering)
 
 		fmt.Println("[")
 		for x, ix := range ordering {
