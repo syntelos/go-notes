@@ -5,6 +5,7 @@
 package notes
 
 import (
+	"bufio"
 	"fmt"
 	"io/fs"
 	"os"
@@ -190,14 +191,18 @@ func (this IndexFile) Target() (that IndexTarget) {
 	that.yyyymmdd = ""
 	that.yyyymm = ""
 	that.path = ""
-
+	that.name = ""
+	/*
+	 * Parse filepath into directory, filename,
+	 * elements, and filename extention.
+	 */
 	switch this.FileType() {
 	case IndexFileTypeTXT, IndexFileTypeSVG:
 		var prefix, infix, postfix, ppostfix int = -1, -1, -1, -1
 
 		var ofs, len int = 0, len(this)
 
-		for ofs = (len-1); 0 < ofs; ofs-- {
+		for ofs = (len-2); 0 < ofs; ofs-- {
 
 			switch this[ofs] {
 			case '/':
@@ -206,6 +211,7 @@ func (this IndexFile) Target() (that IndexTarget) {
 					that.dir = this[0:ofs]
 
 					that.path = that.dir+"/"+that.yyyymmdd+"."+IndexFextJSN
+					that.name = TableName(this[prefix+1:infix])
 
 					return that
 				}
@@ -239,6 +245,7 @@ type IndexTarget struct {
 	yyyymmdd IndexFile
 	yyyymm IndexFile
 	path IndexFile
+	name TableName
 }
 
 type IndexTargetList []IndexTarget
@@ -266,30 +273,58 @@ func (this IndexTarget) IndexWrite() {
 
 		for _, de := range dl {
 
-			var fx IndexFile = this.dir+IndexFile("/")+IndexFile(de.Name())
+			var notes_svg IndexFile = this.dir+IndexFile("/")+IndexFile(de.Name())
 
-			if fx.IsSVG(){
+			if notes_svg.IsSVG(){
 
-				var key IndexFile = fx.LongKey()
+				var key IndexFile = notes_svg.LongKey()
 
-				directory[key] = fx
+				directory[key] = notes_svg
 
 				ordering = append(ordering,key)
 			}
 		}
 
 		sort.Sort(ordering)
+		{
+			var tgt *os.File
+			tgt, er = os.Create(string(this.path))
+			if nil == er {
+				var w *bufio.Writer = bufio.NewWriter(tgt)
+				
+				w.Write([]byte("[\n"))
+				for x, key := range ordering {
 
-		fmt.Println("[")
-		for x, ix := range ordering {
+					var notes_svg IndexFile = directory[key]
+					/*
+					 * N.B. "this name" may be unrelated
+					 * to "notes name", so it is derived
+					 * from the source.
+					 */
+					var notes_idx IndexTarget = notes_svg.Target()
 
-			var fx IndexFile = directory[ix]
+					var name TableName = notes_idx.name
+					var path TablePath = name.Path()
+					var link TableLink = name.Link()
 
-			if 0 != x {
-				fmt.Println(",")	
+					if 0 != x {
+						w.Write([]byte(",\n"))
+					}
+					var record string = fmt.Sprintf(`    {
+        "id": "%s",
+        "icon": "syntelos-catalog",
+        "path": "%s",
+        "link": "%s",
+        "name": "%s",
+        "embed": "https://www.syntelos.io/%s"
+    }`,key,path,link,name,notes_svg)
+					w.Write([]byte(record))
+				}
+				w.Write([]byte("\n]\n"))
+
+				w.Flush()
+				tgt.Close()
 			}
-			fmt.Printf("    {\n        \"id\": \"%s\",\n        \"embed\": \"https://www.syntelos.io/%s\"\n    }",ix,fx)
 		}
-		fmt.Println("\n]")
 	}
 }
