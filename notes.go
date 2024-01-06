@@ -283,6 +283,20 @@ func (this IndexTarget) IsValid() bool {
 	return 0 != len(this.dir) && 0 != len(this.yyyymmdd_hhmmss) && 0 != len(this.yyyymmdd) && 0 != len(this.yyyymm) && 0 != len(this.path)
 }
 
+func (this IndexTarget) Target() FileName {
+	var yyyy string = string(this.yyyymm[0:4])
+	var mm string = string(this.yyyymm[4:6])
+
+	if IsNotes() {
+		var root FileName = notesTarget
+
+		return FileName(string(root)+"/"+yyyy+"/"+mm)
+
+	} else {
+		return FileName("notes/"+yyyy+"/"+mm)
+	}
+}
+
 func (this IndexTarget) IndexWrite() {
 	/*
 	 * Don't overwrite an existing target.
@@ -316,7 +330,7 @@ func (this IndexTarget) IndexWrite() {
 				}
 			}
 
-			sort.Ascending(ordering)
+			sort.Descending(ordering) // (recent)
 			{
 				var tgt *os.File
 				tgt, er = os.Create(string(this.path))

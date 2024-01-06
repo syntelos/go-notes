@@ -34,7 +34,7 @@ func ListTextFiles(path string) (fileList FileList) {
 
 				for _, de := range dl {
 					nm = MakeFileName(path,de)
-					if nm.IsText() && IsTableName(nm.Base()) {
+					if nm.IsText() && IsTableName(nm.TableName()) {
 						
 						fileList = append(fileList,nm)
 					}
@@ -42,7 +42,7 @@ func ListTextFiles(path string) (fileList FileList) {
 				return fileList
 			} else {
 				var nm FileName = FileName(path)
-				if nm.IsText() && IsTableName(nm.Base()) {
+				if nm.IsText() && IsTableName(nm.TableName()) {
 
 					fileList = append(fileList,nm)
 					return fileList
@@ -77,7 +77,23 @@ func (this FileName) IsText() bool {
 	}
 }
 
-func (this FileName) Base() TableName {
+func (this FileName) Base() (that FileName) {
+
+	var x, z = 0, len(this)
+
+	for x = (z-1); 0 <= x; x-- {
+
+		if '/' == this[x] {
+
+			that = FileName(this[x+1:z])
+
+			return that
+		}
+	}
+	return this
+}
+
+func (this FileName) TableName() TableName {
 
 	var first, last, end int = 0, 0, len(this)
 	{
@@ -166,9 +182,10 @@ func (this FileName) Target() FileName {
 			 * The target is a projection from
 			 * the source into "notes".
 			 */
-			var projection IndexFile = IndexFile(this)
-
-			return FileName(projection) // [TODO] (FileName.Target) projection
+			var projection FileName = IndexFile(reflection).Target().Target()
+			var filename FileName = reflection.Base()
+			
+			return FileName(string(projection)+"/"+string(filename))
 
 		} else {
 
