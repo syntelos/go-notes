@@ -5,6 +5,7 @@
 package notes
 
 import (
+	"log"
 	"os"
 )
 
@@ -147,15 +148,64 @@ func (this FileName) Target() FileName {
 	}
 
 	if 0 < first && '.' ==  this[first] {
+		/*
+		 * The target reflects the source.
+		 */
+		var reflection FileName 
 
 		if ".svg" == this[first:end] {
 
-			return this
+			reflection = this
 		} else {
 
-			return this[0:first]+".svg" // [TODO] NotesTarget
+			reflection = this[0:first]+".svg"
+		}
+
+		if IsNotes() {
+			/*
+			 * The target is a projection from
+			 * the source into "notes".
+			 */
+			var projection IndexFile = IndexFile(this)
+
+			return FileName(projection) // [TODO] (FileName.Target) projection
+
+		} else {
+
+			return reflection
 		}
 	} else {
 		return ""
+	}
+}
+
+func (this FileName) CodeWrite(){
+	var er error
+	var tgt *os.File
+	tgt, er = os.Create(string(this.Target()))
+	if nil != er {
+		log.Fatalf("Error opening output '%s': %v",string(this.Target()),er)
+	} else {
+		var src *os.File
+		src, er = os.Open(string(this.Source()))
+		if nil != er {
+			log.Fatalf("Error opening input '%s': %v",string(this.Source()),er)
+		} else {
+			var txt, svg Page
+			txt, er = txt.Read(src)
+			if nil != er {
+				log.Fatal(er)
+			} else {
+				svg = txt.Encode()
+
+				er = svg.Write(tgt)
+				if nil != er {
+					log.Fatal(er)
+				} else {
+					src.Close()
+					tgt.Close()
+				}
+			}
+		}
 	}
 }

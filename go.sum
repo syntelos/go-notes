@@ -1,2 +1,4 @@
 github.com/syntelos/go-sort v0.0.0-20240106140319-6cba6204ed1e h1:sTzVtyt8mM1BpqEcb+vFb1/pRtOH6B4J5XJOBRso4Pk=
 github.com/syntelos/go-sort v0.0.0-20240106140319-6cba6204ed1e/go.mod h1:LUnOKnoBwSdlfQkC21ZwU4saoe6T4UeGicymx8Kn550=
+github.com/syntelos/go-sort v0.0.0-20240106194149-1679505dc973 h1:pst3weFEGRLw+fGZU4qGKP3C16cCmTyFcrQftA+6r20=
+github.com/syntelos/go-sort v0.0.0-20240106194149-1679505dc973/go.mod h1:LUnOKnoBwSdlfQkC21ZwU4saoe6T4UeGicymx8Kn550=

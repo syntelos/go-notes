@@ -12,13 +12,15 @@ import (
 	sort "github.com/syntelos/go-sort"
 )
 
-const NotesTarget FileName = FileName("notes")
+const NotesTargetLocal FileName = FileName("notes")
+
+const NotesTargetTest FileName = FileName("tst/notes")
 
 var   notesTarget FileName
 
 func IsNotes() bool {
 
-	return (NotesTarget == notesTarget)
+	return (NotesTargetLocal == notesTarget || NotesTargetTest == notesTarget)
 }
 
 func Init() bool {
@@ -26,7 +28,7 @@ func Init() bool {
 	var fo *os.File
 	var er error
 
-	fo, er = os.Open(string(NotesTarget))
+	fo, er = os.Open(string(NotesTargetLocal))
 	if nil == er {
 		defer fo.Close()
 
@@ -36,7 +38,30 @@ func Init() bool {
 
 			if fi.IsDir() {
 
-				notesTarget = NotesTarget
+				notesTarget = NotesTargetLocal
+				return true
+			}
+		}
+	}
+	return false
+}
+
+func Test() bool {
+
+	var fo *os.File
+	var er error
+
+	fo, er = os.Open(string(NotesTargetTest))
+	if nil == er {
+		defer fo.Close()
+
+		var fi os.FileInfo
+		fi, er = fo.Stat()
+		if nil == er {
+
+			if fi.IsDir() {
+
+				notesTarget = NotesTargetTest
 				return true
 			}
 		}
@@ -83,7 +108,7 @@ func ListIndexFiles() (fileList IndexTargetList) {
 
 		var dir fs.FS = os.DirFS(".")
 
-		fs.WalkDir(dir,"notes",indexListWalker)
+		fs.WalkDir(dir,string(notesTarget),indexListWalker)
 	}
 	/*
 	 * Serialize index map
@@ -261,56 +286,64 @@ func (this IndexTarget) IsValid() bool {
 }
 
 func (this IndexTarget) IndexWrite() {
-
-	var dl []os.DirEntry
+	/*
+	 * Don't overwrite an existing target.
+	 */
+	var dir fs.FS = os.DirFS(".")
 	var er error
 
-	dl, er = os.ReadDir(string(this.dir))
+	_, er = fs.Stat(dir,string(this.path))
+	if nil != er {
+	
+		var dl []os.DirEntry
 
-	if nil == er {
-		var ordering IndexList
-		var directory map[IndexFile]IndexFile = make(map[IndexFile]IndexFile)
 
-		for _, de := range dl {
+		dl, er = os.ReadDir(string(this.dir))
 
-			var notes_svg IndexFile = this.dir+IndexFile("/")+IndexFile(de.Name())
+		if nil == er {
+			var ordering IndexList
+			var directory map[IndexFile]IndexFile = make(map[IndexFile]IndexFile)
 
-			if notes_svg.IsSVG(){
+			for _, de := range dl {
 
-				var key IndexFile = notes_svg.LongKey()
+				var notes_svg IndexFile = this.dir+IndexFile("/")+IndexFile(de.Name())
 
-				directory[key] = notes_svg
+				if notes_svg.IsSVG(){
 
-				ordering = append(ordering,key)
+					var key IndexFile = notes_svg.LongKey()
+
+					directory[key] = notes_svg
+
+					ordering = append(ordering,key)
+				}
 			}
-		}
 
-		sort.Sort(ordering)
-		{
-			var tgt *os.File
-			tgt, er = os.Create(string(this.path))
-			if nil == er {
-				var w *bufio.Writer = bufio.NewWriter(tgt)
-				
-				w.Write([]byte("[\n"))
-				for x, key := range ordering {
+			sort.Descending(ordering) // [TODO] ("recent" sort order inversion)
+			{
+				var tgt *os.File
+				tgt, er = os.Create(string(this.path))
+				if nil == er {
+					var w *bufio.Writer = bufio.NewWriter(tgt)
+					
+					w.Write([]byte("[\n"))
+					for x, key := range ordering {
 
-					var notes_svg IndexFile = directory[key]
-					/*
-					 * N.B. "this name" may be unrelated
-					 * to "notes name", so it is derived
-					 * from the source.
-					 */
-					var notes_idx IndexTarget = notes_svg.Target()
+						var notes_svg IndexFile = directory[key]
+						/*
+						 * N.B. "this name" may be unrelated
+						 * to "notes name", so it is derived
+						 * from the source.
+						 */
+						var notes_idx IndexTarget = notes_svg.Target()
 
-					var name TableName = notes_idx.name
-					var path TablePath = name.Path()
-					var link TableLink = name.Link()
+						var name TableName = notes_idx.name
+						var path TablePath = name.Path()
+						var link TableLink = name.Link()
 
-					if 0 != x {
-						w.Write([]byte(",\n"))
-					}
-					var record string = fmt.Sprintf(`    {
+						if 0 != x {
+							w.Write([]byte(",\n"))
+						}
+						var record string = fmt.Sprintf(`    {
         "id": "%s",
         "icon": "syntelos-catalog",
         "path": "%s",
@@ -318,12 +351,13 @@ func (this IndexTarget) IndexWrite() {
         "name": "%s",
         "embed": "/%s"
     }`,key,path,link,name,notes_svg)
-					w.Write([]byte(record))
-				}
-				w.Write([]byte("\n]\n"))
+						w.Write([]byte(record))
+					}
+					w.Write([]byte("\n]\n"))
 
-				w.Flush()
-				tgt.Close()
+					w.Flush()
+					tgt.Close()
+				}
 			}
 		}
 	}

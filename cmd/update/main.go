@@ -19,7 +19,9 @@ Synopsis
 Description
 
     Update WWWeb Notes directory structure with JSON
-    indeces.
+    indeces.  
+
+    Note that existing JSON index files are not overwritten.
 
 `)
 	os.Exit(1)
@@ -27,10 +29,10 @@ Description
 
 func main(){
 	if notes.Init() {
-
-		for _, ixfil := range notes.ListIndexFiles() {
+		var target IndexTarget
+		for _, target = range notes.ListIndexFiles() {
 			
-			ixfil.IndexWrite()
+			target.IndexWrite()
 		}
 	} else {
 		usage()
