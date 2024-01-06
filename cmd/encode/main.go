@@ -35,10 +35,10 @@ Description
 }
 
 func main(){
-	if notes.Init()
+	notes.Init()
 
 	if 1 < len(os.Args) {
-		var source FileName
+		var target notes.FileName
 		for _, opd := range os.Args[1:] {
 
 			for _, target = range notes.ListTextFiles(opd) {

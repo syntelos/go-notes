@@ -29,7 +29,7 @@ Description
 
 func main(){
 	if notes.Init() {
-		var target IndexTarget
+		var target notes.IndexTarget
 		for _, target = range notes.ListIndexFiles() {
 			
 			target.IndexWrite()
