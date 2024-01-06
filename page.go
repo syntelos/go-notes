@@ -87,7 +87,7 @@ func (this Page) Encode() (that Page) {
 	 * Body
 	 */
 	var title bool = true
-	var bhi int = 13
+	var bhi int = 15
 	var px, py int = 40, 50
 
 	for _, body := range this {

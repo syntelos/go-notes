@@ -316,7 +316,7 @@ func (this IndexTarget) IndexWrite() {
         "path": "%s",
         "link": "%s",
         "name": "%s",
-        "embed": "https://www.syntelos.io/%s"
+        "embed": "/%s"
     }`,key,path,link,name,notes_svg)
 					w.Write([]byte(record))
 				}
