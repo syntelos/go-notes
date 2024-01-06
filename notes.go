@@ -12,23 +12,20 @@ import (
 	sort "github.com/syntelos/go-sort"
 )
 
-const NotesTargetLocal FileName = FileName("notes")
-
-const NotesTargetTest FileName = FileName("tst/notes")
-
-var   notesTarget FileName
+var notesTarget FileName
 
 func IsNotes() bool {
 
-	return (NotesTargetLocal == notesTarget || NotesTargetTest == notesTarget)
+	return 0 != len(notesTarget)
 }
 
 func Init() bool {
+	var target FileName = FileName("notes")
 
 	var fo *os.File
 	var er error
 
-	fo, er = os.Open(string(NotesTargetLocal))
+	fo, er = os.Open(string(target))
 	if nil == er {
 		defer fo.Close()
 
@@ -38,7 +35,7 @@ func Init() bool {
 
 			if fi.IsDir() {
 
-				notesTarget = NotesTargetLocal
+				notesTarget = target
 				return true
 			}
 		}
@@ -47,11 +44,12 @@ func Init() bool {
 }
 
 func Test() bool {
+	var target FileName = FileName("tst/notes")
 
 	var fo *os.File
 	var er error
 
-	fo, er = os.Open(string(NotesTargetTest))
+	fo, er = os.Open(string(target))
 	if nil == er {
 		defer fo.Close()
 
@@ -61,7 +59,7 @@ func Test() bool {
 
 			if fi.IsDir() {
 
-				notesTarget = NotesTargetTest
+				notesTarget = target
 				return true
 			}
 		}
@@ -318,7 +316,7 @@ func (this IndexTarget) IndexWrite() {
 				}
 			}
 
-			sort.Descending(ordering) // [TODO] ("recent" sort order inversion)
+			sort.Ascending(ordering)
 			{
 				var tgt *os.File
 				tgt, er = os.Create(string(this.path))
