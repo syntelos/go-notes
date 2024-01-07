@@ -233,7 +233,7 @@ func (this IndexFile) Target() (that IndexTarget) {
 					prefix = ofs
 					that.dir = this[0:ofs]
 
-					that.path = that.dir+"/"+that.yyyymmdd+"."+IndexFextJSN
+					that.path = IndexFile(FileCat(string(that.dir),string(that.yyyymmdd))+"."+string(IndexFextJSN))
 					that.name = TableName(this[prefix+1:infix])
 
 					return that
@@ -290,10 +290,10 @@ func (this IndexTarget) Target() FileName {
 	if IsNotes() {
 		var root FileName = notesTarget
 
-		return FileName(string(root)+"/"+yyyy+"/"+mm)
+		return FileName(FileCat(FileCat(string(root),yyyy),mm))
 
 	} else {
-		return FileName("notes/"+yyyy+"/"+mm)
+		return FileName(FileCat(FileCat("notes",yyyy),mm))
 	}
 }
 
@@ -318,7 +318,7 @@ func (this IndexTarget) IndexWrite() {
 
 			for _, de := range dl {
 
-				var notes_svg IndexFile = this.dir+IndexFile("/")+IndexFile(de.Name())
+				var notes_svg IndexFile = IndexFile(FileCat(string(this.dir),de.Name()))
 
 				if notes_svg.IsSVG(){
 

@@ -14,6 +14,8 @@ func usage(){
 	fmt.Println(`
 Synopsis
 
+    notes list [enc txt|upd]  -- List input.
+
     notes encode <txt>        -- Produce SVG from TXT.
 
     notes update              -- Index content with JSON.
@@ -42,10 +44,6 @@ Description
 	os.Exit(1)
 }
 
-func haveOperator() bool {
-	return (1 < len(os.Args))
-}
-
 func operator() (arg string) {
 	if 1 < len(os.Args) {
 		return os.Args[1]
@@ -54,15 +52,26 @@ func operator() (arg string) {
 	}
 }
 
-func haveOperands() bool {
+func haveOperand(first int) bool {
+	first += 2
 
-	return (2 < len(os.Args))
+	return (first < len(os.Args))
 }
 
-func operands() []string {
+func getOperand(first int) string {
+	first += 2
 
-	if 2 < len(os.Args) {
-		return os.Args[2:]
+	if first < len(os.Args) {
+		return os.Args[first]
+	} else {
+		return ""
+	}
+}
+func listOperands(first int) []string {
+	first += 2
+
+	if first < len(os.Args) {
+		return os.Args[first:]
 	} else {
 		return make([]string,0)
 	}
@@ -70,37 +79,69 @@ func operands() []string {
 
 func main(){
 
-	if haveOperator() {
+	switch operator() {
+	case "list":
+		if haveOperand(0) {
+			switch getOperand(0) {
+			case "enc", "encode":
+				notes.Init()
+				if haveOperand(1) {
+					var target notes.FileName
+					for _, opd := range listOperands(1) {
 
-		switch operator() {
-		case "encode":
-			notes.Init()
-			if haveOperands() {
-				var target notes.FileName
-				for _, opd := range operands() {
+						for _, target = range notes.ListTextFiles(opd) {
 
-					for _, target = range notes.ListTextFiles(opd) {
-
-						target.CodeWrite()
+							fmt.Println(target)
+						}
 					}
+					os.Exit(0)
+				} else {
+					usage()
 				}
-			} else {
+			case "upd", "update":
+				if notes.Init() {
+					var target notes.IndexTarget
+					for _, target = range notes.ListIndexFiles() {
+						
+						fmt.Println(target)
+					}
+					os.Exit(0)
+				} else {
+					usage()
+				}
+			default:
 				usage()
 			}
-		case "update":
-			if notes.Init() {
-				var target notes.IndexTarget
-				for _, target = range notes.ListIndexFiles() {
-					
-					target.IndexWrite()
-				}
-			} else {
-				usage()
-			}
-		default:
+		} else {
 			usage()
 		}
-	} else {
+	case "encode":
+		notes.Init()
+		if haveOperand(0) {
+			var target notes.FileName
+			for _, opd := range listOperands(0) {
+
+				for _, target = range notes.ListTextFiles(opd) {
+
+					target.CodeWrite()
+				}
+			}
+			os.Exit(0)
+		} else {
+			usage()
+		}
+	case "update":
+		if notes.Init() {
+			var target notes.IndexTarget
+			for _, target = range notes.ListIndexFiles() {
+				
+				target.IndexWrite()
+			}
+			os.Exit(0)
+		} else {
+			usage()
+		}
+	default:
 		usage()
 	}
 }

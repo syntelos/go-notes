@@ -53,9 +53,23 @@ func ListTextFiles(path string) (fileList FileList) {
 
 func MakeFileName(p string, de os.DirEntry) (fn FileName) {
 
-	var n string = de.Name()
+	return FileName(FileCat(p,de.Name()))
+}
 
-	return FileName(p+"/"+n)
+func FileCat(a, b string) string {
+	var end int = len(a)
+	if 0 < end {
+		var last int = (end-1)
+
+		if '/' == a[last] {
+
+			return (a+b)
+		} else {
+			return (a+"/"+b)
+		}
+	} else {
+		return b
+	}
 }
 
 func (this FileName) IsText() bool {
@@ -181,8 +195,8 @@ func (this FileName) Target() FileName {
 			 */
 			var projection FileName = IndexFile(reflection).Target().Target()
 			var filename FileName = reflection.Base()
-			
-			return FileName(string(projection)+"/"+string(filename))
+
+			return FileName(FileCat(string(projection),string(filename)))
 
 		} else {
 
