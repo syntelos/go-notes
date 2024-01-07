@@ -54,19 +54,17 @@ func operator() (arg string) {
 	}
 }
 
-func haveOperand(idx int) bool {
-	idx += 2
+func haveOperands() bool {
 
-	return (idx < len(os.Args))
+	return (2 < len(os.Args))
 }
 
-func operand(idx int) (arg string) {
-	idx += 2
+func operands() []string {
 
-	if idx < len(os.Args) {
-		return os.Args[idx]
+	if 2 < len(os.Args) {
+		return os.Args[2:]
 	} else {
-		return arg
+		return make([]string,0)
 	}
 }
 
@@ -77,13 +75,17 @@ func main(){
 		switch operator() {
 		case "encode":
 			notes.Init()
-			var target notes.FileName
-			for _, opd := range os.Args[2:] {
+			if haveOperands() {
+				var target notes.FileName
+				for _, opd := range operands() {
 
-				for _, target = range notes.ListTextFiles(opd) {
+					for _, target = range notes.ListTextFiles(opd) {
 
-					target.CodeWrite()
+						target.CodeWrite()
+					}
 				}
+			} else {
+				usage()
 			}
 		case "update":
 			if notes.Init() {
