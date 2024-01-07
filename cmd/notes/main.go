@@ -14,7 +14,9 @@ func usage(){
 	fmt.Println(`
 Synopsis
 
-    notes list [enc txt|upd]  -- List input.
+    notes source [en txt|up]  -- List input.
+
+    notes target [en txt|up]  -- List output.
 
     notes encode <txt>        -- Produce SVG from TXT.
 
@@ -39,6 +41,20 @@ Description
 
       Update WWWeb Notes JSON indeces.  Note that existing
       JSON index files are not overwritten.
+
+  Source
+
+      Enumerate inputs derived from operation "encode" or
+      "update".
+
+  Target
+
+      Enumerate outputs implied by operation "encode" or
+      "update".
+
+  Note that the principal operators, "encode" and "update"
+  are recognized by their corresponding two, three, and six
+  character symbols.
 
 `)
 	os.Exit(1)
@@ -80,10 +96,10 @@ func listOperands(first int) []string {
 func main(){
 
 	switch operator() {
-	case "list":
+	case "source":
 		if haveOperand(0) {
 			switch getOperand(0) {
-			case "enc", "encode":
+			case "en", "enc", "encode":
 				notes.Init()
 				if haveOperand(1) {
 					var target notes.FileName
@@ -98,7 +114,7 @@ func main(){
 				} else {
 					usage()
 				}
-			case "upd", "update":
+			case "up", "upd", "update":
 				if notes.Init() {
 					var target notes.IndexTarget
 					for _, target = range notes.ListIndexFiles() {
@@ -115,7 +131,42 @@ func main(){
 		} else {
 			usage()
 		}
-	case "encode":
+	case "target":
+		if haveOperand(0) {
+			switch getOperand(0) {
+			case "en", "enc", "encode":
+				notes.Init()
+				if haveOperand(1) {
+					var target notes.FileName
+					for _, opd := range listOperands(1) {
+
+						for _, target = range notes.ListTextFiles(opd) {
+
+							fmt.Println(target.Target())
+						}
+					}
+					os.Exit(0)
+				} else {
+					usage()
+				}
+			case "up", "upd", "update":
+				if notes.Init() {
+					var target notes.IndexTarget
+					for _, target = range notes.ListIndexFiles() {
+						
+						fmt.Println(target.Target())
+					}
+					os.Exit(0)
+				} else {
+					usage()
+				}
+			default:
+				usage()
+			}
+		} else {
+			usage()
+		}
+	case "en", "enc", "encode":
 		notes.Init()
 		if haveOperand(0) {
 			var target notes.FileName
@@ -130,7 +181,7 @@ func main(){
 		} else {
 			usage()
 		}
-	case "update":
+	case "up", "upd", "update":
 		if notes.Init() {
 			var target notes.IndexTarget
 			for _, target = range notes.ListIndexFiles() {
