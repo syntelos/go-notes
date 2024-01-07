@@ -79,7 +79,7 @@ func main(){
 		case "encode":
 			notes.Init()
 			var target notes.FileName
-			for _, opd := range os.Args[1:] {
+			for _, opd := range os.Args[2:] {
 
 				for _, target = range notes.ListTextFiles(opd) {
 
