@@ -9,3 +9,5 @@ clean:
 	$(RM) $(shell find tst -type f -name '*.svg')
 	$(RM) $(shell find tst -type f -name '*.json')
 
+test: clean
+	go test

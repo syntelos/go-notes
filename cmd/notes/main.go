@@ -18,26 +18,25 @@ Synopsis
 
     notes update              -- Index content with JSON.
 
-Encode
+Description
 
-    Given one of more directories of TXT files, or
-    individual TXT files, produce corresponding SVG files in
-    place.  
+    Update WWWeb Notes directory files.  If the local
+    directory "notes" is found, it is employed as the WWWeb
+    Notes directory structure.
 
-    Sources are filtered by filename (*.txt) as well as
-    tablename (e.g. "politics-*.txt", or "sociology-*.txt").
+  Encode
 
-    Targets are WWWeb Notes SVG text boxes.
+      Given one of more directories of TXT files, or
+      individual TXT files, produce corresponding SVG files
+      in place or in structure.  Sources are filtered by
+      filename (*.txt) as well as tablename
+      (e.g. "politics-*.txt", or "sociology-*.txt").
+      Targets are WWWeb Notes SVG text boxes.
 
-    If the local directory "notes" is found, it is employed
-    as the WWWeb Notes directory target structure.
+  Update
 
-Update
-
-    Update WWWeb Notes directory structure with JSON
-    indeces.  
-
-    Note that existing JSON index files are not overwritten.
+      Update WWWeb Notes JSON indeces.  Note that existing
+      JSON index files are not overwritten.
 
 `)
 	os.Exit(1)
