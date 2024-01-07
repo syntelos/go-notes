@@ -1,12 +1,7 @@
-godir := $(shell go env GOPATH)
-tgtdir := $(godir)/bin
+gob_dir := $(shell go env GOPATH)
+tgt_dir := $(gob_dir)/bin
 sources := $(shell ls *.go) 
 
-all: $(tgtdir)/encode $(tgtdir)/update
-
-$(tgtdir)/encode: cmd/encode/main.go $(sources)
-	go build -o $@ $<
-
-$(tgtdir)/update: cmd/update/main.go $(sources)
+$(tgt_dir)/notes: cmd/notes/main.go $(sources)
 	go build -o $@ $<
 
