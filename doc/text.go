@@ -11,8 +11,9 @@ import (
 	notes "github.com/syntelos/go-notes"
 )
 
-func Enumerate(this notes.Page) {
-	var bar int
+func bar(this notes.Page) (bar int) {
+	bar = -1
+
 	for tix, txt := range this {
 
 		if txt.IsText() {
@@ -21,12 +22,17 @@ func Enumerate(this notes.Page) {
 			break
 		}
 	}
+	return bar
+}
+
+func Enumerate(this notes.Page) {
 
 	var cc int = 0
 
 	switch operand() {
 
 	case "head":
+		var bar int = bar(this)
 		fmt.Print("var encodehead Page = Page{")
 		for tix, txt := range this {
 
@@ -50,6 +56,7 @@ func Enumerate(this notes.Page) {
 		os.Exit(0)
 
 	case "tail":
+		var bar int = bar(this)
 		fmt.Print("var encodetail Page = Page{")
 		for tix, txt := range this {
 
@@ -71,6 +78,27 @@ func Enumerate(this notes.Page) {
 		fmt.Println("}")
 
 		os.Exit(0)
+
+	case "all":
+		fmt.Print("var page Page = Page{")
+		for _, txt := range this {
+
+			if 0 != cc {
+				fmt.Print(",")
+			}
+			fmt.Print(" Text{")
+			for cx, ch := range txt {
+				if 0 != cx {
+					fmt.Print(",")
+				}
+				fmt.Printf(" 0x%02X",ch)
+			}
+			fmt.Print(" }")
+			cc += 1
+		}
+		fmt.Println("}")
+
+		os.Exit(0)
 	default:
 		usage()
 	}
@@ -78,19 +106,11 @@ func Enumerate(this notes.Page) {
 }
 
 func List(this notes.Page) {
-	var bar int
-	for tix, txt := range this {
-
-		if txt.IsText() {
-
-			bar = tix
-			break
-		}
-	}
 
 	switch operand() {
 
 	case "head":
+		var bar int = bar(this)
 		for tix, txt := range this {
 
 			if tix < bar {
@@ -102,12 +122,21 @@ func List(this notes.Page) {
 		os.Exit(0)
 
 	case "tail":
+		var bar int = bar(this)
 		for tix, txt := range this {
 
 			if bar < tix {
 
 				fmt.Println(string(txt))
 			}
+		}
+
+		os.Exit(0)
+
+	case "all":
+		for _, txt := range this {
+
+			fmt.Println(string(txt))
 		}
 
 		os.Exit(0)
@@ -149,7 +178,7 @@ func usage() {
 	fmt.Println(`
 Synopsis
 
-  text list                   -- List (head|tail).
+  text list                   -- List (head|tail|all).
 
   text enumerate              -- Enumerate (head|tail).
 
