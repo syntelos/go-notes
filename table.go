@@ -30,11 +30,10 @@ const (
 )
 
 func IsTableName(name TableName) bool {
-	switch name {
-	case TableNameExistentialism, TableNamePolitics, TableNameSociology, TableNameTheTempleOfAthena:
-		return true
-
-	default:
+	if 0 != len(name) {
+		var path TablePath = name.Path()
+		return (0 != len(path))
+	} else {
 		return false
 	}
 }
