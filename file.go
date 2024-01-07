@@ -39,17 +39,14 @@ func ListTextFiles(path string) (fileList FileList) {
 						fileList = append(fileList,nm)
 					}
 				}
-				return fileList
 			} else {
 				var nm FileName = FileName(path)
 				if nm.IsText() && IsTableName(nm.TableName()) {
 
 					fileList = append(fileList,nm)
-					return fileList
-				} else {
-					return fileList
 				}
 			}
+			return fileList
 		}
 	}
 }
