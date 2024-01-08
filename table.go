@@ -15,18 +15,21 @@ const (
 	TableNameSociology	TableName	= "sociology"
 	TableNameTheTempleOfAthena	TableName	= "the_temple_of_athena"
 	TableNameCommunication	TableName	= "communication"
+	TableNameInstrumentality	TableName	= "instrumentality"
 
 	TablePathExistentialism	TablePath	= "/syntelos /science /anthropology /existentialism"
 	TablePathPolitics	TablePath	= "/gegonen /politics"
 	TablePathSociology	TablePath	= "/syntelos /science /anthropology /sociology"
 	TablePathTheTempleOfAthena	TablePath	= "/gegonen /the_temple_of_athena"
 	TablePathCommunication	TablePath	= "/syntelos /science /anthropology /communication"
+	TablePathInstrumentality	TablePath	= "/syntelos /science /anthropology /instrumentality"
 
 	TableLinkExistentialism	TableLink	= "https://drive.google.com/drive/folders/162g6-KM5dOkWvJX7NgMRoKJuz8rkwk96"
 	TableLinkPolitics	TableLink	= "https://drive.google.com/drive/folders/1uhgjgL8HBzRwCgP6pXpCwQqLZ0IC_pgJ"
 	TableLinkSociology	TableLink	= "https://drive.google.com/drive/folders/1etCIitYhVQH8_Wf6oHeu_rWUmDfTYZD-"
 	TableLinkTheTempleOfAthena	TableLink	= "https://drive.google.com/drive/folders/1nUpMgy9n-wHWN13hlXm-YZH5rojTUi0j"
 	TableLinkCommunication	TableLink	= "https://drive.google.com/drive/folders/1tXs2GNe1R9wCsKbj-bcCyeiscrK0F2K0"
+	TableLinkInstrumentality	TableLink	= "https://drive.google.com/drive/folders/1YqybUMCurpLc0WdTOuUjew7EujYGFDuG"
 )
 
 func IsTableName(name TableName) bool {
@@ -50,6 +53,8 @@ func (this TableName) Path() TablePath {
 		return TablePathTheTempleOfAthena
 	case TableNameCommunication:
 		return TablePathCommunication
+	case TableNameInstrumentality:
+		return TablePathInstrumentality
 
 	default:
 		return ""
@@ -68,6 +73,8 @@ func (this TableName) Link() TableLink {
 		return TableLinkTheTempleOfAthena
 	case TableNameCommunication:
 		return TableLinkCommunication
+	case TableNameInstrumentality:
+		return TableLinkInstrumentality
 
 	default:
 		return ""
