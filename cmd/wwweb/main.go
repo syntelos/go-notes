@@ -35,8 +35,8 @@ Description
 
     or embed targets
 
-      <tgt>/<YYYY>/<MM>/<YYYY><MM><DD>.svg
-      <tgt>/<YYYY>/<MM>/<YYYY><MM><DD>.png
+      <tgt>/<YYYY>/<MM>/<tablename>-<YYYY><MM><DD>.svg
+      <tgt>/<YYYY>/<MM>/<tablename>-<YYYY><MM><DD>.png
 
   Encode
 
@@ -62,8 +62,8 @@ Description
       Enumerate outputs implied by operation "encode" or
       "update".
 
-  Note that the principal operators, "encode" and "update"
-  are recognized by their corresponding two, three, and six
+  The principal operators, "encode" and "update" are
+  recognized by their corresponding two, three, and six
   character symbols.
 
 `)
