@@ -188,7 +188,7 @@ func (this FileName) Target() FileName {
 			reflection = this[0:first]+".svg"
 		}
 
-		if IsNotes() {
+		if HaveNotes() {
 			/*
 			 * The target is a projection from
 			 * the source into "notes".

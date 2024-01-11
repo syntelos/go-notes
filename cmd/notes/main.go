@@ -14,13 +14,13 @@ func usage(){
 	fmt.Println(`
 Synopsis
 
-    notes source [en txt|up]  -- List input.
+    notes source [en|up] ...  -- List input.
 
-    notes target [en txt|up]  -- List output.
+    notes target [en|up] ...  -- List output.
 
-    notes encode <txt>        -- Produce SVG from TXT.
+    notes encode <tgt> <src>  -- Produce SVG from TXT.
 
-    notes update              -- Index content with JSON.
+    notes update <tgt>        -- Index content with JSON.
 
 Description
 
@@ -100,28 +100,36 @@ func main(){
 		if haveOperand(0) {
 			switch getOperand(0) {
 			case "en", "enc", "encode":
-				notes.Init()
 				if haveOperand(1) {
-					var target notes.FileName
-					for _, opd := range listOperands(1) {
+					notes.Init(getOperand(1))
+					if haveOperand(2) {
+						var target notes.FileName
+						for _, opd := range listOperands(2) {
 
-						for _, target = range notes.ListTextFiles(opd) {
+							for _, target = range notes.ListTextFiles(opd) {
 
-							fmt.Println(target)
+								fmt.Println(target)
+							}
 						}
+						os.Exit(0)
+					} else {
+						usage()
 					}
-					os.Exit(0)
 				} else {
 					usage()
 				}
 			case "up", "upd", "update":
-				if notes.Init() {
-					var target notes.IndexTarget
-					for _, target = range notes.ListIndexFiles() {
-						
-						fmt.Println(target)
+				if haveOperand(1) {
+					if notes.Init(getOperand(1)) {
+						var target notes.IndexTarget
+						for _, target = range notes.ListIndexFiles() {
+							
+							fmt.Println(target)
+						}
+						os.Exit(0)
+					} else {
+						usage()
 					}
-					os.Exit(0)
 				} else {
 					usage()
 				}
@@ -135,28 +143,36 @@ func main(){
 		if haveOperand(0) {
 			switch getOperand(0) {
 			case "en", "enc", "encode":
-				notes.Init()
 				if haveOperand(1) {
-					var target notes.FileName
-					for _, opd := range listOperands(1) {
+					notes.Init(getOperand(1))
+					if haveOperand(2) {
+						var target notes.FileName
+						for _, opd := range listOperands(2) {
 
-						for _, target = range notes.ListTextFiles(opd) {
+							for _, target = range notes.ListTextFiles(opd) {
 
-							fmt.Println(target.Target())
+								fmt.Println(target.Target())
+							}
 						}
+						os.Exit(0)
+					} else {
+						usage()
 					}
-					os.Exit(0)
 				} else {
 					usage()
 				}
 			case "up", "upd", "update":
-				if notes.Init() {
-					var target notes.IndexTarget
-					for _, target = range notes.ListIndexFiles() {
-						
-						fmt.Println(target.Target())
+				if haveOperand(1) {
+					if notes.Init(getOperand(1)) {
+						var target notes.IndexTarget
+						for _, target = range notes.ListIndexFiles() {
+							
+							fmt.Println(target.Target())
+						}
+						os.Exit(0)
+					} else {
+						usage()
 					}
-					os.Exit(0)
 				} else {
 					usage()
 				}
@@ -167,28 +183,36 @@ func main(){
 			usage()
 		}
 	case "en", "enc", "encode":
-		notes.Init()
 		if haveOperand(0) {
-			var target notes.FileName
-			for _, opd := range listOperands(0) {
+			notes.Init(getOperand(0))
+			if haveOperand(1) {
+				var target notes.FileName
+				for _, opd := range listOperands(1) {
 
-				for _, target = range notes.ListTextFiles(opd) {
+					for _, target = range notes.ListTextFiles(opd) {
 
-					target.CodeWrite()
+						target.CodeWrite()
+					}
 				}
+				os.Exit(0)
+			} else {
+				usage()
 			}
-			os.Exit(0)
 		} else {
 			usage()
 		}
 	case "up", "upd", "update":
-		if notes.Init() {
-			var target notes.IndexTarget
-			for _, target = range notes.ListIndexFiles() {
-				
-				target.IndexWrite()
+		if haveOperand(0) {
+			if notes.Init(getOperand(0)) {
+				var target notes.IndexTarget
+				for _, target = range notes.ListIndexFiles() {
+					
+					target.IndexWrite()
+				}
+				os.Exit(0)
+			} else {
+				usage()
 			}
-			os.Exit(0)
 		} else {
 			usage()
 		}

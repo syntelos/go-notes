@@ -12,15 +12,15 @@ import (
 	sort "github.com/syntelos/go-sort"
 )
 
-var notesTarget FileName
+var NotesTarget FileName
 
-func IsNotes() bool {
+func HaveNotes() bool {
 
-	return 0 != len(notesTarget)
+	return 0 != len(NotesTarget)
 }
 
-func Init() bool {
-	var target FileName = FileName("notes")
+func Init(tgt string) bool {
+	var target FileName = FileName(tgt)
 
 	var fo *os.File
 	var er error
@@ -35,31 +35,7 @@ func Init() bool {
 
 			if fi.IsDir() {
 
-				notesTarget = target
-				return true
-			}
-		}
-	}
-	return false
-}
-
-func Test() bool {
-	var target FileName = FileName("tst/notes")
-
-	var fo *os.File
-	var er error
-
-	fo, er = os.Open(string(target))
-	if nil == er {
-		defer fo.Close()
-
-		var fi os.FileInfo
-		fi, er = fo.Stat()
-		if nil == er {
-
-			if fi.IsDir() {
-
-				notesTarget = target
+				NotesTarget = target
 				return true
 			}
 		}
@@ -77,7 +53,7 @@ const (
 
 type IndexList []IndexFile
 
-var notesTargetIndex map[IndexFile]IndexTarget = make(map[IndexFile]IndexTarget)
+var NotesTargetIndex map[IndexFile]IndexTarget = make(map[IndexFile]IndexTarget)
 
 func indexListWalker(path string, d fs.DirEntry, er error) error {
 
@@ -88,10 +64,10 @@ func indexListWalker(path string, d fs.DirEntry, er error) error {
 
 			var a IndexTarget = ixfil.Target()
 
-			var b IndexTarget = notesTargetIndex[a.yyyymm]
+			var b IndexTarget = NotesTargetIndex[a.yyyymm]
 
 			if b.IsInvalid() || a.yyyymmdd > b.yyyymmdd {
-				notesTargetIndex[a.yyyymm] = a
+				NotesTargetIndex[a.yyyymm] = a
 			}
 		}
 	}
@@ -102,17 +78,17 @@ func ListIndexFiles() (fileList IndexTargetList) {
 	/*
 	 * Collect index map
 	 */
-	if 0 == len(notesTargetIndex) {
+	if 0 == len(NotesTargetIndex) {
 
 		var dir fs.FS = os.DirFS(".")
 
-		fs.WalkDir(dir,string(notesTarget),indexListWalker)
+		fs.WalkDir(dir,string(NotesTarget),indexListWalker)
 	}
 	/*
 	 * Serialize index map
 	 */
 	{
-		for _, v := range notesTargetIndex {
+		for _, v := range NotesTargetIndex {
 
 			fileList = append(fileList,v)
 		}
@@ -287,8 +263,8 @@ func (this IndexTarget) Target() FileName {
 	var yyyy string = string(this.yyyymm[0:4])
 	var mm string = string(this.yyyymm[4:6])
 
-	if IsNotes() {
-		var root FileName = notesTarget
+	if HaveNotes() {
+		var root FileName = NotesTarget
 
 		return FileName(FileCat(FileCat(string(root),yyyy),mm))
 
