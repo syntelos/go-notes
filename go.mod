@@ -1,4 +1,4 @@
-module github.com/syntelos/go-notes
+module github.com/syntelos/go-wwweb
 
 go 1.20
 

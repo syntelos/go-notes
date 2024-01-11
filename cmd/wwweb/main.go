@@ -7,26 +7,36 @@ package main
 import (
 	"fmt"
 	"os"
-	notes "github.com/syntelos/go-notes"
+	notes "github.com/syntelos/go-wwweb"
 )
 
 func usage(){
 	fmt.Println(`
 Synopsis
 
-    notes source [en|up] ...  -- List input.
+    wwweb source [en|up] ...  -- List input.
 
-    notes target [en|up] ...  -- List output.
+    wwweb target [en|up] ...  -- List output.
 
-    notes encode <tgt> <src>  -- Produce SVG from TXT.
+    wwweb encode <tgt> <src>  -- Produce SVG from TXT.
 
-    notes update <tgt>        -- Index content with JSON.
+    wwweb update <tgt>        -- Index content with JSON.
 
 Description
 
-    Update WWWeb Notes directory files.  If the local
-    directory "notes" is found, it is employed as the WWWeb
-    Notes directory structure.
+    Update WWWeb Notes directory files.  The WWWeb Notes
+    directory structure is
+
+      <tgt>/<YYYY>/<MM>
+
+    as for JSON index target
+
+      <tgt>/<YYYY>/<MM>/<YYYY><MM><DD>.json
+
+    or embed targets
+
+      <tgt>/<YYYY>/<MM>/<YYYY><MM><DD>.svg
+      <tgt>/<YYYY>/<MM>/<YYYY><MM><DD>.png
 
   Encode
 
