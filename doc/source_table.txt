@@ -5,3 +5,5 @@ the_temple_of_athena	/gegonen /the temple of athena	https://drive.google.com/dri
 communication	/syntelos /science /anthropology /communication	https://drive.google.com/drive/folders/1tXs2GNe1R9wCsKbj-bcCyeiscrK0F2K0
 instrumentality	/syntelos /science /anthropology /instrumentality	https://drive.google.com/drive/folders/1YqybUMCurpLc0WdTOuUjew7EujYGFDuG
 pyrus_malus	/gegonen /through the eyes of pyrus malus	https://drive.google.com/drive/folders/1ODny7w7sTRbzQQGYMREZdQaKZ7lHJDuk
+journey		/syntelos /science /anthropology /morality	https://drive.google.com/drive/folders/1eLNmCSFIH21y7bWB61QVxw0S3VV9RuZI
+morality	/syntelos /science /anthropology /morality	https://drive.google.com/drive/folders/1eLNmCSFIH21y7bWB61QVxw0S3VV9RuZI
