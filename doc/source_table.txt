@@ -1,6 +1,7 @@
 existentialism	/syntelos /science /anthropology /existentialism	https://drive.google.com/drive/folders/162g6-KM5dOkWvJX7NgMRoKJuz8rkwk96
 politics	/gegonen /politics	https://drive.google.com/drive/folders/1uhgjgL8HBzRwCgP6pXpCwQqLZ0IC_pgJ
 sociology	/syntelos /science /anthropology /sociology	https://drive.google.com/drive/folders/1etCIitYhVQH8_Wf6oHeu_rWUmDfTYZD-
-the_temple_of_athena	/gegonen /the_temple_of_athena	https://drive.google.com/drive/folders/1nUpMgy9n-wHWN13hlXm-YZH5rojTUi0j
+the_temple_of_athena	/gegonen /the temple of athena	https://drive.google.com/drive/folders/1nUpMgy9n-wHWN13hlXm-YZH5rojTUi0j
 communication	/syntelos /science /anthropology /communication	https://drive.google.com/drive/folders/1tXs2GNe1R9wCsKbj-bcCyeiscrK0F2K0
 instrumentality	/syntelos /science /anthropology /instrumentality	https://drive.google.com/drive/folders/1YqybUMCurpLc0WdTOuUjew7EujYGFDuG
+through_the_eyes_of_pyrus_malus	/gegonen /through the eyes of pyrus malus	https://drive.google.com/drive/folders/1ODny7w7sTRbzQQGYMREZdQaKZ7lHJDuk
