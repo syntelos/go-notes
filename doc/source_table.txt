@@ -4,4 +4,4 @@ sociology	/syntelos /science /anthropology /sociology	https://drive.google.com/d
 the_temple_of_athena	/gegonen /the temple of athena	https://drive.google.com/drive/folders/1nUpMgy9n-wHWN13hlXm-YZH5rojTUi0j
 communication	/syntelos /science /anthropology /communication	https://drive.google.com/drive/folders/1tXs2GNe1R9wCsKbj-bcCyeiscrK0F2K0
 instrumentality	/syntelos /science /anthropology /instrumentality	https://drive.google.com/drive/folders/1YqybUMCurpLc0WdTOuUjew7EujYGFDuG
-through_the_eyes_of_pyrus_malus	/gegonen /through the eyes of pyrus malus	https://drive.google.com/drive/folders/1ODny7w7sTRbzQQGYMREZdQaKZ7lHJDuk
+pyrus_malus	/gegonen /through the eyes of pyrus malus	https://drive.google.com/drive/folders/1ODny7w7sTRbzQQGYMREZdQaKZ7lHJDuk
