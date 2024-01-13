@@ -9,7 +9,7 @@ import (
 )
 
 func TestEncode(t *testing.T){
-	if Init("tst/notes") {
+	if InitTarget("tst/notes") {
 		var source FileName
 		for _, source = range ListTextFiles("tst/txt") {
 			
@@ -21,7 +21,7 @@ func TestEncode(t *testing.T){
 }
 
 func TestUpdate(t *testing.T){
-	if Init("tst/notes") {
+	if InitTarget("tst/notes") {
 		var target IndexTarget
 		for _, target = range ListIndexFiles() {
 			

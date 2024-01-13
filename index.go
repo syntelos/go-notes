@@ -12,37 +12,6 @@ import (
 	sort "github.com/syntelos/go-sort"
 )
 
-var NotesTarget FileName
-
-func HaveNotes() bool {
-
-	return 0 != len(NotesTarget)
-}
-
-func Init(tgt string) bool {
-	var target FileName = FileName(tgt)
-
-	var fo *os.File
-	var er error
-
-	fo, er = os.Open(string(target))
-	if nil == er {
-		defer fo.Close()
-
-		var fi os.FileInfo
-		fi, er = fo.Stat()
-		if nil == er {
-
-			if fi.IsDir() {
-
-				NotesTarget = target
-				return true
-			}
-		}
-	}
-	return false
-}
-
 type IndexFile FileName
 
 const (
@@ -263,7 +232,7 @@ func (this IndexTarget) Target() FileName {
 	var yyyy string = string(this.yyyymm[0:4])
 	var mm string = string(this.yyyymm[4:6])
 
-	if HaveNotes() {
+	if HaveTarget() {
 		var root FileName = NotesTarget
 
 		return FileName(FileCat(FileCat(string(root),yyyy),mm))
