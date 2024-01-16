@@ -235,6 +235,14 @@ func (this IndexTarget) IsValid() bool {
 	return 0 != len(this.dir) && 0 != len(this.yyyymmdd_hhmmss) && 0 != len(this.yyyymmdd) && 0 != len(this.yyyymm) && 0 != len(this.path)
 }
 
+func (this IndexTarget) Path() string {
+	return this.path
+}
+
+func (this IndexTarget) Name() string {
+	return this.name
+}
+
 func (this IndexTarget) Target() FileName {
 	var yyyy string = string(this.yyyymm[0:4])
 	var mm string = string(this.yyyymm[4:6])

@@ -156,7 +156,7 @@ func main(){
 						var target notes.IndexTarget
 						for _, target = range notes.ListIndexFiles() {
 							
-							fmt.Println(target) // [TODO] (review)
+							fmt.Println(target.Path()) // [TODO] (review)
 						}
 						os.Exit(0)
 					} else {
