@@ -77,7 +77,10 @@ func ListIndexFiles() (fileList IndexTargetList) {
 	{
 		for _, v := range NotesTargetIndex {
 
-			fileList = append(fileList,v)
+			if v.IsValid() {
+
+				fileList = append(fileList,v)
+			}
 		}
 	}
 	return fileList
@@ -172,7 +175,8 @@ func (this IndexFile) LongKey() (that IndexFile) {
 	}
 }
 
-func (this IndexFile) Target() (that IndexTarget) {
+func (this IndexFile) Target() (empty IndexTarget) {
+	var that IndexTarget
 	that.dir = ""
 	that.yyyymmdd = ""
 	that.yyyymm = ""
@@ -192,7 +196,8 @@ func (this IndexFile) Target() (that IndexTarget) {
 
 			switch this[ofs] {
 			case '/':
-				if -1 == prefix {
+				if -1 == prefix && -1 != infix {
+
 					prefix = ofs
 					that.dir = this[0:ofs]
 
@@ -218,11 +223,8 @@ func (this IndexFile) Target() (that IndexTarget) {
 				}
 			}
 		}
-		return that
-
-	default:
-		return that
 	}
+	return empty
 }
 
 func (this IndexTarget) IsInvalid() bool {
@@ -236,24 +238,28 @@ func (this IndexTarget) IsValid() bool {
 }
 
 func (this IndexTarget) Path() string {
-	return this.path
+	return string(this.path)
 }
 
 func (this IndexTarget) Name() string {
-	return this.name
+	return string(this.name)
 }
 
-func (this IndexTarget) Target() FileName {
-	var yyyy string = string(this.yyyymm[0:4])
-	var mm string = string(this.yyyymm[4:6])
+func (this IndexTarget) Target() (empty FileName) {
+	if this.IsValid() {
+		var yyyy string = string(this.yyyymm[0:4])
+		var mm string = string(this.yyyymm[4:6])
 
-	if HaveTarget() {
-		var root FileName = NotesTarget
+		if HaveTarget() {
+			var root FileName = NotesTarget
 
-		return FileName(FileCat(FileCat(string(root),yyyy),mm))
+			return FileName(FileCat(FileCat(string(root),yyyy),mm))
 
+		} else {
+			return FileName(FileCat(FileCat("notes",yyyy),mm))
+		}
 	} else {
-		return FileName(FileCat(FileCat("notes",yyyy),mm))
+		return empty
 	}
 }
 /*

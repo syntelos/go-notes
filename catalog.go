@@ -76,7 +76,7 @@ func (this IndexTarget) Encode() (that Catalog) {
 
 			that = append(that,[]byte(str))
 
-			py += bhi
+			py += (bhi<<1)
 		}
 		/*
 		 * Body
@@ -101,4 +101,34 @@ func (this IndexTarget) Encode() (that Catalog) {
 		}
 	}
 	return that
+}
+
+func (this IndexTarget) CatalogTarget() string {
+	if this.IsValid() {
+		var path string = string(this.Target())
+		var file string = string(this.yyyymmdd)+".svg"
+
+		return FileCat(string(path),string(file))
+	} else {
+		return ""
+	}
+}
+
+func (this IndexTarget) CatalogWrite() {
+	var path string = this.CatalogTarget()
+	var file *os.File
+	var er error
+
+	file, er = os.Create(path)
+	if nil == er {
+		var w *bufio.Writer = bufio.NewWriter(file)
+
+		for _, line := range this.Encode() {
+
+			w.Write(line)
+		}
+
+		w.Flush()
+		file.Close()
+	}
 }

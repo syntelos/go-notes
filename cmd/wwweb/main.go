@@ -156,7 +156,7 @@ func main(){
 						var target notes.IndexTarget
 						for _, target = range notes.ListIndexFiles() {
 							
-							fmt.Println(target.Path()) // [TODO] (review)
+							fmt.Println(target.Path())
 						}
 						os.Exit(0)
 					} else {
@@ -214,7 +214,7 @@ func main(){
 						var target notes.IndexTarget
 						for _, target = range notes.ListIndexFiles() {
 							
-							fmt.Println(target.Target()) // [TODO] (review)
+							fmt.Println(target.CatalogTarget())
 						}
 						os.Exit(0)
 					} else {
@@ -269,7 +269,7 @@ func main(){
 				var target notes.IndexTarget
 				for _, target = range notes.ListIndexFiles() {
 					
-					target.IndexWrite() // [TODO] (review)
+					target.CatalogWrite()
 				}
 				os.Exit(0)
 			} else {
