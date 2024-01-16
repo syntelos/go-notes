@@ -44,12 +44,11 @@ func TestContent(t *testing.T){
 
 			fmt.Printf("[TestContent] (IndexRead) %s\n",target.path)
 
-			var list []IndexCatalog = target.IndexRead()
+			var text Catalog = target.Encode()
 
-			var catalog IndexCatalog
-			for _, catalog = range list {
+			for _, line := range text {
 
-				fmt.Println(catalog)
+				fmt.Println(string(line))
 			}
 		}		
 	} else {

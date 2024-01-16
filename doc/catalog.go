@@ -11,7 +11,7 @@ import (
 	notes "github.com/syntelos/go-wwweb"
 )
 
-func bar(this notes.Page) (bar int) {
+func bar(this notes.Catalog) (bar int) {
 	bar = -1
 
 	for tix, txt := range this {
@@ -25,7 +25,7 @@ func bar(this notes.Page) (bar int) {
 	return bar
 }
 
-func Enumerate(this notes.Page) {
+func Enumerate(this notes.Catalog) {
 
 	var cc int = 0
 
@@ -33,7 +33,7 @@ func Enumerate(this notes.Page) {
 
 	case "head":
 		var bar int = bar(this)
-		fmt.Print("var page_head Page = Page{")
+		fmt.Print("var catalog_head Catalog = Catalog{")
 		for tix, txt := range this {
 
 			if tix < bar {
@@ -57,7 +57,7 @@ func Enumerate(this notes.Page) {
 
 	case "tail":
 		var bar int = bar(this)
-		fmt.Print("var page_tail Page = Page{")
+		fmt.Print("var catalog_tail Catalog = Catalog{")
 		for tix, txt := range this {
 
 			if bar < tix {
@@ -80,7 +80,7 @@ func Enumerate(this notes.Page) {
 		os.Exit(0)
 
 	case "all":
-		fmt.Print("var page Page = Page{")
+		fmt.Print("var catalog Catalog = Catalog{")
 		for _, txt := range this {
 
 			if 0 != cc {
@@ -105,7 +105,7 @@ func Enumerate(this notes.Page) {
 
 }
 
-func List(this notes.Page) {
+func List(this notes.Catalog) {
 
 	switch operand() {
 
@@ -148,9 +148,9 @@ func List(this notes.Page) {
 
 func open() (fi *os.File) {
 	var er error
-	fi, er = os.Open("page.svg")
+	fi, er = os.Open("catalog.svg")
 	if nil != er {
-		fi, er = os.Open("doc/page.svg")
+		fi, er = os.Open("doc/catalog.svg")
 		if nil != er {
 			return nil
 		}
@@ -178,9 +178,9 @@ func usage() {
 	fmt.Println(`
 Synopsis
 
-  page list                   -- List (head|tail|all).
+  catalog list                   -- List (head|tail|all).
 
-  page enumerate              -- Enumerate (head|tail).
+  catalog enumerate              -- Enumerate (head|tail).
 
 `)
 	os.Exit(1)
@@ -192,26 +192,26 @@ func main(){
 	if nil != file {
 		defer file.Close()
 
-		var page notes.Page
+		var catalog notes.Catalog
 		var er error
 
-		page, er = page.Read(file)
+		catalog, er = catalog.Read(file)
 		if nil != er {
 			log.Fatal(er)
 		} else {
 			switch operator() {
 
 			case "enumerate":
-				Enumerate(page)
+				Enumerate(catalog)
 
 			case "list":
-				List(page)
+				List(catalog)
 
 			default:
 				usage()
 			}
 		}
 	} else {
-		log.Fatalf("Missing source 'page.svg'.",)
+		log.Fatalf("Missing source 'catalog.svg'.",)
 	}
 }
