@@ -8,7 +8,7 @@ import (
 	"fmt"
 	"log"
 	"os"
-	notes "github.com/syntelos/go-notes"
+	notes "github.com/syntelos/go-wwweb"
 )
 
 func bar(this notes.Page) (bar int) {
@@ -148,9 +148,9 @@ func List(this notes.Page) {
 
 func open() (fi *os.File) {
 	var er error
-	fi, er = os.Open("text.svg")
+	fi, er = os.Open("page.svg")
 	if nil != er {
-		fi, er = os.Open("doc/text.svg")
+		fi, er = os.Open("doc/page.svg")
 		if nil != er {
 			return nil
 		}
@@ -178,9 +178,9 @@ func usage() {
 	fmt.Println(`
 Synopsis
 
-  text list                   -- List (head|tail|all).
+  page list                   -- List (head|tail|all).
 
-  text enumerate              -- Enumerate (head|tail).
+  page enumerate              -- Enumerate (head|tail).
 
 `)
 	os.Exit(1)
@@ -212,6 +212,6 @@ func main(){
 			}
 		}
 	} else {
-		log.Fatal("Missing source text.")
+		log.Fatalf("Missing source 'page.svg'.",)
 	}
 }

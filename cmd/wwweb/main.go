@@ -22,6 +22,8 @@ Synopsis
 
     wwweb update <tgt>        -- Index content with JSON.
 
+    wwweb table <tgt>         -- Write content index as SVG.
+
 Description
 
     Update WWWeb Notes directory files.  The WWWeb Notes
@@ -52,18 +54,23 @@ Description
       Update WWWeb Notes JSON indeces.  Note that existing
       JSON index files are not overwritten.
 
+  Table
+
+      Update WWWeb Notes graphical tables of contents.
+      Existing tables of contents are overwritten.
+
   Source
 
-      Enumerate inputs derived from operation "encode" or
-      "update".
+      Enumerate inputs derived from operation "encode",
+      "update", or "table".
 
   Target
 
-      Enumerate outputs implied by operation "encode" or
-      "update".
+      Enumerate outputs implied by operation "encode",
+      "update", or "table".
 
-  The principal operators, "encode" and "update" are
-  recognized by their corresponding two, three, and six
+  The principal operators, "encode", "update", and "table"
+  are recognized by their corresponding two, three, and six
   character symbols.
 
 `)
@@ -143,6 +150,21 @@ func main(){
 				} else {
 					usage()
 				}
+			case "ta", "tab", "table":
+				if haveOperand(1) {
+					if notes.InitTarget(getOperand(1)) {
+						var target notes.IndexTarget
+						for _, target = range notes.ListIndexFiles() {
+							
+							fmt.Println(target) // [TODO] (review)
+						}
+						os.Exit(0)
+					} else {
+						usage()
+					}
+				} else {
+					usage()
+				}
 			default:
 				usage()
 			}
@@ -186,6 +208,21 @@ func main(){
 				} else {
 					usage()
 				}
+			case "ta", "tab", "table":
+				if haveOperand(1) {
+					if notes.InitTarget(getOperand(1)) {
+						var target notes.IndexTarget
+						for _, target = range notes.ListIndexFiles() {
+							
+							fmt.Println(target.Target()) // [TODO] (review)
+						}
+						os.Exit(0)
+					} else {
+						usage()
+					}
+				} else {
+					usage()
+				}
 			default:
 				usage()
 			}
@@ -218,6 +255,21 @@ func main(){
 				for _, target = range notes.ListIndexFiles() {
 					
 					target.IndexWrite()
+				}
+				os.Exit(0)
+			} else {
+				usage()
+			}
+		} else {
+			usage()
+		}
+	case "ta", "tab", "table":
+		if haveOperand(0) {
+			if notes.InitTarget(getOperand(0)) {
+				var target notes.IndexTarget
+				for _, target = range notes.ListIndexFiles() {
+					
+					target.IndexWrite() // [TODO] (review)
 				}
 				os.Exit(0)
 			} else {

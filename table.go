@@ -19,6 +19,9 @@ const (
 	TableNamePyrusMalus	TableName	= "pyrus_malus"
 	TableNameJourney	TableName	= "journey"
 	TableNameMorality	TableName	= "morality"
+	TableNameCulture	TableName	= "culture"
+	TableNameIdeology	TableName	= "ideology"
+	TableNameNihilism	TableName	= "nihilism"
 
 	TablePathExistentialism	TablePath	= "/syntelos /science /anthropology /existentialism"
 	TablePathPolitics	TablePath	= "/gegonen /politics"
@@ -29,6 +32,9 @@ const (
 	TablePathPyrusMalus	TablePath	= "/gegonen /through the eyes of pyrus malus"
 	TablePathJourney	TablePath	= ""
 	TablePathMorality	TablePath	= "/syntelos /science /anthropology /morality"
+	TablePathCulture	TablePath	= ""
+	TablePathIdeology	TablePath	= "/syntelos /science /anthropology /ideology"
+	TablePathNihilism	TablePath	= "/syntelos /science /anthropology /nihilism"
 
 	TableLinkExistentialism	TableLink	= "https://drive.google.com/drive/folders/162g6-KM5dOkWvJX7NgMRoKJuz8rkwk96"
 	TableLinkPolitics	TableLink	= "https://drive.google.com/drive/folders/1uhgjgL8HBzRwCgP6pXpCwQqLZ0IC_pgJ"
@@ -39,6 +45,9 @@ const (
 	TableLinkPyrusMalus	TableLink	= "https://drive.google.com/drive/folders/1ODny7w7sTRbzQQGYMREZdQaKZ7lHJDuk"
 	TableLinkJourney	TableLink	= "/syntelos /science /anthropology /morality"
 	TableLinkMorality	TableLink	= "https://drive.google.com/drive/folders/1eLNmCSFIH21y7bWB61QVxw0S3VV9RuZI"
+	TableLinkCulture	TableLink	= "/syntelos /science /anthropology /culture"
+	TableLinkIdeology	TableLink	= "https://drive.google.com/drive/folders/17CpRzqOoCtS-7WK98N24oPt0Ke_9379E"
+	TableLinkNihilism	TableLink	= "https://drive.google.com/drive/folders/1l4CQXKr3DyFJDS3bjfxro7AT5TO_tzZZ"
 )
 
 func IsTableName(name TableName) bool {
@@ -70,6 +79,12 @@ func (this TableName) Path() TablePath {
 		return TablePathJourney
 	case TableNameMorality:
 		return TablePathMorality
+	case TableNameCulture:
+		return TablePathCulture
+	case TableNameIdeology:
+		return TablePathIdeology
+	case TableNameNihilism:
+		return TablePathNihilism
 
 	default:
 		return ""
@@ -96,6 +111,12 @@ func (this TableName) Link() TableLink {
 		return TableLinkJourney
 	case TableNameMorality:
 		return TableLinkMorality
+	case TableNameCulture:
+		return TableLinkCulture
+	case TableNameIdeology:
+		return TableLinkIdeology
+	case TableNameNihilism:
+		return TableLinkNihilism
 
 	default:
 		return ""

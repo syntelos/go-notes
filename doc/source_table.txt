@@ -7,3 +7,6 @@ instrumentality	/syntelos /science /anthropology /instrumentality	https://drive.
 pyrus_malus	/gegonen /through the eyes of pyrus malus	https://drive.google.com/drive/folders/1ODny7w7sTRbzQQGYMREZdQaKZ7lHJDuk
 journey		/syntelos /science /anthropology /morality	https://drive.google.com/drive/folders/1eLNmCSFIH21y7bWB61QVxw0S3VV9RuZI
 morality	/syntelos /science /anthropology /morality	https://drive.google.com/drive/folders/1eLNmCSFIH21y7bWB61QVxw0S3VV9RuZI
+culture		/syntelos /science /anthropology /culture	https://drive.google.com/drive/folders/1szqgHRry7jXvuV4spXrcn7S4VQxLucB_
+ideology	/syntelos /science /anthropology /ideology	https://drive.google.com/drive/folders/17CpRzqOoCtS-7WK98N24oPt0Ke_9379E
+nihilism	/syntelos /science /anthropology /nihilism	https://drive.google.com/drive/folders/1l4CQXKr3DyFJDS3bjfxro7AT5TO_tzZZ

@@ -6,8 +6,10 @@ package notes
 
 import (
 	"bufio"
+	json "github.com/syntelos/go-json"
 	"fmt"
 	"io/fs"
+	"log"
 	"os"
 	sort "github.com/syntelos/go-sort"
 )
@@ -21,6 +23,22 @@ const (
 )
 
 type IndexList []IndexFile
+
+type IndexTarget struct {
+	dir IndexFile
+	yyyymmdd_hhmmss IndexFile
+	yyyymmdd IndexFile
+	yyyymm IndexFile
+	path IndexFile
+	name TableName
+}
+
+type IndexTargetList []IndexTarget
+
+type IndexCatalog struct {
+	target IndexTarget
+	id, icon, path, link, name, embed string
+}
 
 var NotesTargetIndex map[IndexFile]IndexTarget = make(map[IndexFile]IndexTarget)
 
@@ -207,17 +225,6 @@ func (this IndexFile) Target() (that IndexTarget) {
 	}
 }
 
-type IndexTarget struct {
-	dir IndexFile
-	yyyymmdd_hhmmss IndexFile
-	yyyymmdd IndexFile
-	yyyymm IndexFile
-	path IndexFile
-	name TableName
-}
-
-type IndexTargetList []IndexTarget
-
 func (this IndexTarget) IsInvalid() bool {
 
 	return 0 == len(this.dir) || 0 == len(this.yyyymmdd_hhmmss) || 0 == len(this.yyyymmdd) || 0 == len(this.yyyymm) || 0 == len(this.path)
@@ -241,26 +248,25 @@ func (this IndexTarget) Target() FileName {
 		return FileName(FileCat(FileCat("notes",yyyy),mm))
 	}
 }
+/*
+ * An original source listing often differs from an
+ * objective target listing because the file has been edited
+ * manually since its initial production, as to include an
+ * arbitrarily expanded date time range.
+ */
+func (this IndexTarget) IndexSourceList() (list []IndexCatalog) {
 
-func (this IndexTarget) IndexWrite() {
-	/*
-	 * Don't overwrite an existing target.
-	 */
-	var dir fs.FS = os.DirFS(".")
+	var dl []os.DirEntry
 	var er error
 
-	_, er = fs.Stat(dir,string(this.path))
-	if nil != er {
-	
-		var dl []os.DirEntry
-
-
-		dl, er = os.ReadDir(string(this.dir))
-
-		if nil == er {
-			var ordering IndexList
-			var directory map[IndexFile]IndexFile = make(map[IndexFile]IndexFile)
-
+	dl, er = os.ReadDir(string(this.dir))
+	if nil == er {
+		/*
+		 * Source list
+		 */
+		var ordering IndexList
+		var directory map[IndexFile]IndexFile = make(map[IndexFile]IndexFile)
+		{
 			for _, de := range dl {
 
 				var notes_svg IndexFile = IndexFile(FileCat(string(this.dir),de.Name()))
@@ -275,47 +281,159 @@ func (this IndexTarget) IndexWrite() {
 				}
 			}
 
-			sort.Descending(ordering) // (recent)
-			{
-				var tgt *os.File
-				tgt, er = os.Create(string(this.path))
-				if nil == er {
-					var w *bufio.Writer = bufio.NewWriter(tgt)
+			sort.Descending(ordering)
+		}
+		/*
+		 * Order list
+		 */
+		for _, key := range ordering {
+
+			var notes_svg IndexFile = "/"+directory[key]
+			var key IndexFile = notes_svg.LongKey()
+			/*
+			 * N.B. "this name" may be unrelated
+			 * to "notes name", so it is derived
+			 * from the source.
+			 */
+			var notes_idx IndexTarget = notes_svg.Target()
+
+			var name TableName = notes_idx.name
+			var path TablePath = name.Path()
+			var link TableLink = name.Link()
+			/*
+			 * N.B. "this target" is
+			 * objective, not
+			 * figurative.
+			 */
+			var catalog IndexCatalog = IndexCatalog{this,string(key),"syntelos-catalog",string(path),string(link),string(name),string(notes_svg)}
+
+			list = append(list,catalog)
+		}
+	}
+	return list
+}
+/*
+ * Write index source list to objective target file.
+ */
+func (this IndexTarget) IndexWrite() {
+	/*
+	 * Don't overwrite an existing target.
+	 */
+	var dir fs.FS = os.DirFS(".")
+	var er error
+
+	_, er = fs.Stat(dir,string(this.path))
+	if nil != er {
+	
+		var tgt *os.File
+		tgt, er = os.Create(string(this.path))
+		if nil == er {
+			var w *bufio.Writer = bufio.NewWriter(tgt)
 					
-					w.Write([]byte("[\n"))
-					for x, key := range ordering {
+			w.Write([]byte("[\n"))
+			for x, record := range this.IndexSourceList() {
 
-						var notes_svg IndexFile = directory[key]
-						/*
-						 * N.B. "this name" may be unrelated
-						 * to "notes name", so it is derived
-						 * from the source.
-						 */
-						var notes_idx IndexTarget = notes_svg.Target()
+				if 0 != x {
+					w.Write([]byte(",\n"))
+				}
+				w.Write([]byte(record.String()))
+			}
+			w.Write([]byte("\n]\n"))
 
-						var name TableName = notes_idx.name
-						var path TablePath = name.Path()
-						var link TableLink = name.Link()
+			w.Flush()
+			tgt.Close()
+		}
+	}
+}
+/*
+ * Read objective target index.  N.B. The objective target
+ * index may differ from the original index source list by
+ * manual intervention.
+ */
+func (this IndexTarget) IndexRead() (list []IndexCatalog) {
+	var er error
+	var fo *os.File
 
-						if 0 != x {
-							w.Write([]byte(",\n"))
+	fo, er = os.Open(string(this.path))
+	if nil == er {
+		defer fo.Close()
+
+		var reader json.Reader = json.ReadFile(fo)
+		if reader.IsNotEmpty() {
+
+			var array json.Reader = reader.HeadArray()
+			if array.IsNotEmpty() {
+
+				var object json.Reader = array.HeadObject()
+
+				for object.IsNotEmpty() {
+
+					var field_id json.Reader = object.HeadField()
+
+					if field_id.IsNotEmpty() && object.Contains(field_id) {
+						var field_ic json.Reader = field_id.TailField()
+						if field_ic.IsNotEmpty() && object.Contains(field_ic) {
+							var field_pa json.Reader = field_ic.TailField()
+							if field_pa.IsNotEmpty() && object.Contains(field_pa) {
+								var field_li json.Reader = field_pa.TailField()
+								if field_li.IsNotEmpty() && object.Contains(field_li) {
+									var field_na json.Reader = field_li.TailField()
+									if field_na.IsNotEmpty() && object.Contains(field_na) {
+										var field_em json.Reader = field_na.TailField()
+										if field_em.IsNotEmpty() && object.Contains(field_em) {
+
+
+											var value_id string = Trim(field_id.HeadString().TailString().String())
+											var value_ic string = Trim(field_ic.HeadString().TailString().String())
+											var value_pa string = Trim(field_pa.HeadString().TailString().String())
+											var value_li string = Trim(field_li.HeadString().TailString().String())
+											var value_na string = Trim(field_na.HeadString().TailString().String())
+											var value_em string = Trim(field_em.HeadString().TailString().String())
+
+											var catalog IndexCatalog = IndexCatalog{this,value_id,value_ic,value_pa,value_li,value_na,value_em}
+
+											list = append(list,catalog)
+										}
+									}
+								}
+							}
 						}
-						var record string = fmt.Sprintf(`    {
+					}
+					object = object.TailObject()
+				}
+
+			} else {
+				log.Fatalf("Reading '%s': empty JSON Array",this.path)
+			}
+		} else {
+			log.Fatalf("Reading '%s': %v",this.path,er)
+		}
+	} else {
+		log.Fatalf("Reading '%s': %v",this.path,er)
+	}
+	return list
+}
+
+func (this IndexCatalog) String() string {
+	return fmt.Sprintf(`    {
         "id": "%s",
-        "icon": "syntelos-catalog",
+        "icon": "%s",
         "path": "%s",
         "link": "%s",
         "name": "%s",
-        "embed": "/%s"
-    }`,key,path,link,name,notes_svg)
-						w.Write([]byte(record))
-					}
-					w.Write([]byte("\n]\n"))
+        "embed": "%s"
+    }`,this.id,this.icon,this.path,this.link,this.name,this.embed)
+}
 
-					w.Flush()
-					tgt.Close()
-				}
-			}
+func Trim(value string) (empty string) {
+	var vz int = len(value)
+	if 0 < vz {
+		var first, last int = 0, (vz-1)
+
+		if '"' == value[first] && '"' == value[last] {
+
+			return value[first+1:last]
 		}
 	}
+	return empty
 }
