@@ -14,9 +14,9 @@ func usage(){
 	fmt.Println(`
 Synopsis
 
-    wwweb source [en|up|co] .. -- List input of operation.
+    wwweb source [en|up|co] . -- List input of operation.
 
-    wwweb target [en|up|co] .. -- List output of operation.
+    wwweb target [en|up|co] . -- List output of operation.
 
     wwweb encode <tgt> <src>  -- Produce SVG from TXT.
 
@@ -24,7 +24,7 @@ Synopsis
 
     wwweb contents <tgt>      -- Write content index as SVG.
 
-    wwweb table <tgt>         -- Tabulate indeces.
+    wwweb tabulate <tgt>      -- Tabulate indeces.
 
 Description
 
@@ -72,8 +72,8 @@ Description
       "update", or "contents".
 
   The principal operators, "encode", "update", and
-  "contents" are recognized by their corresponding two,
-  three, and six (or eight) character symbols.
+  "contents" are recognized by their corresponding short and
+  long character symbols.
 
 `)
 	os.Exit(1)
@@ -167,13 +167,13 @@ func main(){
 				} else {
 					usage()
 				}
-			case "ta", "tab", "table":
+			case "ta", "tab", "tabulate":
 				if haveOperand(1) {
 					if notes.InitObjective(getOperand(1)) {
 						var target notes.IndexTarget
 						for _, target = range notes.ListIndexFiles() {
 							
-							fmt.Println(target.Path()) // [TODO] (review "source table")
+							fmt.Println(target.Path()) // [TODO] (review "source tabulate")
 						}
 						os.Exit(0)
 					} else {
@@ -200,7 +200,7 @@ func main(){
 
 							for _, target = range notes.ListTextFiles(opd) {
 
-								fmt.Println(target.Target()) // [TODO] (review "target encode")
+								fmt.Println(target.Target("svg")) // [TODO] (review "target encode")
 							}
 						}
 						os.Exit(0)
@@ -240,13 +240,13 @@ func main(){
 				} else {
 					usage()
 				}
-			case "ta", "tab", "table":
+			case "ta", "tab", "tabulate":
 				if haveOperand(1) {
 					if notes.InitObjective(getOperand(1)) {
 						var target notes.IndexTarget
 						for _, target = range notes.ListIndexFiles() {
 							
-							fmt.Println(target.CatalogTarget()) // [TODO] (review "target table")
+							fmt.Println(target.CatalogTarget()) // [TODO] (review "target tabulate")
 						}
 						os.Exit(0)
 					} else {
@@ -310,13 +310,13 @@ func main(){
 		} else {
 			usage()
 		}
-	case "ta", "tab", "table":
+	case "ta", "tab", "tabulate":
 		if haveOperand(0) {
 			if notes.InitObjective(getOperand(0)) {
 				var target notes.IndexTarget
 				for _, target = range notes.ListIndexFiles() {
 					
-					target.CatalogWrite() // [TODO] (review "table")
+					target.CatalogWrite() // [TODO] (review "tabulate")
 				}
 				os.Exit(0)
 			} else {

@@ -144,7 +144,7 @@ func (this FileName) TableName() TableName {
 	}
 }
 
-func (this FileName) Source() FileName {
+func (this FileName) Source(fext string) FileName {
 
 	var first, last, end int = 0, 0, len(this)
 	{
@@ -154,19 +154,21 @@ func (this FileName) Source() FileName {
 
 	if 0 < first && '.' ==  this[first] {
 
-		if ".txt" == this[first:end] {
+		var found string = string(this[(first+1):end])
+
+		if ".txt" == found {
 
 			return this
 		} else {
 
-			return this[0:first]+".txt"
+			return FileName(string(this[0:first])+"."+fext)
 		}
 	} else {
 		return ""
 	}
 }
 
-func (this FileName) Target() FileName {
+func (this FileName) Target(fext string) FileName {
 
 	var first, last, end int = 0, 0, len(this)
 	{
@@ -178,14 +180,16 @@ func (this FileName) Target() FileName {
 		/*
 		 * The target reflects the source.
 		 */
-		var reflection FileName 
+		var reflection FileName
 
-		if ".svg" == this[first:end] {
+		var found string = string(this[(first+1):end])
+
+		if ".svg" == found {
 
 			reflection = this
 		} else {
 
-			reflection = this[0:first]+".svg"
+			reflection = FileName(string(this[0:first])+"."+fext)
 		}
 
 		if HaveObjective() {
@@ -210,14 +214,14 @@ func (this FileName) Target() FileName {
 func (this FileName) CodeWrite(){
 	var er error
 	var tgt *os.File
-	tgt, er = os.Create(string(this.Target()))
+	tgt, er = os.Create(string(this.Target("svg")))
 	if nil != er {
-		log.Fatalf("Error opening output '%s': %v",string(this.Target()),er)
+		log.Fatalf("Error opening output '%s': %v",string(this.Target("svg")),er)
 	} else {
 		var src *os.File
-		src, er = os.Open(string(this.Source()))
+		src, er = os.Open(string(this.Source("txt")))
 		if nil != er {
-			log.Fatalf("Error opening input '%s': %v",string(this.Source()),er)
+			log.Fatalf("Error opening input '%s': %v",string(this.Source("txt")),er)
 		} else {
 			var txt, svg Page
 			txt, er = txt.Read(src)
