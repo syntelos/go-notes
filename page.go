@@ -8,6 +8,7 @@ import (
 	"bufio"
 	"fmt"
 	"io"
+	"log"
 	"os"
 )
 
@@ -111,6 +112,37 @@ func (this Page) Encode() (that Page) {
 		that = append(that,tail)
 	}
 	return that
+}
+
+func (this FileName) CodeWrite(){
+	var er error
+	var tgt *os.File
+	tgt, er = os.Create(string(this.Target("svg")))
+	if nil != er {
+		log.Fatalf("Error opening output '%s': %v",string(this.Target("svg")),er)
+	} else {
+		var src *os.File
+		src, er = os.Open(string(this.Source("txt")))
+		if nil != er {
+			log.Fatalf("Error opening input '%s': %v",string(this.Source("txt")),er)
+		} else {
+			var txt, svg Page
+			txt, er = txt.Read(src)
+			if nil != er {
+				log.Fatal(er)
+			} else {
+				svg = txt.Encode()
+
+				er = svg.Write(tgt)
+				if nil != er {
+					log.Fatal(er)
+				} else {
+					src.Close()
+					tgt.Close()
+				}
+			}
+		}
+	}
 }
 
 func (this Text) IsText() (bool) {

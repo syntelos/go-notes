@@ -127,7 +127,7 @@ func main(){
 
 							for _, target = range notes.ListTextFiles(opd) {
 
-								fmt.Println(target) // [TODO] (review "source encode")
+								fmt.Println(target)
 							}
 						}
 						os.Exit(0)
@@ -143,7 +143,7 @@ func main(){
 						var target notes.IndexTarget
 						for _, target = range notes.ListIndexFiles() {
 							
-							fmt.Println(target) // [TODO] (review "source update")
+							fmt.Println(target) // [TODO] (review "source update") <this is target>
 						}
 						os.Exit(0)
 					} else {
