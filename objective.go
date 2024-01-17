@@ -8,14 +8,14 @@ import (
 	"os"
 )
 
-var NotesTarget FileName
+var ObjectiveDirectory FileName
 
-func HaveTarget() bool {
+func HaveObjective() bool {
 
-	return 0 != len(NotesTarget)
+	return 0 != len(ObjectiveDirectory)
 }
 
-func InitTarget(tgt string) bool {
+func InitObjective(tgt string) bool {
 	var target FileName = FileName(tgt)
 
 	var fo *os.File
@@ -31,7 +31,7 @@ func InitTarget(tgt string) bool {
 
 			if fi.IsDir() {
 
-				NotesTarget = target
+				ObjectiveDirectory = target
 				return true
 			}
 		}

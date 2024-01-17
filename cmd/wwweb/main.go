@@ -120,7 +120,7 @@ func main(){
 			switch getOperand(0) {
 			case "en", "enc", "encode":
 				if haveOperand(1) {
-					notes.InitTarget(getOperand(1))
+					notes.InitObjective(getOperand(1))
 					if haveOperand(2) {
 						var target notes.FileName
 						for _, opd := range listOperands(2) {
@@ -139,7 +139,7 @@ func main(){
 				}
 			case "up", "upd", "update":
 				if haveOperand(1) {
-					if notes.InitTarget(getOperand(1)) {
+					if notes.InitObjective(getOperand(1)) {
 						var target notes.IndexTarget
 						for _, target = range notes.ListIndexFiles() {
 							
@@ -154,7 +154,7 @@ func main(){
 				}
 			case "co", "con", "contents":
 				if haveOperand(1) {
-					if notes.InitTarget(getOperand(1)) {
+					if notes.InitObjective(getOperand(1)) {
 						var target notes.IndexTarget
 						for _, target = range notes.ListIndexFiles() {
 							
@@ -169,7 +169,7 @@ func main(){
 				}
 			case "ta", "tab", "table":
 				if haveOperand(1) {
-					if notes.InitTarget(getOperand(1)) {
+					if notes.InitObjective(getOperand(1)) {
 						var target notes.IndexTarget
 						for _, target = range notes.ListIndexFiles() {
 							
@@ -193,7 +193,7 @@ func main(){
 			switch getOperand(0) {
 			case "en", "enc", "encode":
 				if haveOperand(1) {
-					notes.InitTarget(getOperand(1))
+					notes.InitObjective(getOperand(1))
 					if haveOperand(2) {
 						var target notes.FileName
 						for _, opd := range listOperands(2) {
@@ -212,7 +212,7 @@ func main(){
 				}
 			case "up", "upd", "update":
 				if haveOperand(1) {
-					if notes.InitTarget(getOperand(1)) {
+					if notes.InitObjective(getOperand(1)) {
 						var target notes.IndexTarget
 						for _, target = range notes.ListIndexFiles() {
 							
@@ -227,7 +227,7 @@ func main(){
 				}
 			case "co", "con", "contents":
 				if haveOperand(1) {
-					if notes.InitTarget(getOperand(1)) {
+					if notes.InitObjective(getOperand(1)) {
 						var target notes.IndexTarget
 						for _, target = range notes.ListIndexFiles() {
 							
@@ -242,7 +242,7 @@ func main(){
 				}
 			case "ta", "tab", "table":
 				if haveOperand(1) {
-					if notes.InitTarget(getOperand(1)) {
+					if notes.InitObjective(getOperand(1)) {
 						var target notes.IndexTarget
 						for _, target = range notes.ListIndexFiles() {
 							
@@ -263,7 +263,7 @@ func main(){
 		}
 	case "en", "enc", "encode":
 		if haveOperand(0) {
-			notes.InitTarget(getOperand(0))
+			notes.InitObjective(getOperand(0))
 			if haveOperand(1) {
 				var target notes.FileName
 				for _, opd := range listOperands(1) {
@@ -282,7 +282,7 @@ func main(){
 		}
 	case "up", "upd", "update":
 		if haveOperand(0) {
-			if notes.InitTarget(getOperand(0)) {
+			if notes.InitObjective(getOperand(0)) {
 				var target notes.IndexTarget
 				for _, target = range notes.ListIndexFiles() {
 					
@@ -297,7 +297,7 @@ func main(){
 		}
 	case "co", "con", "contents":
 		if haveOperand(0) {
-			if notes.InitTarget(getOperand(0)) {
+			if notes.InitObjective(getOperand(0)) {
 				var target notes.IndexTarget
 				for _, target = range notes.ListIndexFiles() {
 					
@@ -312,7 +312,7 @@ func main(){
 		}
 	case "ta", "tab", "table":
 		if haveOperand(0) {
-			if notes.InitTarget(getOperand(0)) {
+			if notes.InitObjective(getOperand(0)) {
 				var target notes.IndexTarget
 				for _, target = range notes.ListIndexFiles() {
 					
