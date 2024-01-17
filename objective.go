@@ -8,14 +8,28 @@ import (
 	"os"
 )
 
-var ObjectiveDirectory FileName
+type ObjectiveKey uint8
+const (
+	ObjectiveKeyUnknown    ObjectiveKey = 0
+	ObjectiveKeySourceText ObjectiveKey = 1
+	ObjectiveKeyTargetWeb  ObjectiveKey = 2
+)
 
-func HaveObjective() bool {
+var objective map[ObjectiveKey]FileName = make(map[ObjectiveKey]FileName)
 
-	return 0 != len(ObjectiveDirectory)
+func ObjectiveDirectory(key ObjectiveKey) FileName {
+
+	return objective[key]
 }
 
-func InitObjective(tgt string) bool {
+func HaveObjective(key ObjectiveKey) bool {
+
+	var target FileName = objective[key]
+
+	return 0 != len(target)
+}
+
+func DefineObjectiveDirectory(key ObjectiveKey, tgt string) bool {
 	var target FileName = FileName(tgt)
 
 	var fo *os.File
@@ -31,7 +45,7 @@ func InitObjective(tgt string) bool {
 
 			if fi.IsDir() {
 
-				ObjectiveDirectory = target
+				objective[key] = target
 				return true
 			}
 		}

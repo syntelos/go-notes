@@ -69,7 +69,7 @@ func ListIndexFiles() (fileList IndexTargetList) {
 
 		var dir fs.FS = os.DirFS(".")
 
-		fs.WalkDir(dir,string(ObjectiveDirectory),indexListWalker)
+		fs.WalkDir(dir,string(ObjectiveDirectory(ObjectiveKeyTargetWeb)),indexListWalker)
 	}
 	/*
 	 * Serialize index map
@@ -250,8 +250,8 @@ func (this IndexTarget) Target() (empty FileName) {
 		var yyyy string = string(this.yyyymm[0:4])
 		var mm string = string(this.yyyymm[4:6])
 
-		if HaveObjective() {
-			var root FileName = ObjectiveDirectory
+		if HaveObjective(ObjectiveKeyTargetWeb) {
+			var root FileName = ObjectiveDirectory(ObjectiveKeyTargetWeb)
 
 			return FileName(FileCat(FileCat(string(root),yyyy),mm))
 

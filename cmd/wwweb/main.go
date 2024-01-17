@@ -120,7 +120,7 @@ func main(){
 			switch getOperand(0) {
 			case "en", "enc", "encode":
 				if haveOperand(1) {
-					notes.InitObjective(getOperand(1))
+					notes.DefineObjectiveDirectory(notes.ObjectiveKeyTargetWeb,getOperand(1))
 					if haveOperand(2) {
 						var target notes.FileName
 						for _, opd := range listOperands(2) {
@@ -139,7 +139,7 @@ func main(){
 				}
 			case "up", "upd", "update":
 				if haveOperand(1) {
-					if notes.InitObjective(getOperand(1)) {
+					if notes.DefineObjectiveDirectory(notes.ObjectiveKeyTargetWeb,getOperand(1)) {
 						var target notes.IndexTarget
 						for _, target = range notes.ListIndexFiles() {
 							
@@ -154,11 +154,11 @@ func main(){
 				}
 			case "co", "con", "contents":
 				if haveOperand(1) {
-					if notes.InitObjective(getOperand(1)) {
+					if notes.DefineObjectiveDirectory(notes.ObjectiveKeyTargetWeb,getOperand(1)) {
 						var target notes.IndexTarget
 						for _, target = range notes.ListIndexFiles() {
 							
-							fmt.Println(target.Path()) // [TODO] (review "source contents")
+							fmt.Println(target.Path()) // [TODO] (review "source contents") <condensed>
 						}
 						os.Exit(0)
 					} else {
@@ -169,11 +169,11 @@ func main(){
 				}
 			case "ta", "tab", "tabulate":
 				if haveOperand(1) {
-					if notes.InitObjective(getOperand(1)) {
+					if notes.DefineObjectiveDirectory(notes.ObjectiveKeyTargetWeb,getOperand(1)) {
 						var target notes.IndexTarget
 						for _, target = range notes.ListIndexFiles() {
 							
-							fmt.Println(target.Path()) // [TODO] (review "source tabulate")
+							fmt.Println(target.Path()) // [TODO] (review "source tabulate") <condensed>
 						}
 						os.Exit(0)
 					} else {
@@ -193,7 +193,7 @@ func main(){
 			switch getOperand(0) {
 			case "en", "enc", "encode":
 				if haveOperand(1) {
-					notes.InitObjective(getOperand(1))
+					notes.DefineObjectiveDirectory(notes.ObjectiveKeyTargetWeb,getOperand(1))
 					if haveOperand(2) {
 						var target notes.FileName
 						for _, opd := range listOperands(2) {
@@ -212,11 +212,11 @@ func main(){
 				}
 			case "up", "upd", "update":
 				if haveOperand(1) {
-					if notes.InitObjective(getOperand(1)) {
+					if notes.DefineObjectiveDirectory(notes.ObjectiveKeyTargetWeb,getOperand(1)) {
 						var target notes.IndexTarget
 						for _, target = range notes.ListIndexFiles() {
 							
-							fmt.Println(target.Target()) // [TODO] (review "target update")
+							fmt.Println(target.Target()) // [TODO] (review "target update") <condensed>
 						}
 						os.Exit(0)
 					} else {
@@ -227,11 +227,11 @@ func main(){
 				}
 			case "co", "con", "contents":
 				if haveOperand(1) {
-					if notes.InitObjective(getOperand(1)) {
+					if notes.DefineObjectiveDirectory(notes.ObjectiveKeyTargetWeb,getOperand(1)) {
 						var target notes.IndexTarget
 						for _, target = range notes.ListIndexFiles() {
 							
-							fmt.Println(target.CatalogTarget()) // [TODO] (review "target contents")
+							fmt.Println(target.CatalogTarget())
 						}
 						os.Exit(0)
 					} else {
@@ -242,11 +242,11 @@ func main(){
 				}
 			case "ta", "tab", "tabulate":
 				if haveOperand(1) {
-					if notes.InitObjective(getOperand(1)) {
+					if notes.DefineObjectiveDirectory(notes.ObjectiveKeyTargetWeb,getOperand(1)) {
 						var target notes.IndexTarget
 						for _, target = range notes.ListIndexFiles() {
 							
-							fmt.Println(target.CatalogTarget()) // [TODO] (review "target tabulate")
+							fmt.Println(target.CatalogTarget()) // [TODO] (review "target tabulate") <condensed>
 						}
 						os.Exit(0)
 					} else {
@@ -263,7 +263,7 @@ func main(){
 		}
 	case "en", "enc", "encode":
 		if haveOperand(0) {
-			notes.InitObjective(getOperand(0))
+			notes.DefineObjectiveDirectory(notes.ObjectiveKeyTargetWeb,getOperand(0))
 			if haveOperand(1) {
 				var target notes.FileName
 				for _, opd := range listOperands(1) {
@@ -282,7 +282,7 @@ func main(){
 		}
 	case "up", "upd", "update":
 		if haveOperand(0) {
-			if notes.InitObjective(getOperand(0)) {
+			if notes.DefineObjectiveDirectory(notes.ObjectiveKeyTargetWeb,getOperand(0)) {
 				var target notes.IndexTarget
 				for _, target = range notes.ListIndexFiles() {
 					
@@ -297,7 +297,7 @@ func main(){
 		}
 	case "co", "con", "contents":
 		if haveOperand(0) {
-			if notes.InitObjective(getOperand(0)) {
+			if notes.DefineObjectiveDirectory(notes.ObjectiveKeyTargetWeb,getOperand(0)) {
 				var target notes.IndexTarget
 				for _, target = range notes.ListIndexFiles() {
 					
@@ -312,7 +312,7 @@ func main(){
 		}
 	case "ta", "tab", "tabulate":
 		if haveOperand(0) {
-			if notes.InitObjective(getOperand(0)) {
+			if notes.DefineObjectiveDirectory(notes.ObjectiveKeyTargetWeb,getOperand(0)) {
 				var target notes.IndexTarget
 				for _, target = range notes.ListIndexFiles() {
 					

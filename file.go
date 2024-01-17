@@ -191,7 +191,7 @@ func (this FileName) Target(fext string) FileName {
 			reflection = FileName(string(this[0:first])+"."+fext)
 		}
 
-		if HaveObjective() {
+		if HaveObjective(ObjectiveKeyTargetWeb) {
 			/*
 			 * The target is a projection from
 			 * the source into "notes".
