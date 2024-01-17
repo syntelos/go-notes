@@ -40,7 +40,7 @@ type IndexCatalog struct {
 	id, icon, path, link, name, embed string
 }
 
-var NotesTargetIndex map[IndexFile]IndexTarget = make(map[IndexFile]IndexTarget)
+var CondensedObjectiveIndex map[IndexFile]IndexTarget = make(map[IndexFile]IndexTarget)
 
 func indexListWalker(path string, d fs.DirEntry, er error) error {
 
@@ -51,10 +51,10 @@ func indexListWalker(path string, d fs.DirEntry, er error) error {
 
 			var a IndexTarget = ixfil.Target()
 
-			var b IndexTarget = NotesTargetIndex[a.yyyymm]
+			var b IndexTarget = CondensedObjectiveIndex[a.yyyymm]
 
 			if b.IsInvalid() || a.yyyymmdd > b.yyyymmdd {
-				NotesTargetIndex[a.yyyymm] = a
+				CondensedObjectiveIndex[a.yyyymm] = a
 			}
 		}
 	}
@@ -65,7 +65,7 @@ func ListIndexFiles() (fileList IndexTargetList) {
 	/*
 	 * Collect index map
 	 */
-	if 0 == len(NotesTargetIndex) {
+	if 0 == len(CondensedObjectiveIndex) {
 
 		var dir fs.FS = os.DirFS(".")
 
@@ -75,7 +75,7 @@ func ListIndexFiles() (fileList IndexTargetList) {
 	 * Serialize index map
 	 */
 	{
-		for _, v := range NotesTargetIndex {
+		for _, v := range CondensedObjectiveIndex {
 
 			if v.IsValid() {
 
@@ -176,15 +176,10 @@ func (this IndexFile) LongKey() (that IndexFile) {
 }
 
 func (this IndexFile) Target() (empty IndexTarget) {
-	var that IndexTarget
-	that.dir = ""
-	that.yyyymmdd = ""
-	that.yyyymm = ""
-	that.path = ""
-	that.name = ""
+	var ctor IndexTarget
 	/*
-	 * Parse filepath into directory, filename,
-	 * elements, and filename extention.
+	 * Parse filepath into directory, tablename,
+	 * datetime, and filename extension.
 	 */
 	switch this.FileType() {
 	case IndexFileTypeTXT, IndexFileTypeSVG:
@@ -199,19 +194,21 @@ func (this IndexFile) Target() (empty IndexTarget) {
 				if -1 == prefix && -1 != infix {
 
 					prefix = ofs
-					that.dir = this[0:ofs]
+					ctor.dir = this[0:ofs]
 
-					that.path = IndexFile(FileCat(string(that.dir),string(that.yyyymmdd))+"."+string(IndexFextJSN))
-					that.name = TableName(this[prefix+1:infix])
+					ctor.path = IndexFile(FileCat(string(ctor.dir),string(ctor.yyyymmdd))+"."+string(IndexFextJSN))
+					ctor.name = TableName(this[prefix+1:infix])
 
-					return that
+					return ctor
+				} else {
+					return empty
 				}
 			case '-':
 				if -1 == infix && 0 < postfix {
 					infix = ofs
-					that.yyyymmdd_hhmmss = this[infix+1:ppostfix]
-					that.yyyymmdd = this[infix+1:postfix]
-					that.yyyymm = that.yyyymmdd[0:6]
+					ctor.yyyymmdd_hhmmss = this[infix+1:ppostfix]
+					ctor.yyyymmdd = this[infix+1:postfix]
+					ctor.yyyymm = ctor.yyyymmdd[0:6]
 				}
 			case '_':
 				if -1 == postfix {
@@ -437,6 +434,12 @@ func (this IndexCatalog) String() string {
         "name": "%s",
         "embed": "%s"
     }`,this.id,this.icon,this.path,this.link,this.name,this.embed)
+}
+/*
+ * User prepends '#' for use in web media HREF [HTML, XLINK, SVG11].
+ */
+func (this IndexCatalog) Anchor() string {
+	return string(this.target.name)+"/"+string(this.target.yyyymmdd)+"/"+string(this.id)
 }
 
 func Trim(value string) (empty string) {

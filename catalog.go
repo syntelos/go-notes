@@ -84,10 +84,12 @@ func (this IndexTarget) Encode() (that Catalog) {
 		var icat IndexCatalog
 
 		for _, icat = range list {
+			/*
+			 * Prepend '#' for HREF (target top).
+			 */
+			var anchor string = icat.Anchor()
 
-			var anchor string = "#"+string(icat.target.name)+"/"+string(icat.target.yyyymmdd)+"/"+string(icat.id)
-
-			var str string = fmt.Sprintf("  <a href=\"%s\" target=\"_top\"><text class=\"link\" x=\"%d\" y=\"%d\">%s</text></a>",anchor,px,py,icat.path)
+			var str string = fmt.Sprintf("  <a href=\"#%s\" target=\"_top\"><text class=\"link\" x=\"%d\" y=\"%d\">%s</text></a>",anchor,px,py,icat.path)
 
 			that = append(that,[]byte(str))
 
