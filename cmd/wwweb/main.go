@@ -14,15 +14,17 @@ func usage(){
 	fmt.Println(`
 Synopsis
 
-    wwweb source [en|up] ...  -- List input.
+    wwweb source [en|up|co] .. -- List input of operation.
 
-    wwweb target [en|up] ...  -- List output.
+    wwweb target [en|up|co] .. -- List output of operation.
 
     wwweb encode <tgt> <src>  -- Produce SVG from TXT.
 
     wwweb update <tgt>        -- Index content with JSON.
 
-    wwweb table <tgt>         -- Write content index as SVG.
+    wwweb contents <tgt>      -- Write content index as SVG.
+
+    wwweb table <tgt>         -- Tabulate indeces.
 
 Description
 
@@ -54,7 +56,7 @@ Description
       Update WWWeb Notes JSON indeces.  Note that existing
       JSON index files are not overwritten.
 
-  Table
+  Contents
 
       Update WWWeb Notes graphical tables of contents.
       Existing tables of contents are overwritten.
@@ -62,16 +64,16 @@ Description
   Source
 
       Enumerate inputs derived from operation "encode",
-      "update", or "table".
+      "update", or "contents".
 
   Target
 
       Enumerate outputs implied by operation "encode",
-      "update", or "table".
+      "update", or "contents".
 
-  The principal operators, "encode", "update", and "table"
-  are recognized by their corresponding two, three, and six
-  character symbols.
+  The principal operators, "encode", "update", and
+  "contents" are recognized by their corresponding two,
+  three, and six (or eight) character symbols.
 
 `)
 	os.Exit(1)
@@ -125,7 +127,7 @@ func main(){
 
 							for _, target = range notes.ListTextFiles(opd) {
 
-								fmt.Println(target)
+								fmt.Println(target) // [TODO] (review "source encode")
 							}
 						}
 						os.Exit(0)
@@ -141,7 +143,22 @@ func main(){
 						var target notes.IndexTarget
 						for _, target = range notes.ListIndexFiles() {
 							
-							fmt.Println(target)
+							fmt.Println(target) // [TODO] (review "source update")
+						}
+						os.Exit(0)
+					} else {
+						usage()
+					}
+				} else {
+					usage()
+				}
+			case "co", "con", "contents":
+				if haveOperand(1) {
+					if notes.InitTarget(getOperand(1)) {
+						var target notes.IndexTarget
+						for _, target = range notes.ListIndexFiles() {
+							
+							fmt.Println(target.Path()) // [TODO] (review "source contents")
 						}
 						os.Exit(0)
 					} else {
@@ -156,7 +173,7 @@ func main(){
 						var target notes.IndexTarget
 						for _, target = range notes.ListIndexFiles() {
 							
-							fmt.Println(target.Path())
+							fmt.Println(target.Path()) // [TODO] (review "source table")
 						}
 						os.Exit(0)
 					} else {
@@ -183,7 +200,7 @@ func main(){
 
 							for _, target = range notes.ListTextFiles(opd) {
 
-								fmt.Println(target.Target())
+								fmt.Println(target.Target()) // [TODO] (review "target encode")
 							}
 						}
 						os.Exit(0)
@@ -199,7 +216,22 @@ func main(){
 						var target notes.IndexTarget
 						for _, target = range notes.ListIndexFiles() {
 							
-							fmt.Println(target.Target())
+							fmt.Println(target.Target()) // [TODO] (review "target update")
+						}
+						os.Exit(0)
+					} else {
+						usage()
+					}
+				} else {
+					usage()
+				}
+			case "co", "con", "contents":
+				if haveOperand(1) {
+					if notes.InitTarget(getOperand(1)) {
+						var target notes.IndexTarget
+						for _, target = range notes.ListIndexFiles() {
+							
+							fmt.Println(target.CatalogTarget()) // [TODO] (review "target contents")
 						}
 						os.Exit(0)
 					} else {
@@ -214,7 +246,7 @@ func main(){
 						var target notes.IndexTarget
 						for _, target = range notes.ListIndexFiles() {
 							
-							fmt.Println(target.CatalogTarget())
+							fmt.Println(target.CatalogTarget()) // [TODO] (review "target table")
 						}
 						os.Exit(0)
 					} else {
@@ -238,7 +270,7 @@ func main(){
 
 					for _, target = range notes.ListTextFiles(opd) {
 
-						target.CodeWrite()
+						target.CodeWrite() // [TODO] (review "encode")
 					}
 				}
 				os.Exit(0)
@@ -254,7 +286,22 @@ func main(){
 				var target notes.IndexTarget
 				for _, target = range notes.ListIndexFiles() {
 					
-					target.IndexWrite()
+					target.IndexWrite() // [TODO] (review "update")
+				}
+				os.Exit(0)
+			} else {
+				usage()
+			}
+		} else {
+			usage()
+		}
+	case "co", "con", "contents":
+		if haveOperand(0) {
+			if notes.InitTarget(getOperand(0)) {
+				var target notes.IndexTarget
+				for _, target = range notes.ListIndexFiles() {
+					
+					target.CatalogWrite() // [TODO] (review "contents")
 				}
 				os.Exit(0)
 			} else {
@@ -269,7 +316,7 @@ func main(){
 				var target notes.IndexTarget
 				for _, target = range notes.ListIndexFiles() {
 					
-					target.CatalogWrite()
+					target.CatalogWrite() // [TODO] (review "table")
 				}
 				os.Exit(0)
 			} else {
