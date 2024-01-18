@@ -93,7 +93,7 @@ func (this IndexTarget) CatalogEncode() (that Catalog) {
 			 */
 			var anchor string = icat.Anchor()
 
-			var str string = fmt.Sprintf("  <a href=\"#%s\" target=\"_top\"><text class=\"link\" x=\"%d\" y=\"%d\">%s</text></a>",anchor,px,py,icat.path)
+			var str string = fmt.Sprintf("  <a href=\"#%s\" target=\"_top\"><text class=\"link\" x=\"%d\" y=\"%d\">%s /%s</text></a>",anchor,px,py,icat.path,icat.id)
 
 			that = append(that,[]byte(str))
 
@@ -662,6 +662,7 @@ func (this IndexTarget) CatalogWrite() {
 		for _, line := range this.CatalogEncode() {
 
 			w.Write(line)
+			w.WriteByte('\n')
 		}
 
 		w.Flush()
@@ -681,6 +682,7 @@ func (this IndexTarget) TabulateWrite() {
 		for _, line := range this.TabulateEncode() {
 
 			w.Write(line)
+			w.WriteByte('\n')
 		}
 
 		w.Flush()
