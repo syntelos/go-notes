@@ -42,7 +42,7 @@ func TestContent(t *testing.T){
 		var target IndexTarget
 		for _, target = range ListIndexFiles() {
 
-			fmt.Printf("[TestContent] (IndexRead) %s\n",target.path)
+			fmt.Printf("[TestContent] (CatalogRead) %s\n",target.path)
 
 			var text Catalog = target.Encode()
 
