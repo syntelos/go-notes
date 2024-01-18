@@ -46,7 +46,7 @@ func DefineObjectiveDirectory(key ObjectiveKey, tgt string) bool {
 
 				objective[key] = FileName(tgt)
 
-				DefineIndex(tgt)
+				defineIndex(tgt)
 
 				return true
 			}

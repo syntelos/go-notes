@@ -14,9 +14,9 @@ func usage(){
 	fmt.Println(`
 Synopsis
 
-    wwweb source [en|up|co] . -- List input of operation.
+    wwweb source [en|up|co|ta]-- List input of operation.
 
-    wwweb target [en|up|co] . -- List output of operation.
+    wwweb target [en|up|co|ta]-- List output of operation.
 
     wwweb encode <tgt> <src>  -- Produce SVG from TXT.
 
@@ -170,10 +170,10 @@ func main(){
 			case "ta", "tab", "tabulate":
 				if haveOperand(1) {
 					if notes.DefineObjectiveDirectory(notes.ObjectiveKeyTargetWeb,getOperand(1)) {
-						var target notes.IndexTarget
-						for _, target = range notes.ListIndexFiles() {
+						var target notes.IndexFile
+						for _, target = range notes.ListIndexTarget() {
 							
-							fmt.Println(target.Path()) // [TODO] (review "source tabulate") <condensed>
+							fmt.Println(target)
 						}
 						os.Exit(0)
 					} else {
@@ -200,7 +200,7 @@ func main(){
 
 							for _, target = range notes.ListTextFiles(opd) {
 
-								fmt.Println(target.Target("svg")) // [TODO] (review "target encode")
+								fmt.Println(target.Target("svg"))
 							}
 						}
 						os.Exit(0)
@@ -216,7 +216,7 @@ func main(){
 						var target notes.IndexTarget
 						for _, target = range notes.ListIndexFiles() {
 							
-							fmt.Println(target.Target()) // [TODO] (review "target update") <condensed>
+							fmt.Println(target.Path())
 						}
 						os.Exit(0)
 					} else {
@@ -246,7 +246,7 @@ func main(){
 						var target notes.IndexTarget
 						for _, target = range notes.ListIndexFiles() {
 							
-							fmt.Println(target.CatalogTarget()) // [TODO] (review "target tabulate") <condensed>
+							fmt.Println(target.TabulateTarget())
 						}
 						os.Exit(0)
 					} else {
@@ -270,7 +270,7 @@ func main(){
 
 					for _, target = range notes.ListTextFiles(opd) {
 
-						target.CodeWrite() // [TODO] (review "encode")
+						target.CodeWrite()
 					}
 				}
 				os.Exit(0)
@@ -286,7 +286,7 @@ func main(){
 				var target notes.IndexTarget
 				for _, target = range notes.ListIndexFiles() {
 					
-					target.IndexWrite() // [TODO] (review "update")
+					target.IndexWrite()
 				}
 				os.Exit(0)
 			} else {
@@ -301,7 +301,7 @@ func main(){
 				var target notes.IndexTarget
 				for _, target = range notes.ListIndexFiles() {
 					
-					target.CatalogWrite() // [TODO] (review "contents")
+					target.CatalogWrite()
 				}
 				os.Exit(0)
 			} else {
@@ -316,7 +316,7 @@ func main(){
 				var target notes.IndexTarget
 				for _, target = range notes.ListIndexFiles() {
 					
-					target.CatalogWrite() // [TODO] (review "tabulate")
+					target.TabulateWrite()
 				}
 				os.Exit(0)
 			} else {

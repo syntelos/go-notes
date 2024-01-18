@@ -44,7 +44,26 @@ func TestContent(t *testing.T){
 
 			fmt.Printf("[TestContent] (CatalogRead) %s\n",target.path)
 
-			var text Catalog = target.Encode()
+			var text Catalog = target.CatalogEncode()
+
+			for _, line := range text {
+
+				fmt.Println(string(line))
+			}
+		}		
+	} else {
+		t.Fatal("Missing 'tst/notes'.")
+	}
+}
+
+func TestTabulate(t *testing.T){
+	if DefineObjectiveDirectory(ObjectiveKeyTargetWeb,"tst/notes") {
+		var target IndexTarget
+		for _, target = range ListIndexFiles() {
+
+			fmt.Printf("[TestTabulate] (CatalogRead) %s\n",target.path)
+
+			var text Tabulation = target.TabulateEncode()
 
 			for _, line := range text {
 

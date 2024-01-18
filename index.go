@@ -37,9 +37,11 @@ type IndexCatalog struct {
 	id, icon, path, link, name, embed string
 }
 
-var SourceObjectiveList []IndexFile
+var sourceObjectiveList []IndexFile
 
-var CondensedObjectiveIndex map[IndexFile]IndexTarget = make(map[IndexFile]IndexTarget)
+var targetObjectiveList []IndexFile
+
+var condensedObjectiveIndex map[IndexFile]IndexTarget = make(map[IndexFile]IndexTarget)
 
 func indexListWalker(path string, d fs.DirEntry, er error) error {
 
@@ -48,25 +50,28 @@ func indexListWalker(path string, d fs.DirEntry, er error) error {
 
 		if IndexFileTypeSVG == ixfil.FileType() {
 
-			SourceObjectiveList = append(SourceObjectiveList,ixfil)
+			sourceObjectiveList = append(sourceObjectiveList,ixfil)
 
 			var a IndexTarget = ixfil.Target()
 
 			if a.IsValid() {
 
-				var b IndexTarget = CondensedObjectiveIndex[a.yyyymm]
+				var b IndexTarget = condensedObjectiveIndex[a.yyyymm]
 
 				if b.IsInvalid() || a.yyyymmdd > b.yyyymmdd {
 
-					CondensedObjectiveIndex[a.yyyymm] = a
+					condensedObjectiveIndex[a.yyyymm] = a
 				}
 			}
+		} else if IndexFileTypeJSN == ixfil.FileType() {
+
+			targetObjectiveList = append(targetObjectiveList,ixfil)
 		}
 	}
 	return nil
 }
 
-func DefineIndex(tgt string) {
+func defineIndex(tgt string) {
 
 	var dir fs.FS = os.DirFS(".")
 
@@ -75,7 +80,7 @@ func DefineIndex(tgt string) {
 
 func ListIndexFiles() (list IndexTargetList) {
 
-	for _, v := range CondensedObjectiveIndex {
+	for _, v := range condensedObjectiveIndex {
 
 		list = append(list,v)
 	}
@@ -84,7 +89,16 @@ func ListIndexFiles() (list IndexTargetList) {
 
 func ListIndexSource() (list []IndexFile) {
 
-	for _, v := range SourceObjectiveList {
+	for _, v := range sourceObjectiveList {
+
+		list = append(list,v)
+	}
+	return list
+}
+
+func ListIndexTarget() (list []IndexFile) {
+
+	for _, v := range targetObjectiveList {
 
 		list = append(list,v)
 	}
