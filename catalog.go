@@ -8,6 +8,8 @@ import (
 	"bufio"
 	"fmt"
 	"io"
+	json "github.com/syntelos/go-json"
+	"log"
 	"os"
 )
 
@@ -138,18 +140,18 @@ func (this IndexTarget) CatalogRead() (list []IndexCatalog) {
 
 				for object.IsNotEmpty() {
 
-					var field_id json.Reader = object.HeadField()
+					var field_id json.Reader = object.CondHeadField("id")
 
 					if field_id.IsNotEmpty() && object.Contains(field_id) {
-						var field_ic json.Reader = field_id.TailField()
+						var field_ic json.Reader = field_id.CondTailField("icon")
 						if field_ic.IsNotEmpty() && object.Contains(field_ic) {
-							var field_pa json.Reader = field_ic.TailField()
+							var field_pa json.Reader = field_ic.CondTailField("path")
 							if field_pa.IsNotEmpty() && object.Contains(field_pa) {
-								var field_li json.Reader = field_pa.TailField()
+								var field_li json.Reader = field_pa.CondTailField("link")
 								if field_li.IsNotEmpty() && object.Contains(field_li) {
-									var field_na json.Reader = field_li.TailField()
+									var field_na json.Reader = field_li.CondTailField("name")
 									if field_na.IsNotEmpty() && object.Contains(field_na) {
-										var field_em json.Reader = field_na.TailField()
+										var field_em json.Reader = field_na.CondTailField("embed")
 										if field_em.IsNotEmpty() && object.Contains(field_em) {
 
 
@@ -163,11 +165,444 @@ func (this IndexTarget) CatalogRead() (list []IndexCatalog) {
 											var catalog IndexCatalog = IndexCatalog{this,value_id,value_ic,value_pa,value_li,value_na,value_em}
 
 											list = append(list,catalog)
+										} else {
+											var value_id string = Trim(field_id.HeadString().TailString().String())
+											var value_ic string = Trim(field_ic.HeadString().TailString().String())
+											var value_pa string = Trim(field_pa.HeadString().TailString().String())
+											var value_li string = Trim(field_li.HeadString().TailString().String())
+											var value_na string = Trim(field_na.HeadString().TailString().String())
+
+											var catalog IndexCatalog = IndexCatalog{this,value_id,value_ic,value_pa,value_li,value_na,""}
+
+											list = append(list,catalog)
+										}
+									} else {
+										var field_em json.Reader = field_li.CondTailField("embed")
+										if field_em.IsNotEmpty() && object.Contains(field_em) {
+
+
+											var value_id string = Trim(field_id.HeadString().TailString().String())
+											var value_ic string = Trim(field_ic.HeadString().TailString().String())
+											var value_pa string = Trim(field_pa.HeadString().TailString().String())
+											var value_li string = Trim(field_li.HeadString().TailString().String())
+											var value_na string = Trim(field_na.HeadString().TailString().String())
+											var value_em string = Trim(field_em.HeadString().TailString().String())
+
+											var catalog IndexCatalog = IndexCatalog{this,value_id,value_ic,value_pa,value_li,value_na,value_em}
+
+											list = append(list,catalog)
+										} else {
+											var value_id string = Trim(field_id.HeadString().TailString().String())
+											var value_ic string = Trim(field_ic.HeadString().TailString().String())
+											var value_pa string = Trim(field_pa.HeadString().TailString().String())
+											var value_li string = Trim(field_li.HeadString().TailString().String())
+											var value_na string = Trim(field_na.HeadString().TailString().String())
+
+											var catalog IndexCatalog = IndexCatalog{this,value_id,value_ic,value_pa,value_li,value_na,""}
+
+											list = append(list,catalog)
+										}
+									}
+								} else {
+									var field_na json.Reader = field_pa.CondTailField("name")
+									if field_na.IsNotEmpty() && object.Contains(field_na) {
+										var field_em json.Reader = field_na.CondTailField("embed")
+										if field_em.IsNotEmpty() && object.Contains(field_em) {
+
+
+											var value_id string = Trim(field_id.HeadString().TailString().String())
+											var value_ic string = Trim(field_ic.HeadString().TailString().String())
+											var value_pa string = Trim(field_pa.HeadString().TailString().String())
+											var value_li string = Trim(field_li.HeadString().TailString().String())
+											var value_na string = Trim(field_na.HeadString().TailString().String())
+											var value_em string = Trim(field_em.HeadString().TailString().String())
+
+											var catalog IndexCatalog = IndexCatalog{this,value_id,value_ic,value_pa,value_li,value_na,value_em}
+
+											list = append(list,catalog)
+										} else {
+											var value_id string = Trim(field_id.HeadString().TailString().String())
+											var value_ic string = Trim(field_ic.HeadString().TailString().String())
+											var value_pa string = Trim(field_pa.HeadString().TailString().String())
+											var value_li string = Trim(field_li.HeadString().TailString().String())
+											var value_na string = Trim(field_na.HeadString().TailString().String())
+
+											var catalog IndexCatalog = IndexCatalog{this,value_id,value_ic,value_pa,value_li,value_na,""}
+
+											list = append(list,catalog)
+										}
+									} else {
+										var field_em json.Reader = field_li.CondTailField("embed")
+										if field_em.IsNotEmpty() && object.Contains(field_em) {
+
+
+											var value_id string = Trim(field_id.HeadString().TailString().String())
+											var value_ic string = Trim(field_ic.HeadString().TailString().String())
+											var value_pa string = Trim(field_pa.HeadString().TailString().String())
+											var value_li string = Trim(field_li.HeadString().TailString().String())
+											var value_na string = Trim(field_na.HeadString().TailString().String())
+											var value_em string = Trim(field_em.HeadString().TailString().String())
+
+											var catalog IndexCatalog = IndexCatalog{this,value_id,value_ic,value_pa,value_li,value_na,value_em}
+
+											list = append(list,catalog)
+										} else {
+											var value_id string = Trim(field_id.HeadString().TailString().String())
+											var value_ic string = Trim(field_ic.HeadString().TailString().String())
+											var value_pa string = Trim(field_pa.HeadString().TailString().String())
+											var value_li string = Trim(field_li.HeadString().TailString().String())
+											var value_na string = Trim(field_na.HeadString().TailString().String())
+
+											var catalog IndexCatalog = IndexCatalog{this,value_id,value_ic,value_pa,value_li,value_na,""}
+
+											list = append(list,catalog)
+										}
+									}
+								}
+							} else {
+								var field_li json.Reader = field_ic.CondTailField("link")
+								if field_li.IsNotEmpty() && object.Contains(field_li) {
+									var field_na json.Reader = field_li.CondTailField("name")
+									if field_na.IsNotEmpty() && object.Contains(field_na) {
+										var field_em json.Reader = field_na.CondTailField("embed")
+										if field_em.IsNotEmpty() && object.Contains(field_em) {
+
+
+											var value_id string = Trim(field_id.HeadString().TailString().String())
+											var value_ic string = Trim(field_ic.HeadString().TailString().String())
+											var value_pa string = Trim(field_pa.HeadString().TailString().String())
+											var value_li string = Trim(field_li.HeadString().TailString().String())
+											var value_na string = Trim(field_na.HeadString().TailString().String())
+											var value_em string = Trim(field_em.HeadString().TailString().String())
+
+											var catalog IndexCatalog = IndexCatalog{this,value_id,value_ic,value_pa,value_li,value_na,value_em}
+
+											list = append(list,catalog)
+										} else {
+											var value_id string = Trim(field_id.HeadString().TailString().String())
+											var value_ic string = Trim(field_ic.HeadString().TailString().String())
+											var value_pa string = Trim(field_pa.HeadString().TailString().String())
+											var value_li string = Trim(field_li.HeadString().TailString().String())
+											var value_na string = Trim(field_na.HeadString().TailString().String())
+
+											var catalog IndexCatalog = IndexCatalog{this,value_id,value_ic,value_pa,value_li,value_na,""}
+
+											list = append(list,catalog)
+										}
+									} else {
+										var field_em json.Reader = field_li.CondTailField("embed")
+										if field_em.IsNotEmpty() && object.Contains(field_em) {
+
+
+											var value_id string = Trim(field_id.HeadString().TailString().String())
+											var value_ic string = Trim(field_ic.HeadString().TailString().String())
+											var value_pa string = Trim(field_pa.HeadString().TailString().String())
+											var value_li string = Trim(field_li.HeadString().TailString().String())
+											var value_na string = Trim(field_na.HeadString().TailString().String())
+											var value_em string = Trim(field_em.HeadString().TailString().String())
+
+											var catalog IndexCatalog = IndexCatalog{this,value_id,value_ic,value_pa,value_li,value_na,value_em}
+
+											list = append(list,catalog)
+										} else {
+											var value_id string = Trim(field_id.HeadString().TailString().String())
+											var value_ic string = Trim(field_ic.HeadString().TailString().String())
+											var value_pa string = Trim(field_pa.HeadString().TailString().String())
+											var value_li string = Trim(field_li.HeadString().TailString().String())
+											var value_na string = Trim(field_na.HeadString().TailString().String())
+
+											var catalog IndexCatalog = IndexCatalog{this,value_id,value_ic,value_pa,value_li,value_na,""}
+
+											list = append(list,catalog)
+										}
+									}
+								} else {
+									var field_na json.Reader = field_pa.CondTailField("name")
+									if field_na.IsNotEmpty() && object.Contains(field_na) {
+										var field_em json.Reader = field_na.CondTailField("embed")
+										if field_em.IsNotEmpty() && object.Contains(field_em) {
+
+
+											var value_id string = Trim(field_id.HeadString().TailString().String())
+											var value_ic string = Trim(field_ic.HeadString().TailString().String())
+											var value_pa string = Trim(field_pa.HeadString().TailString().String())
+											var value_li string = Trim(field_li.HeadString().TailString().String())
+											var value_na string = Trim(field_na.HeadString().TailString().String())
+											var value_em string = Trim(field_em.HeadString().TailString().String())
+
+											var catalog IndexCatalog = IndexCatalog{this,value_id,value_ic,value_pa,value_li,value_na,value_em}
+
+											list = append(list,catalog)
+										} else {
+											var value_id string = Trim(field_id.HeadString().TailString().String())
+											var value_ic string = Trim(field_ic.HeadString().TailString().String())
+											var value_pa string = Trim(field_pa.HeadString().TailString().String())
+											var value_li string = Trim(field_li.HeadString().TailString().String())
+											var value_na string = Trim(field_na.HeadString().TailString().String())
+
+											var catalog IndexCatalog = IndexCatalog{this,value_id,value_ic,value_pa,value_li,value_na,""}
+
+											list = append(list,catalog)
+										}
+									} else {
+										var field_em json.Reader = field_li.CondTailField("embed")
+										if field_em.IsNotEmpty() && object.Contains(field_em) {
+
+
+											var value_id string = Trim(field_id.HeadString().TailString().String())
+											var value_ic string = Trim(field_ic.HeadString().TailString().String())
+											var value_pa string = Trim(field_pa.HeadString().TailString().String())
+											var value_li string = Trim(field_li.HeadString().TailString().String())
+											var value_na string = Trim(field_na.HeadString().TailString().String())
+											var value_em string = Trim(field_em.HeadString().TailString().String())
+
+											var catalog IndexCatalog = IndexCatalog{this,value_id,value_ic,value_pa,value_li,value_na,value_em}
+
+											list = append(list,catalog)
+										} else {
+											var value_id string = Trim(field_id.HeadString().TailString().String())
+											var value_ic string = Trim(field_ic.HeadString().TailString().String())
+											var value_pa string = Trim(field_pa.HeadString().TailString().String())
+											var value_li string = Trim(field_li.HeadString().TailString().String())
+											var value_na string = Trim(field_na.HeadString().TailString().String())
+
+											var catalog IndexCatalog = IndexCatalog{this,value_id,value_ic,value_pa,value_li,value_na,""}
+
+											list = append(list,catalog)
 										}
 									}
 								}
 							}
-						}
+						} else {
+							var field_pa json.Reader = field_id.CondTailField("path")
+							if field_pa.IsNotEmpty() && object.Contains(field_pa) {
+								var field_li json.Reader = field_pa.CondTailField("link")
+								if field_li.IsNotEmpty() && object.Contains(field_li) {
+									var field_na json.Reader = field_li.CondTailField("name")
+									if field_na.IsNotEmpty() && object.Contains(field_na) {
+										var field_em json.Reader = field_na.CondTailField("embed")
+										if field_em.IsNotEmpty() && object.Contains(field_em) {
+
+
+											var value_id string = Trim(field_id.HeadString().TailString().String())
+											var value_ic string = Trim(field_ic.HeadString().TailString().String())
+											var value_pa string = Trim(field_pa.HeadString().TailString().String())
+											var value_li string = Trim(field_li.HeadString().TailString().String())
+											var value_na string = Trim(field_na.HeadString().TailString().String())
+											var value_em string = Trim(field_em.HeadString().TailString().String())
+
+											var catalog IndexCatalog = IndexCatalog{this,value_id,value_ic,value_pa,value_li,value_na,value_em}
+
+											list = append(list,catalog)
+										} else {
+											var value_id string = Trim(field_id.HeadString().TailString().String())
+											var value_ic string = Trim(field_ic.HeadString().TailString().String())
+											var value_pa string = Trim(field_pa.HeadString().TailString().String())
+											var value_li string = Trim(field_li.HeadString().TailString().String())
+											var value_na string = Trim(field_na.HeadString().TailString().String())
+
+											var catalog IndexCatalog = IndexCatalog{this,value_id,value_ic,value_pa,value_li,value_na,""}
+
+											list = append(list,catalog)
+										}
+									} else {
+										var field_em json.Reader = field_li.CondTailField("embed")
+										if field_em.IsNotEmpty() && object.Contains(field_em) {
+
+
+											var value_id string = Trim(field_id.HeadString().TailString().String())
+											var value_ic string = Trim(field_ic.HeadString().TailString().String())
+											var value_pa string = Trim(field_pa.HeadString().TailString().String())
+											var value_li string = Trim(field_li.HeadString().TailString().String())
+											var value_na string = Trim(field_na.HeadString().TailString().String())
+											var value_em string = Trim(field_em.HeadString().TailString().String())
+
+											var catalog IndexCatalog = IndexCatalog{this,value_id,value_ic,value_pa,value_li,value_na,value_em}
+
+											list = append(list,catalog)
+										} else {
+											var value_id string = Trim(field_id.HeadString().TailString().String())
+											var value_ic string = Trim(field_ic.HeadString().TailString().String())
+											var value_pa string = Trim(field_pa.HeadString().TailString().String())
+											var value_li string = Trim(field_li.HeadString().TailString().String())
+											var value_na string = Trim(field_na.HeadString().TailString().String())
+
+											var catalog IndexCatalog = IndexCatalog{this,value_id,value_ic,value_pa,value_li,value_na,""}
+
+											list = append(list,catalog)
+										}
+									}
+								} else {
+									var field_na json.Reader = field_pa.CondTailField("name")
+									if field_na.IsNotEmpty() && object.Contains(field_na) {
+										var field_em json.Reader = field_na.CondTailField("embed")
+										if field_em.IsNotEmpty() && object.Contains(field_em) {
+
+
+											var value_id string = Trim(field_id.HeadString().TailString().String())
+											var value_ic string = Trim(field_ic.HeadString().TailString().String())
+											var value_pa string = Trim(field_pa.HeadString().TailString().String())
+											var value_li string = Trim(field_li.HeadString().TailString().String())
+											var value_na string = Trim(field_na.HeadString().TailString().String())
+											var value_em string = Trim(field_em.HeadString().TailString().String())
+
+											var catalog IndexCatalog = IndexCatalog{this,value_id,value_ic,value_pa,value_li,value_na,value_em}
+
+											list = append(list,catalog)
+										} else {
+											var value_id string = Trim(field_id.HeadString().TailString().String())
+											var value_ic string = Trim(field_ic.HeadString().TailString().String())
+											var value_pa string = Trim(field_pa.HeadString().TailString().String())
+											var value_li string = Trim(field_li.HeadString().TailString().String())
+											var value_na string = Trim(field_na.HeadString().TailString().String())
+
+											var catalog IndexCatalog = IndexCatalog{this,value_id,value_ic,value_pa,value_li,value_na,""}
+
+											list = append(list,catalog)
+										}
+									} else {
+										var field_em json.Reader = field_li.CondTailField("embed")
+										if field_em.IsNotEmpty() && object.Contains(field_em) {
+
+
+											var value_id string = Trim(field_id.HeadString().TailString().String())
+											var value_ic string = Trim(field_ic.HeadString().TailString().String())
+											var value_pa string = Trim(field_pa.HeadString().TailString().String())
+											var value_li string = Trim(field_li.HeadString().TailString().String())
+											var value_na string = Trim(field_na.HeadString().TailString().String())
+											var value_em string = Trim(field_em.HeadString().TailString().String())
+
+											var catalog IndexCatalog = IndexCatalog{this,value_id,value_ic,value_pa,value_li,value_na,value_em}
+
+											list = append(list,catalog)
+										} else {
+											var value_id string = Trim(field_id.HeadString().TailString().String())
+											var value_ic string = Trim(field_ic.HeadString().TailString().String())
+											var value_pa string = Trim(field_pa.HeadString().TailString().String())
+											var value_li string = Trim(field_li.HeadString().TailString().String())
+											var value_na string = Trim(field_na.HeadString().TailString().String())
+
+											var catalog IndexCatalog = IndexCatalog{this,value_id,value_ic,value_pa,value_li,value_na,""}
+
+											list = append(list,catalog)
+										}
+									}
+								}
+							} else {
+								var field_li json.Reader = field_ic.CondTailField("link")
+								if field_li.IsNotEmpty() && object.Contains(field_li) {
+									var field_na json.Reader = field_li.CondTailField("name")
+									if field_na.IsNotEmpty() && object.Contains(field_na) {
+										var field_em json.Reader = field_na.CondTailField("embed")
+										if field_em.IsNotEmpty() && object.Contains(field_em) {
+
+
+											var value_id string = Trim(field_id.HeadString().TailString().String())
+											var value_ic string = Trim(field_ic.HeadString().TailString().String())
+											var value_pa string = Trim(field_pa.HeadString().TailString().String())
+											var value_li string = Trim(field_li.HeadString().TailString().String())
+											var value_na string = Trim(field_na.HeadString().TailString().String())
+											var value_em string = Trim(field_em.HeadString().TailString().String())
+
+											var catalog IndexCatalog = IndexCatalog{this,value_id,value_ic,value_pa,value_li,value_na,value_em}
+
+											list = append(list,catalog)
+										} else {
+											var value_id string = Trim(field_id.HeadString().TailString().String())
+											var value_ic string = Trim(field_ic.HeadString().TailString().String())
+											var value_pa string = Trim(field_pa.HeadString().TailString().String())
+											var value_li string = Trim(field_li.HeadString().TailString().String())
+											var value_na string = Trim(field_na.HeadString().TailString().String())
+
+											var catalog IndexCatalog = IndexCatalog{this,value_id,value_ic,value_pa,value_li,value_na,""}
+
+											list = append(list,catalog)
+										}
+									} else {
+										var field_em json.Reader = field_li.CondTailField("embed")
+										if field_em.IsNotEmpty() && object.Contains(field_em) {
+
+
+											var value_id string = Trim(field_id.HeadString().TailString().String())
+											var value_ic string = Trim(field_ic.HeadString().TailString().String())
+											var value_pa string = Trim(field_pa.HeadString().TailString().String())
+											var value_li string = Trim(field_li.HeadString().TailString().String())
+											var value_na string = Trim(field_na.HeadString().TailString().String())
+											var value_em string = Trim(field_em.HeadString().TailString().String())
+
+											var catalog IndexCatalog = IndexCatalog{this,value_id,value_ic,value_pa,value_li,value_na,value_em}
+
+											list = append(list,catalog)
+										} else {
+											var value_id string = Trim(field_id.HeadString().TailString().String())
+											var value_ic string = Trim(field_ic.HeadString().TailString().String())
+											var value_pa string = Trim(field_pa.HeadString().TailString().String())
+											var value_li string = Trim(field_li.HeadString().TailString().String())
+											var value_na string = Trim(field_na.HeadString().TailString().String())
+
+											var catalog IndexCatalog = IndexCatalog{this,value_id,value_ic,value_pa,value_li,value_na,""}
+
+											list = append(list,catalog)
+										}
+									}
+								} else {
+									var field_na json.Reader = field_pa.CondTailField("name")
+									if field_na.IsNotEmpty() && object.Contains(field_na) {
+										var field_em json.Reader = field_na.CondTailField("embed")
+										if field_em.IsNotEmpty() && object.Contains(field_em) {
+
+
+											var value_id string = Trim(field_id.HeadString().TailString().String())
+											var value_ic string = Trim(field_ic.HeadString().TailString().String())
+											var value_pa string = Trim(field_pa.HeadString().TailString().String())
+											var value_li string = Trim(field_li.HeadString().TailString().String())
+											var value_na string = Trim(field_na.HeadString().TailString().String())
+											var value_em string = Trim(field_em.HeadString().TailString().String())
+
+											var catalog IndexCatalog = IndexCatalog{this,value_id,value_ic,value_pa,value_li,value_na,value_em}
+
+											list = append(list,catalog)
+										} else {
+											var value_id string = Trim(field_id.HeadString().TailString().String())
+											var value_ic string = Trim(field_ic.HeadString().TailString().String())
+											var value_pa string = Trim(field_pa.HeadString().TailString().String())
+											var value_li string = Trim(field_li.HeadString().TailString().String())
+											var value_na string = Trim(field_na.HeadString().TailString().String())
+
+											var catalog IndexCatalog = IndexCatalog{this,value_id,value_ic,value_pa,value_li,value_na,""}
+
+											list = append(list,catalog)
+										}
+									} else {
+										var field_em json.Reader = field_li.CondTailField("embed")
+										if field_em.IsNotEmpty() && object.Contains(field_em) {
+
+
+											var value_id string = Trim(field_id.HeadString().TailString().String())
+											var value_ic string = Trim(field_ic.HeadString().TailString().String())
+											var value_pa string = Trim(field_pa.HeadString().TailString().String())
+											var value_li string = Trim(field_li.HeadString().TailString().String())
+											var value_na string = Trim(field_na.HeadString().TailString().String())
+											var value_em string = Trim(field_em.HeadString().TailString().String())
+
+											var catalog IndexCatalog = IndexCatalog{this,value_id,value_ic,value_pa,value_li,value_na,value_em}
+
+											list = append(list,catalog)
+										} else {
+											var value_id string = Trim(field_id.HeadString().TailString().String())
+											var value_ic string = Trim(field_ic.HeadString().TailString().String())
+											var value_pa string = Trim(field_pa.HeadString().TailString().String())
+											var value_li string = Trim(field_li.HeadString().TailString().String())
+											var value_na string = Trim(field_na.HeadString().TailString().String())
+
+											var catalog IndexCatalog = IndexCatalog{this,value_id,value_ic,value_pa,value_li,value_na,""}
+
+											list = append(list,catalog)
+										}
+									}
+								}
+							}
+						}//
 					}
 					object = object.TailObject()
 				}

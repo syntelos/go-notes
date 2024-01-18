@@ -2,6 +2,8 @@ github.com/syntelos/go-json v0.0.0-20240114022632-4493e472f11f h1:txIbijNcmN7Kie
 github.com/syntelos/go-json v0.0.0-20240114022632-4493e472f11f/go.mod h1:g6o1hTs22p15qJgpTSvRruowrO9Jfr5wgQMN1zPBNjs=
 github.com/syntelos/go-json v0.0.0-20240116170141-24edff1a703c h1:/av14N5p45dyCx+sCa+pKvjoxWHTlFKYtNn7LPP+FDU=
 github.com/syntelos/go-json v0.0.0-20240116170141-24edff1a703c/go.mod h1:u0JNsRJXqeLPeBfyVqQ2HML2mDWbJsvc2qM38iYsx1w=
+github.com/syntelos/go-json v0.0.0-20240118131134-843c4e9dba9d h1:6hk6x4+ygWS9dVddwMzM2yg8YWX00sy9Q/Ghx3SvLZQ=
+github.com/syntelos/go-json v0.0.0-20240118131134-843c4e9dba9d/go.mod h1:sxwJJoBFELwd/wj105svYgxj/BwT0Jq2X3iOKcM5WhI=
 github.com/syntelos/go-sort v0.0.0-20240106194149-1679505dc973 h1:pst3weFEGRLw+fGZU4qGKP3C16cCmTyFcrQftA+6r20=
 github.com/syntelos/go-sort v0.0.0-20240106194149-1679505dc973/go.mod h1:LUnOKnoBwSdlfQkC21ZwU4saoe6T4UeGicymx8Kn550=
 github.com/syntelos/go-sort v0.0.0-20240106195219-561f6af1d973 h1:2nOyT/2kSaBZVTMkWgJorjPVtbd28/cLaMhFOCF7ga4=

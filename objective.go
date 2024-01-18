@@ -30,12 +30,11 @@ func HaveObjective(key ObjectiveKey) bool {
 }
 
 func DefineObjectiveDirectory(key ObjectiveKey, tgt string) bool {
-	var target FileName = FileName(tgt)
 
 	var fo *os.File
 	var er error
 
-	fo, er = os.Open(string(target))
+	fo, er = os.Open(tgt)
 	if nil == er {
 		defer fo.Close()
 
@@ -45,7 +44,10 @@ func DefineObjectiveDirectory(key ObjectiveKey, tgt string) bool {
 
 			if fi.IsDir() {
 
-				objective[key] = target
+				objective[key] = FileName(tgt)
+
+				DefineIndex(tgt)
+
 				return true
 			}
 		}

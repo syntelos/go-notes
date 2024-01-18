@@ -10,7 +10,7 @@ import (
 )
 
 func TestEncode(t *testing.T){
-	if InitObjective("tst/notes") {
+	if DefineObjectiveDirectory(ObjectiveKeyTargetWeb,"tst/notes") {
 		var source FileName
 		for _, source = range ListTextFiles("tst/txt") {
 
@@ -24,7 +24,7 @@ func TestEncode(t *testing.T){
 }
 
 func TestUpdate(t *testing.T){
-	if InitObjective("tst/notes") {
+	if DefineObjectiveDirectory(ObjectiveKeyTargetWeb,"tst/notes") {
 		var target IndexTarget
 		for _, target = range ListIndexFiles() {
 
@@ -38,7 +38,7 @@ func TestUpdate(t *testing.T){
 }
 
 func TestContent(t *testing.T){
-	if InitObjective("tst/notes") {
+	if DefineObjectiveDirectory(ObjectiveKeyTargetWeb,"tst/notes") {
 		var target IndexTarget
 		for _, target = range ListIndexFiles() {
 

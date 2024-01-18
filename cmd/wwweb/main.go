@@ -140,10 +140,10 @@ func main(){
 			case "up", "upd", "update":
 				if haveOperand(1) {
 					if notes.DefineObjectiveDirectory(notes.ObjectiveKeyTargetWeb,getOperand(1)) {
-						var target notes.IndexTarget
-						for _, target = range notes.ListIndexFiles() {
+						var file notes.IndexFile
+						for _, file = range notes.ListIndexSource() {
 							
-							fmt.Println(target) // [TODO] (review "source update") <this is target>
+							fmt.Println(file)
 						}
 						os.Exit(0)
 					} else {
@@ -158,7 +158,7 @@ func main(){
 						var target notes.IndexTarget
 						for _, target = range notes.ListIndexFiles() {
 							
-							fmt.Println(target.Path()) // [TODO] (review "source contents") <condensed>
+							fmt.Println(target.Path())
 						}
 						os.Exit(0)
 					} else {

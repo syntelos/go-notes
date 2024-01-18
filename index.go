@@ -6,10 +6,7 @@ package notes
 
 import (
 	"bufio"
-	json "github.com/syntelos/go-json"
-	"fmt"
 	"io/fs"
-	"log"
 	"os"
 	sort "github.com/syntelos/go-sort"
 )
@@ -40,6 +37,8 @@ type IndexCatalog struct {
 	id, icon, path, link, name, embed string
 }
 
+var SourceObjectiveList []IndexFile
+
 var CondensedObjectiveIndex map[IndexFile]IndexTarget = make(map[IndexFile]IndexTarget)
 
 func indexListWalker(path string, d fs.DirEntry, er error) error {
@@ -49,41 +48,47 @@ func indexListWalker(path string, d fs.DirEntry, er error) error {
 
 		if IndexFileTypeSVG == ixfil.FileType() {
 
+			SourceObjectiveList = append(SourceObjectiveList,ixfil)
+
 			var a IndexTarget = ixfil.Target()
 
-			var b IndexTarget = CondensedObjectiveIndex[a.yyyymm]
+			if a.IsValid() {
 
-			if b.IsInvalid() || a.yyyymmdd > b.yyyymmdd {
-				CondensedObjectiveIndex[a.yyyymm] = a
+				var b IndexTarget = CondensedObjectiveIndex[a.yyyymm]
+
+				if b.IsInvalid() || a.yyyymmdd > b.yyyymmdd {
+
+					CondensedObjectiveIndex[a.yyyymm] = a
+				}
 			}
 		}
 	}
 	return nil
 }
 
-func ListIndexFiles() (fileList IndexTargetList) {
-	/*
-	 * Collect index map
-	 */
-	if 0 == len(CondensedObjectiveIndex) {
+func DefineIndex(tgt string) {
 
-		var dir fs.FS = os.DirFS(".")
+	var dir fs.FS = os.DirFS(".")
 
-		fs.WalkDir(dir,string(ObjectiveDirectory(ObjectiveKeyTargetWeb)),indexListWalker)
+	fs.WalkDir(dir,tgt,indexListWalker)
+}
+
+func ListIndexFiles() (list IndexTargetList) {
+
+	for _, v := range CondensedObjectiveIndex {
+
+		list = append(list,v)
 	}
-	/*
-	 * Serialize index map
-	 */
-	{
-		for _, v := range CondensedObjectiveIndex {
+	return list
+}
 
-			if v.IsValid() {
+func ListIndexSource() (list []IndexFile) {
 
-				fileList = append(fileList,v)
-			}
-		}
+	for _, v := range SourceObjectiveList {
+
+		list = append(list,v)
 	}
-	return fileList
+	return list
 }
 
 type IndexFileType uint8
