@@ -43,7 +43,7 @@ var CondensedObjectiveIndex map[IndexFile]IndexTarget = make(map[IndexFile]Index
 
 func indexListWalker(path string, d fs.DirEntry, er error) error {
 
-	if ! d.IsDir() {
+	if nil != d && ! d.IsDir() {
 		var ixfil IndexFile = IndexFile(path)
 
 		if IndexFileTypeSVG == ixfil.FileType() {
