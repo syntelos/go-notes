@@ -114,17 +114,17 @@ func (this Page) Encode() (that Page) {
 	return that
 }
 
-func (this FileName) CodeWrite(){
+func (this IndexFile) CodeWrite(){
 	var er error
 	var tgt *os.File
-	tgt, er = os.Create(string(this.Target("svg")))
+	tgt, er = os.Create(string(this.FileTarget("svg")))
 	if nil != er {
-		log.Fatalf("Error opening output '%s': %v",string(this.Target("svg")),er)
+		log.Fatalf("Error opening output '%s': %v",string(this.FileTarget("svg")),er)
 	} else {
 		var src *os.File
-		src, er = os.Open(string(this.Source("txt")))
+		src, er = os.Open(string(this.FileSource("txt")))
 		if nil != er {
-			log.Fatalf("Error opening input '%s': %v",string(this.Source("txt")),er)
+			log.Fatalf("Error opening input '%s': %v",string(this.FileSource("txt")),er)
 		} else {
 			var txt, svg Page
 			txt, er = txt.Read(src)

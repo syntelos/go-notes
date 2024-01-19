@@ -13,13 +13,7 @@ import (
 
 type IndexFile FileName
 
-const (
-	IndexFextTXT IndexFile = "txt"
-	IndexFextSVG IndexFile = "svg"
-	IndexFextJSN IndexFile = "json"
-)
-
-type IndexList []IndexFile
+type IndexFileList []IndexFile
 
 type IndexTarget struct {
 	dir IndexFile
@@ -37,35 +31,37 @@ type IndexCatalog struct {
 	id, icon, path, link, name, embed string
 }
 
-var sourceObjectiveList []IndexFile
-
-var targetObjectiveList []IndexFile
+var sourceObjectiveIndex map[IndexFileType]IndexFileList
 
 var condensedObjectiveIndex map[IndexFile]IndexTarget = make(map[IndexFile]IndexTarget)
 
 func indexListWalker(path string, d fs.DirEntry, er error) error {
 
-	if nil != d && ! d.IsDir() {
-		var ixfil IndexFile = IndexFile(path)
+	var ixfil IndexFile = IndexFile(path)
 
-		if IndexFileTypeSVG == ixfil.FileType() {
+	var fileType IndexFileType = ixfil.FileType()
+	/*
+	 */
+	var fileList IndexFileList = sourceObjectiveIndex[fileType]
+	{
+		fileList = append(fileList,ixfil)
 
-			sourceObjectiveList = append(sourceObjectiveList,ixfil)
+		sourceObjectiveIndex[fileType] = fileList
+	}
+	/*
+	 */
+	if IndexFileTypeSVG == fileType {
 
-			var a IndexTarget = ixfil.Target()
+		var a IndexTarget = ixfil.IndexTarget()
 
-			if a.IsValid() {
+		if a.IsValid() {
 
-				var b IndexTarget = condensedObjectiveIndex[a.yyyymm]
+			var b IndexTarget = condensedObjectiveIndex[a.yyyymm]
 
-				if b.IsInvalid() || a.yyyymmdd > b.yyyymmdd {
+			if b.IsInvalid() || a.yyyymmdd > b.yyyymmdd {
 
-					condensedObjectiveIndex[a.yyyymm] = a
-				}
+				condensedObjectiveIndex[a.yyyymm] = a
 			}
-		} else if IndexFileTypeJSN == ixfil.FileType() {
-
-			targetObjectiveList = append(targetObjectiveList,ixfil)
 		}
 	}
 	return nil
@@ -87,20 +83,27 @@ func ListIndexFiles() (list IndexTargetList) {
 	return list
 }
 
-func ListIndexSource() (list []IndexFile) {
+func ListIndexSource(fileType IndexFileType) (list []IndexFile) {
+	var fileList IndexFileList = sourceObjectiveIndex[fileType]
 
-	for _, v := range sourceObjectiveList {
+	for _, v := range fileList {
 
 		list = append(list,v)
 	}
 	return list
 }
 
-func ListIndexTarget() (list []IndexFile) {
+func ListIndexTarget(fileType IndexFileType) (list []IndexTarget) {
+	var fileList IndexFileList = sourceObjectiveIndex[fileType]
 
-	for _, v := range targetObjectiveList {
+	for _, v := range fileList {
 
-		list = append(list,v)
+		var target IndexTarget = v.IndexTarget()
+
+		if target.IsValid() {
+
+			list = append(list,target)
+		}
 	}
 	return list
 }
@@ -134,9 +137,9 @@ func (this IndexFile) FileType() IndexFileType {
 		var fext IndexFile = this[first:end]
 
 		switch fext {
-		case IndexFextTXT:
+		case "txt":
 			return IndexFileTypeTXT
-		case IndexFextSVG:
+		case "svg":
 			return IndexFileTypeSVG
 
 		default:
@@ -150,7 +153,7 @@ func (this IndexFile) FileType() IndexFileType {
 			var fext IndexFile = this[first:end]
 
 			switch fext {
-			case IndexFextJSN:
+			case "json":
 				return IndexFileTypeJSN
 
 			default:
@@ -161,7 +164,9 @@ func (this IndexFile) FileType() IndexFileType {
 		}
 	}
 }
-
+/*
+ * 
+ */
 func (this IndexFile) LongKey() (that IndexFile) {
 
 	switch this.FileType() {
@@ -194,7 +199,17 @@ func (this IndexFile) LongKey() (that IndexFile) {
 	}
 }
 
-func (this IndexFile) Target() (empty IndexTarget) {
+func (this IndexFile) FileSource(fext string) IndexFile {
+
+	return IndexFile(FileName(this).Source(fext))
+}
+
+func (this IndexFile) FileTarget(fext string) IndexFile {
+
+	return IndexFile(FileName(this).Target(fext))
+}
+
+func (this IndexFile) IndexTarget() (empty IndexTarget) {
 	var ctor IndexTarget
 	/*
 	 * Parse filepath into directory, tablename,
@@ -215,7 +230,7 @@ func (this IndexFile) Target() (empty IndexTarget) {
 					prefix = ofs
 					ctor.dir = this[0:ofs]
 
-					ctor.path = IndexFile(FileCat(string(ctor.dir),string(ctor.yyyymmdd))+"."+string(IndexFextJSN))
+					ctor.path = IndexFile(FileCat(string(ctor.dir),string(ctor.yyyymmdd))+".json")
 					ctor.name = TableName(this[prefix+1:infix])
 
 					return ctor
@@ -271,12 +286,9 @@ func (this IndexTarget) Target() (empty FileName) {
 
 			return FileName(FileCat(FileCat(string(root),yyyy),mm))
 
-		} else {
-			return FileName(FileCat(FileCat("notes",yyyy),mm))
 		}
-	} else {
-		return empty
 	}
+	return empty
 }
 /*
  * An original source listing often differs from an
@@ -294,7 +306,7 @@ func (this IndexTarget) IndexSourceList() (list []IndexCatalog) {
 		/*
 		 * Source list
 		 */
-		var ordering IndexList
+		var ordering IndexFileList
 		var directory map[IndexFile]IndexFile = make(map[IndexFile]IndexFile)
 		{
 			for _, de := range dl {
@@ -325,7 +337,7 @@ func (this IndexTarget) IndexSourceList() (list []IndexCatalog) {
 			 * to "notes name", so it is derived
 			 * from the source.
 			 */
-			var notes_idx IndexTarget = notes_svg.Target()
+			var notes_idx IndexTarget = notes_svg.IndexTarget()
 
 			var name TableName = notes_idx.name
 			var path TablePath = name.Path()

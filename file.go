@@ -9,43 +9,48 @@ import (
 )
 
 type FileName string
+
 type FileList []FileName
 
-func ListTextFiles(path string) (fileList FileList) {
-	var fo *os.File
-	var er error
+func DefineTextFiles(list []string) {
 
-	fo, er = os.Open(path)
-	if nil != er {
-		return fileList
-	} else {
-		defer fo.Close()
+	for _, path := range list {
+		var fo *os.File
+		var er error
 
-		var fi os.FileInfo
-		fi, er = fo.Stat()
-		if nil != er {
-			return fileList
-		} else {
-			if fi.IsDir() {
-				var nm FileName
-				var dl []os.DirEntry
-				dl, er = os.ReadDir(path)
+		fo, er = os.Open(path)
+		if nil == er {
 
-				for _, de := range dl {
-					nm = MakeFileName(path,de)
-					if nm.IsText() && IsTableName(nm.TableName()) {
-						
-						fileList = append(fileList,nm)
+			var fi os.FileInfo
+			fi, er = fo.Stat()
+
+			if nil == er {
+				
+				if fi.IsDir() {
+					var nm FileName
+					var dl []os.DirEntry
+					dl, er = os.ReadDir(path)
+
+					for _, de := range dl {
+						nm = MakeFileName(path,de)
+						if nm.IsFext("txt") && IsTableName(nm.TableName()) {
+							var fileList IndexFileList = sourceObjectiveIndex[IndexFileTypeTXT]
+
+							fileList = append(fileList,IndexFile(nm))
+							sourceObjectiveIndex[IndexFileTypeTXT] = fileList
+						}
+					}
+				} else {
+					var nm FileName = FileName(path)
+					if nm.IsFext("txt") && IsTableName(nm.TableName()) {
+						var fileList IndexFileList = sourceObjectiveIndex[IndexFileTypeTXT]
+
+						fileList = append(fileList,IndexFile(nm))
+						sourceObjectiveIndex[IndexFileTypeTXT] = fileList
 					}
 				}
-			} else {
-				var nm FileName = FileName(path)
-				if nm.IsText() && IsTableName(nm.TableName()) {
-
-					fileList = append(fileList,nm)
-				}
 			}
-			return fileList
+			fo.Close()
 		}
 	}
 }
@@ -71,7 +76,7 @@ func FileCat(a, b string) string {
 	}
 }
 
-func (this FileName) IsText() bool {
+func (this FileName) IsFext(fext string) bool {
 
 	var first, last, end int = 0, 0, len(this)
 	{
@@ -79,7 +84,7 @@ func (this FileName) IsText() bool {
 		first = (last-3)
 	}
 
-	if 0 < first && '.' ==  this[first] && ".txt" == this[first:end]{
+	if 0 < first && '.' ==  this[first] && fext == string(this[(first+1):end]) {
 
 		return true
 	} else {
@@ -155,7 +160,7 @@ func (this FileName) Source(fext string) FileName {
 
 		var found string = string(this[(first+1):end])
 
-		if ".txt" == found {
+		if fext == found {
 
 			return this
 		} else {
@@ -183,7 +188,7 @@ func (this FileName) Target(fext string) FileName {
 
 		var found string = string(this[(first+1):end])
 
-		if ".svg" == found {
+		if fext == found {
 
 			reflection = this
 		} else {
@@ -194,9 +199,9 @@ func (this FileName) Target(fext string) FileName {
 		if HaveObjective(ObjectiveKeyTargetWeb) {
 			/*
 			 * The target is a projection from
-			 * the source into "notes".
+			 * the source into target.
 			 */
-			var projection FileName = IndexFile(reflection).Target().Target()
+			var projection FileName = IndexFile(reflection).IndexTarget().Target()
 			var filename FileName = reflection.Base()
 
 			return FileName(FileCat(string(projection),string(filename)))

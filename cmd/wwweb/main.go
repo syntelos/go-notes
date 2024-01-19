@@ -14,15 +14,15 @@ func usage(){
 	fmt.Println(`
 Synopsis
 
-    wwweb source [en|up|co|ta]-- List input of operation.
+    wwweb source ...          -- List input of operation.
 
-    wwweb target [en|up|co|ta]-- List output of operation.
+    wwweb target ...          -- List output of operation.
 
-    wwweb encode <tgt> <src>  -- Produce SVG from TXT.
+    wwweb encode <tgt> <src>  -- Produce SVG notes from TXT.
 
-    wwweb update <tgt>        -- Index content with JSON.
+    wwweb update <tgt>        -- Index SVG notes with JSON.
 
-    wwweb contents <tgt>      -- Write content index as SVG.
+    wwweb contents <tgt>      -- Write JSON index as SVG.
 
     wwweb tabulate <tgt>      -- Tabulate indeces.
 
@@ -122,13 +122,12 @@ func main(){
 				if haveOperand(1) {
 					notes.DefineObjectiveDirectory(notes.ObjectiveKeyTargetWeb,getOperand(1))
 					if haveOperand(2) {
-						var target notes.FileName
-						for _, opd := range listOperands(2) {
+						notes.DefineTextFiles(listOperands(2))
 
-							for _, target = range notes.ListTextFiles(opd) {
+						var target notes.IndexFile
+						for _, target = range notes.ListIndexSource(notes.IndexFileTypeTXT) {
 
-								fmt.Println(target)
-							}
+							fmt.Println(target)
 						}
 						os.Exit(0)
 					} else {
@@ -141,7 +140,7 @@ func main(){
 				if haveOperand(1) {
 					if notes.DefineObjectiveDirectory(notes.ObjectiveKeyTargetWeb,getOperand(1)) {
 						var file notes.IndexFile
-						for _, file = range notes.ListIndexSource() {
+						for _, file = range notes.ListIndexSource(notes.IndexFileTypeSVG) {
 							
 							fmt.Println(file)
 						}
@@ -156,7 +155,7 @@ func main(){
 				if haveOperand(1) {
 					if notes.DefineObjectiveDirectory(notes.ObjectiveKeyTargetWeb,getOperand(1)) {
 						var target notes.IndexTarget
-						for _, target = range notes.ListIndexFiles() {
+						for _, target = range notes.ListIndexTarget(notes.IndexFileTypeJSN) {
 							
 							fmt.Println(target.Path())
 						}
@@ -171,7 +170,7 @@ func main(){
 				if haveOperand(1) {
 					if notes.DefineObjectiveDirectory(notes.ObjectiveKeyTargetWeb,getOperand(1)) {
 						var target notes.IndexFile
-						for _, target = range notes.ListIndexTarget() {
+						for _, target = range notes.ListIndexSource(notes.IndexFileTypeJSN) {
 							
 							fmt.Println(target)
 						}
@@ -195,13 +194,12 @@ func main(){
 				if haveOperand(1) {
 					notes.DefineObjectiveDirectory(notes.ObjectiveKeyTargetWeb,getOperand(1))
 					if haveOperand(2) {
-						var target notes.FileName
-						for _, opd := range listOperands(2) {
+						notes.DefineTextFiles(listOperands(2))
 
-							for _, target = range notes.ListTextFiles(opd) {
+						var target notes.IndexFile
+						for _, target = range notes.ListIndexSource(notes.IndexFileTypeTXT) {
 
-								fmt.Println(target.Target("svg"))
-							}
+							fmt.Println(target.FileTarget("svg"))
 						}
 						os.Exit(0)
 					} else {
@@ -229,7 +227,7 @@ func main(){
 				if haveOperand(1) {
 					if notes.DefineObjectiveDirectory(notes.ObjectiveKeyTargetWeb,getOperand(1)) {
 						var target notes.IndexTarget
-						for _, target = range notes.ListIndexFiles() {
+						for _, target = range notes.ListIndexTarget(notes.IndexFileTypeJSN) {
 							
 							fmt.Println(target.CatalogTarget())
 						}
@@ -244,7 +242,7 @@ func main(){
 				if haveOperand(1) {
 					if notes.DefineObjectiveDirectory(notes.ObjectiveKeyTargetWeb,getOperand(1)) {
 						var target notes.IndexTarget
-						for _, target = range notes.ListIndexFiles() {
+						for _, target = range notes.ListIndexTarget(notes.IndexFileTypeJSN) {
 							
 							fmt.Println(target.TabulateTarget())
 						}
@@ -265,10 +263,11 @@ func main(){
 		if haveOperand(0) {
 			notes.DefineObjectiveDirectory(notes.ObjectiveKeyTargetWeb,getOperand(0))
 			if haveOperand(1) {
-				var target notes.FileName
-				for _, opd := range listOperands(1) {
+				if haveOperand(2) {
+					notes.DefineTextFiles(listOperands(2))
 
-					for _, target = range notes.ListTextFiles(opd) {
+					var target notes.IndexFile
+					for _, target = range notes.ListIndexSource(notes.IndexFileTypeTXT) {
 
 						target.CodeWrite()
 					}
@@ -299,7 +298,7 @@ func main(){
 		if haveOperand(0) {
 			if notes.DefineObjectiveDirectory(notes.ObjectiveKeyTargetWeb,getOperand(0)) {
 				var target notes.IndexTarget
-				for _, target = range notes.ListIndexFiles() {
+				for _, target = range notes.ListIndexTarget(notes.IndexFileTypeJSN) {
 					
 					target.CatalogWrite()
 				}
@@ -314,7 +313,7 @@ func main(){
 		if haveOperand(0) {
 			if notes.DefineObjectiveDirectory(notes.ObjectiveKeyTargetWeb,getOperand(0)) {
 				var target notes.IndexTarget
-				for _, target = range notes.ListIndexFiles() {
+				for _, target = range notes.ListIndexTarget(notes.IndexFileTypeJSN) {
 					
 					target.TabulateWrite()
 				}
