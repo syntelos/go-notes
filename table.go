@@ -22,6 +22,7 @@ const (
 	TableNameCulture	TableName	= "culture"
 	TableNameIdeology	TableName	= "ideology"
 	TableNameNihilism	TableName	= "nihilism"
+	TableNameMetaphysics	TableName	= "metaphysics"
 
 	TablePathExistentialism	TablePath	= "/syntelos /science /anthropology /existentialism"
 	TablePathPolitics	TablePath	= "/gegonen /politics"
@@ -35,6 +36,7 @@ const (
 	TablePathCulture	TablePath	= ""
 	TablePathIdeology	TablePath	= "/syntelos /science /anthropology /ideology"
 	TablePathNihilism	TablePath	= "/syntelos /science /anthropology /nihilism"
+	TablePathMetaphysics	TablePath	= "/syntelos /science /anthropology /metaphysics"
 
 	TableLinkExistentialism	TableLink	= "https://drive.google.com/drive/folders/162g6-KM5dOkWvJX7NgMRoKJuz8rkwk96"
 	TableLinkPolitics	TableLink	= "https://drive.google.com/drive/folders/1uhgjgL8HBzRwCgP6pXpCwQqLZ0IC_pgJ"
@@ -48,6 +50,7 @@ const (
 	TableLinkCulture	TableLink	= "/syntelos /science /anthropology /culture"
 	TableLinkIdeology	TableLink	= "https://drive.google.com/drive/folders/17CpRzqOoCtS-7WK98N24oPt0Ke_9379E"
 	TableLinkNihilism	TableLink	= "https://drive.google.com/drive/folders/1l4CQXKr3DyFJDS3bjfxro7AT5TO_tzZZ"
+	TableLinkMetaphysics	TableLink	= "https://drive.google.com/drive/folders/18ea3fgt2FjHWr_HZr84tXCNrmZiQOVHx"
 )
 
 func IsTableName(name TableName) bool {
@@ -85,6 +88,8 @@ func (this TableName) Path() TablePath {
 		return TablePathIdeology
 	case TableNameNihilism:
 		return TablePathNihilism
+	case TableNameMetaphysics:
+		return TablePathMetaphysics
 
 	default:
 		return ""
@@ -117,6 +122,8 @@ func (this TableName) Link() TableLink {
 		return TableLinkIdeology
 	case TableNameNihilism:
 		return TableLinkNihilism
+	case TableNameMetaphysics:
+		return TableLinkMetaphysics
 
 	default:
 		return ""

@@ -11,7 +11,7 @@ import (
 	sort "github.com/syntelos/go-sort"
 )
 
-type IndexFile FileName
+type IndexFile string
 
 type IndexFileList []IndexFile
 
@@ -31,7 +31,7 @@ type IndexCatalog struct {
 	id, icon, path, link, name, embed string
 }
 
-var sourceObjectiveIndex map[IndexFileType]IndexFileList
+var sourceObjectiveIndex map[IndexFileType]IndexFileList = make(map[IndexFileType]IndexFileList)
 
 var condensedObjectiveIndex map[IndexFile]IndexTarget = make(map[IndexFile]IndexTarget)
 
@@ -199,16 +199,6 @@ func (this IndexFile) LongKey() (that IndexFile) {
 	}
 }
 
-func (this IndexFile) FileSource(fext string) IndexFile {
-
-	return IndexFile(FileName(this).Source(fext))
-}
-
-func (this IndexFile) FileTarget(fext string) IndexFile {
-
-	return IndexFile(FileName(this).Target(fext))
-}
-
 func (this IndexFile) IndexTarget() (empty IndexTarget) {
 	var ctor IndexTarget
 	/*
@@ -276,15 +266,15 @@ func (this IndexTarget) Name() string {
 	return string(this.name)
 }
 
-func (this IndexTarget) Target() (empty FileName) {
+func (this IndexTarget) Target() (empty IndexFile) {
 	if this.IsValid() {
 		var yyyy string = string(this.yyyymm[0:4])
 		var mm string = string(this.yyyymm[4:6])
 
 		if HaveObjective(ObjectiveKeyTargetWeb) {
-			var root FileName = ObjectiveDirectory(ObjectiveKeyTargetWeb)
+			var root IndexFile = ObjectiveDirectory(ObjectiveKeyTargetWeb)
 
-			return FileName(FileCat(FileCat(string(root),yyyy),mm))
+			return IndexFile(FileCat(FileCat(string(root),yyyy),mm))
 
 		}
 	}

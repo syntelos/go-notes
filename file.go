@@ -8,12 +8,20 @@ import (
 	"os"
 )
 
-type FileName string
-
-type FileList []FileName
-
 func DefineTextFiles(list []string) {
-
+	/*
+	 * Unique membership
+	 */
+	var unique map[IndexFile]bool = make(map[IndexFile]bool)
+	{
+		var filelist IndexFileList = sourceObjectiveIndex[IndexFileTypeTXT]
+		for _, file := range filelist {
+			unique[file] = true
+		}
+	}
+	/*
+	 * Review membership
+	 */
 	for _, path := range list {
 		var fo *os.File
 		var er error
@@ -27,13 +35,17 @@ func DefineTextFiles(list []string) {
 			if nil == er {
 				
 				if fi.IsDir() {
-					var nm FileName
+					var nm IndexFile
 					var dl []os.DirEntry
 					dl, er = os.ReadDir(path)
 
 					for _, de := range dl {
 						nm = MakeFileName(path,de)
-						if nm.IsFext("txt") && IsTableName(nm.TableName()) {
+
+						if unique[nm] && nm.IsFext("txt") && IsTableName(nm.TableName()) {
+
+							unique[nm] = true
+
 							var fileList IndexFileList = sourceObjectiveIndex[IndexFileTypeTXT]
 
 							fileList = append(fileList,IndexFile(nm))
@@ -41,8 +53,12 @@ func DefineTextFiles(list []string) {
 						}
 					}
 				} else {
-					var nm FileName = FileName(path)
-					if nm.IsFext("txt") && IsTableName(nm.TableName()) {
+					var nm IndexFile = IndexFile(path)
+
+					if unique[nm] && nm.IsFext("txt") && IsTableName(nm.TableName()) {
+
+						unique[nm] = true
+
 						var fileList IndexFileList = sourceObjectiveIndex[IndexFileTypeTXT]
 
 						fileList = append(fileList,IndexFile(nm))
@@ -55,9 +71,9 @@ func DefineTextFiles(list []string) {
 	}
 }
 
-func MakeFileName(p string, de os.DirEntry) (fn FileName) {
+func MakeFileName(p string, de os.DirEntry) (fn IndexFile) {
 
-	return FileName(FileCat(p,de.Name()))
+	return IndexFile(FileCat(p,de.Name()))
 }
 
 func FileCat(a, b string) string {
@@ -76,7 +92,7 @@ func FileCat(a, b string) string {
 	}
 }
 
-func (this FileName) IsFext(fext string) bool {
+func (this IndexFile) IsFext(fext string) bool {
 
 	var first, last, end int = 0, 0, len(this)
 	{
@@ -92,7 +108,7 @@ func (this FileName) IsFext(fext string) bool {
 	}
 }
 
-func (this FileName) Base() (that FileName) {
+func (this IndexFile) Base() (that IndexFile) {
 
 	var x, z = 0, len(this)
 
@@ -100,7 +116,7 @@ func (this FileName) Base() (that FileName) {
 
 		if '/' == this[x] {
 
-			that = FileName(this[x+1:z])
+			that = IndexFile(this[x+1:z])
 
 			return that
 		}
@@ -108,7 +124,7 @@ func (this FileName) Base() (that FileName) {
 	return this
 }
 
-func (this FileName) TableName() TableName {
+func (this IndexFile) TableName() TableName {
 
 	var first, last, end int = 0, 0, len(this)
 	{
@@ -118,7 +134,7 @@ func (this FileName) TableName() TableName {
 
 	if 0 < first && '.' ==  this[first] {
 
-		var head FileName = this[0:first]
+		var head IndexFile = this[0:first]
 
 		var x, z = 0, len(head)
 
@@ -148,7 +164,7 @@ func (this FileName) TableName() TableName {
 	}
 }
 
-func (this FileName) Source(fext string) FileName {
+func (this IndexFile) FileSource(fext string) IndexFile {
 
 	var first, last, end int = 0, 0, len(this)
 	{
@@ -165,14 +181,14 @@ func (this FileName) Source(fext string) FileName {
 			return this
 		} else {
 
-			return FileName(string(this[0:first])+"."+fext)
+			return IndexFile(string(this[0:first])+"."+fext)
 		}
 	} else {
 		return ""
 	}
 }
 
-func (this FileName) Target(fext string) FileName {
+func (this IndexFile) FileTarget(fext string) IndexFile {
 
 	var first, last, end int = 0, 0, len(this)
 	{
@@ -184,7 +200,7 @@ func (this FileName) Target(fext string) FileName {
 		/*
 		 * The target reflects the source.
 		 */
-		var reflection FileName
+		var reflection IndexFile
 
 		var found string = string(this[(first+1):end])
 
@@ -193,7 +209,7 @@ func (this FileName) Target(fext string) FileName {
 			reflection = this
 		} else {
 
-			reflection = FileName(string(this[0:first])+"."+fext)
+			reflection = IndexFile(string(this[0:first])+"."+fext)
 		}
 
 		if HaveObjective(ObjectiveKeyTargetWeb) {
@@ -201,10 +217,10 @@ func (this FileName) Target(fext string) FileName {
 			 * The target is a projection from
 			 * the source into target.
 			 */
-			var projection FileName = IndexFile(reflection).IndexTarget().Target()
-			var filename FileName = reflection.Base()
+			var projection IndexFile = IndexFile(reflection).IndexTarget().Target()
+			var filename IndexFile = reflection.Base()
 
-			return FileName(FileCat(string(projection),string(filename)))
+			return IndexFile(FileCat(string(projection),string(filename)))
 
 		} else {
 
@@ -213,4 +229,12 @@ func (this FileName) Target(fext string) FileName {
 	} else {
 		return ""
 	}
+}
+
+func (this IndexFile) IsValid() bool {
+	return (0 != len(this))
+}
+
+func (this IndexFile) IsNotValid() bool {
+	return (0 == len(this))
 }

@@ -11,8 +11,9 @@ import (
 
 func TestEncode(t *testing.T){
 	if DefineObjectiveDirectory(ObjectiveKeyTargetWeb,"tst/notes") {
-		var source FileName
-		for _, source = range ListTextFiles("tst/txt") {
+		DefineTextFiles([]string{"tst/txt"})
+		var source IndexFile
+		for _, source = range ListIndexSource(IndexFileTypeTXT) {
 
 			fmt.Printf("[TestEncode] (CodeWrite) %s\n",source)
 

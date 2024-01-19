@@ -71,9 +71,8 @@ Description
       Enumerate outputs implied by operation "encode",
       "update", or "contents".
 
-  The principal operators, "encode", "update", and
-  "contents" are recognized by their corresponding short and
-  long character symbols.
+  The operators are recognized by both short and long
+  character symbols, including "src", "tgt", "en", and "co".
 
 `)
 	os.Exit(1)
@@ -115,7 +114,7 @@ func listOperands(first int) []string {
 func main(){
 
 	switch operator() {
-	case "source":
+	case "src", "source":
 		if haveOperand(0) {
 			switch getOperand(0) {
 			case "en", "enc", "encode":
@@ -187,7 +186,7 @@ func main(){
 		} else {
 			usage()
 		}
-	case "target":
+	case "tgt", "target":
 		if haveOperand(0) {
 			switch getOperand(0) {
 			case "en", "enc", "encode":

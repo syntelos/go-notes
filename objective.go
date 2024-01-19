@@ -15,16 +15,16 @@ const (
 	ObjectiveKeyTargetWeb  ObjectiveKey = 2
 )
 
-var objective map[ObjectiveKey]FileName = make(map[ObjectiveKey]FileName)
+var objective map[ObjectiveKey]IndexFile = make(map[ObjectiveKey]IndexFile)
 
-func ObjectiveDirectory(key ObjectiveKey) FileName {
+func ObjectiveDirectory(key ObjectiveKey) IndexFile {
 
 	return objective[key]
 }
 
 func HaveObjective(key ObjectiveKey) bool {
 
-	var target FileName = objective[key]
+	var target IndexFile = objective[key]
 
 	return 0 != len(target)
 }
@@ -44,7 +44,7 @@ func DefineObjectiveDirectory(key ObjectiveKey, tgt string) bool {
 
 			if fi.IsDir() {
 
-				objective[key] = FileName(tgt)
+				objective[key] = IndexFile(tgt)
 
 				defineIndex(tgt)
 
