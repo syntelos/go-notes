@@ -1,13 +1,24 @@
-existentialism	/syntelos /science /anthropology /existentialism	https://drive.google.com/drive/folders/162g6-KM5dOkWvJX7NgMRoKJuz8rkwk96
-politics	/gegonen /politics	https://drive.google.com/drive/folders/1uhgjgL8HBzRwCgP6pXpCwQqLZ0IC_pgJ
-sociology	/syntelos /science /anthropology /sociology	https://drive.google.com/drive/folders/1etCIitYhVQH8_Wf6oHeu_rWUmDfTYZD-
-the_temple_of_athena	/gegonen /the temple of athena	https://drive.google.com/drive/folders/1nUpMgy9n-wHWN13hlXm-YZH5rojTUi0j
 communication	/syntelos /science /anthropology /communication	https://drive.google.com/drive/folders/1tXs2GNe1R9wCsKbj-bcCyeiscrK0F2K0
-instrumentality	/syntelos /science /anthropology /instrumentality	https://drive.google.com/drive/folders/1YqybUMCurpLc0WdTOuUjew7EujYGFDuG
-pyrus_malus	/gegonen /through the eyes of pyrus malus	https://drive.google.com/drive/folders/1ODny7w7sTRbzQQGYMREZdQaKZ7lHJDuk
-journey		/syntelos /science /anthropology /morality	https://drive.google.com/drive/folders/1eLNmCSFIH21y7bWB61QVxw0S3VV9RuZI
-morality	/syntelos /science /anthropology /morality	https://drive.google.com/drive/folders/1eLNmCSFIH21y7bWB61QVxw0S3VV9RuZI
+communism	/syntelos /science /anthropology /communism	https://drive.google.com/drive/folders/15Eq2asOsXyz9xB-A-NLFU1IUg0lKDQWJ
 culture		/syntelos /science /anthropology /culture	https://drive.google.com/drive/folders/1szqgHRry7jXvuV4spXrcn7S4VQxLucB_
+existentialism	/syntelos /science /anthropology /existentialism	https://drive.google.com/drive/folders/162g6-KM5dOkWvJX7NgMRoKJuz8rkwk96
+humanism	/syntelos /science /anthropology /humanism	https://drive.google.com/drive/folders/1QHhQnpt88m0u5dN2fgHto8Dam5Mh6c_9
 ideology	/syntelos /science /anthropology /ideology	https://drive.google.com/drive/folders/17CpRzqOoCtS-7WK98N24oPt0Ke_9379E
-nihilism	/syntelos /science /anthropology /nihilism	https://drive.google.com/drive/folders/1l4CQXKr3DyFJDS3bjfxro7AT5TO_tzZZ
+individualism	/syntelos /science /anthropology /individualism	https://drive.google.com/drive/folders/1vahEEfMA42RpSTXNEZgEMeuO7SDOqXg0
+instrumentality	/syntelos /science /anthropology /instrumentality	https://drive.google.com/drive/folders/1YqybUMCurpLc0WdTOuUjew7EujYGFDuG
+intellectuality	/syntelos /science /anthropology /intellectuality	https://drive.google.com/drive/folders/1_zMHs6uHkF4UzlIywjqwfv9FmZyGO5rT
+journey		/syntelos /science /anthropology /morality	https://drive.google.com/drive/folders/1eLNmCSFIH21y7bWB61QVxw0S3VV9RuZI
+liberalism	/syntelos /science /anthropology /liberalism	https://drive.google.com/drive/folders/1OczHAQbfNIOwBzhqwCFoCPPQM_eDsQ1J
+literacy	/syntelos /science /anthropology /literacy	https://drive.google.com/drive/folders/1KeSxi5xwUFB-D51PolHoGXEfZ2fLvwMo
+materialism	/syntelos /science /anthropology /materialism	https://drive.google.com/drive/folders/1KbBCIIRH5RtqyPda8NW14dcRQh2fwsvL
 metaphysics	/syntelos /science /anthropology /metaphysics	https://drive.google.com/drive/folders/18ea3fgt2FjHWr_HZr84tXCNrmZiQOVHx
+morality	/syntelos /science /anthropology /morality	https://drive.google.com/drive/folders/1eLNmCSFIH21y7bWB61QVxw0S3VV9RuZI
+nihilism	/syntelos /science /anthropology /nihilism	https://drive.google.com/drive/folders/1l4CQXKr3DyFJDS3bjfxro7AT5TO_tzZZ
+politics	/gegonen /politics	https://drive.google.com/drive/folders/1uhgjgL8HBzRwCgP6pXpCwQqLZ0IC_pgJ
+psychology	/syntelos /science /anthropology /psychology	https://drive.google.com/drive/folders/1adSWRCYYCf_rdhcxUk2hCe-k3Tn6tzHQ
+pyrus_malus	/gegonen /through the eyes of pyrus malus	https://drive.google.com/drive/folders/1ODny7w7sTRbzQQGYMREZdQaKZ7lHJDuk
+sexuality	/syntelos /science /anthropology /sexuality	https://drive.google.com/drive/folders/10EU25uM8ueRaLXI_WT0PtAE4nRR6tRTb
+socialism	/syntelos /science /anthropology /socialism	https://drive.google.com/drive/folders/1v6n1KFL4pGDRZo-LmfkHBTs0k-QUTMbj
+sociology	/syntelos /science /anthropology /sociology	https://drive.google.com/drive/folders/1etCIitYhVQH8_Wf6oHeu_rWUmDfTYZD-
+spirituality	/syntelos /science /anthropology /spirituality	https://drive.google.com/drive/folders/1Ztj8tmFI6qvkVkjx5Y62VqopK_6Sq86x
+the_temple_of_athena	/gegonen /the temple of athena	https://drive.google.com/drive/folders/1nUpMgy9n-wHWN13hlXm-YZH5rojTUi0j
