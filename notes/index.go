@@ -220,7 +220,7 @@ func (this IndexFile) IndexTarget() (empty IndexTarget) {
 					prefix = ofs
 					ctor.dir = this[0:ofs]
 
-					ctor.path = IndexFile(FileCat(string(ctor.dir),string(ctor.yyyymmdd))+".json")
+					ctor.path = FileCat(ctor.dir,ctor.yyyymmdd)+".json"
 					ctor.name = TableName(this[prefix+1:infix])
 
 					return ctor
@@ -268,13 +268,13 @@ func (this IndexTarget) Name() string {
 
 func (this IndexTarget) Target() (empty IndexFile) {
 	if this.IsValid() {
-		var yyyy string = string(this.yyyymm[0:4])
-		var mm string = string(this.yyyymm[4:6])
+		var yyyy IndexFile = this.yyyymm[0:4]
+		var mm IndexFile = this.yyyymm[4:6]
 
 		if HaveObjective(ObjectiveKeyTargetWeb) {
 			var root IndexFile = ObjectiveDirectory(ObjectiveKeyTargetWeb)
 
-			return IndexFile(FileCat(FileCat(string(root),yyyy),mm))
+			return FileCat(FileCat(root,yyyy),mm)
 
 		}
 	}
@@ -301,7 +301,7 @@ func (this IndexTarget) IndexSourceList() (list []IndexCatalog) {
 		{
 			for _, de := range dl {
 
-				var notes_svg IndexFile = IndexFile(FileCat(string(this.dir),de.Name()))
+				var notes_svg IndexFile = FileCat(this.dir,IndexFile(de.Name()))
 
 				if notes_svg.IsSVG(){
 

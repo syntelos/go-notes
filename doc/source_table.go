@@ -21,6 +21,7 @@ type Record struct {
 
 func tab(src []byte, ofs, len int) (idx int) {
 	for ofs < len {
+
 		if '\t' == src[ofs] {
 			return ofs
 		} else {
@@ -46,9 +47,11 @@ func (this Record) read(line []byte) (Record) {
 
 			begin = end+1
 			end = tab(line,begin,len)
-			if 0 < end {
+			if begin < end && 0 < end {
 
 				this.link = string(line[begin:end])
+			} else {
+				fmt.Fprintf(os.Stderr,"Skipping '%s'.\n",string(line))
 			}
 		}
 	}

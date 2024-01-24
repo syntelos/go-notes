@@ -40,7 +40,7 @@ func DefineTextFiles(list []string) {
 					dl, er = os.ReadDir(path)
 
 					for _, de := range dl {
-						nm = MakeFileName(path,de)
+						nm = MakeFile(path,de)
 
 						if unique[nm] && nm.IsFext("txt") && IsTableName(nm.TableName()) {
 
@@ -71,24 +71,24 @@ func DefineTextFiles(list []string) {
 	}
 }
 
-func MakeFileName(p string, de os.DirEntry) (fn IndexFile) {
+func MakeFile(p string, de os.DirEntry) (fn IndexFile) {
 
-	return IndexFile(FileCat(p,de.Name()))
+	return FileCat(IndexFile(p),IndexFile(de.Name()))
 }
 
-func FileCat(a, b string) string {
+func FileCat(a, b IndexFile) IndexFile {
 	var end int = len(a)
 	if 0 < end {
 		var last int = (end-1)
 
 		if '/' == a[last] {
 
-			return (a+b)
+			return IndexFile(a+b)
 		} else {
-			return (a+"/"+b)
+			return IndexFile(a+"/"+b)
 		}
 	} else {
-		return b
+		return IndexFile(b)
 	}
 }
 
@@ -220,7 +220,7 @@ func (this IndexFile) FileTarget(fext string) IndexFile {
 			var projection IndexFile = IndexFile(reflection).IndexTarget().Target()
 			var filename IndexFile = reflection.Base()
 
-			return IndexFile(FileCat(string(projection),string(filename)))
+			return FileCat(projection,filename)
 
 		} else {
 

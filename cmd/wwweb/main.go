@@ -7,7 +7,7 @@ package main
 import (
 	"fmt"
 	"os"
-	notes "github.com/syntelos/go-wwweb"
+	notes "github.com/syntelos/go-wwweb/notes"
 )
 
 func usage(){

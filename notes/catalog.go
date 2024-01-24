@@ -126,28 +126,6 @@ func (this IndexTarget) TabulateEncode() (that Tabulation) {
 	}
 	return that
 }
-
-func (this IndexTarget) CatalogTarget() string {
-	if this.IsValid() {
-		var path string = string(this.Target())
-		var file string = string(this.yyyymmdd)+".svg"
-
-		return FileCat(string(path),string(file))
-	} else {
-		return ""
-	}
-}
-
-func (this IndexTarget) TabulateTarget() string {
-	if this.IsValid() {
-		var path string = string(this.Target())
-		var file string = string(this.yyyymmdd)+".txt"
-
-		return FileCat(string(path),string(file))
-	} else {
-		return ""
-	}
-}
 /*
  * Read objective target index.  N.B. The objective target
  * index may differ from the original index source list by
@@ -650,12 +628,23 @@ func (this IndexTarget) CatalogRead() (list []IndexCatalog) {
 	return list
 }
 
+func (this IndexTarget) CatalogTarget() IndexFile {
+	if this.IsValid() {
+		var path IndexFile = this.Target()
+		var file IndexFile = this.yyyymmdd+".svg"
+
+		return FileCat(path,file)
+	} else {
+		return ""
+	}
+}
+
 func (this IndexTarget) CatalogWrite() {
-	var path string = this.CatalogTarget()
+	var path IndexFile = this.CatalogTarget()
 	var file *os.File
 	var er error
 
-	file, er = os.Create(path)
+	file, er = os.Create(string(path))
 	if nil == er {
 		var w *bufio.Writer = bufio.NewWriter(file)
 
@@ -670,12 +659,23 @@ func (this IndexTarget) CatalogWrite() {
 	}
 }
 
+func (this IndexTarget) TabulateTarget() IndexFile {
+	if this.IsValid() {
+		var path IndexFile = this.Target()
+		var file IndexFile = this.yyyymmdd+".txt"
+
+		return FileCat(path,file)
+	} else {
+		return ""
+	}
+}
+
 func (this IndexTarget) TabulateWrite() {
-	var path string = this.TabulateTarget()
+	var path IndexFile = this.TabulateTarget()
 	var file *os.File
 	var er error
 
-	file, er = os.Create(path)
+	file, er = os.Create(string(path))
 	if nil == er {
 		var w *bufio.Writer = bufio.NewWriter(file)
 
