@@ -3,7 +3,7 @@ gob_dir := $(env_dir)/bin
 sources := $(shell find . -type f -name "*.go")
 targets := $(shell find tst -type f -name '*.svg' -o -name '*.json')
 
-$(gob_dir)/wwweb: cmd/wwweb/main.go $(sources)
+$(gob_dir)/wwweb: main/wwweb.go $(sources)
 	go build -o $@ $<
 
 clean:
