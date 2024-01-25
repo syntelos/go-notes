@@ -10,35 +10,25 @@ import (
 )
 
 const TestTargetClassSVG FileTypeClass = (FileClassTable|FileTypeSVG)
-const TestTargetClassTXT FileTypeClass = (FileClassTable|FileTypeTXT)
 
 func TestTarget(t *testing.T){
-	Configure([]string{"notes","encode","tst/notes","tst/txt"}) // [TODO] (review)
-	SourceDefine(Operand(1))
-	TargetDefine()
+	if Configure([]string{"notes","encode","tst/notes","tst/txt"}) { // [TODO] (review)
+		SourceDefine(Operand(1))
+		TargetDefine()
 
-	fmt.Println("[TestTarget]")
+		fmt.Printf("[TestTarget] (%s)\n",Operand(1))
 
-	var svg uint32 = 0
-	for _, file := range TargetList(TestTargetClassSVG) {
-		svg += 1
-
-		fmt.Printf("[TestTarget] %s\n",file)
-	}
-
-	if 2 == svg {
-
-		var txt uint32 = 0
-		for _, file := range SourceList(TestTargetClassTXT) {
-			txt += 1
+		var tgt uint32 = 0
+		for _, file := range TargetList(TestTargetClassSVG) {
+			tgt += 1
 
 			fmt.Printf("[TestTarget] %s\n",file)
 		}
 
-		if 4 != txt {
-			t.Fatalf("[TestTarget] Count TXT %d expected 4.  Classes %d.",svg,SourceClassCount())
+		if 4 != tgt {
+			t.Fatalf("[TestTarget] Count SVG %d expected 4.",tgt)
 		}
 	} else {
-		t.Fatalf("[TestTarget] Count SVG %d expected 2.  Classes %d.",svg,SourceClassCount())
+		t.Fatal("[TestTarget] Failed to configure.");
 	}
 }

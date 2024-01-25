@@ -1,6 +1,6 @@
 WWWeb Notes
 
-  Transform preformatted plain text to SVG text.
+  Content encoding and indexing tools.
 
 References
 

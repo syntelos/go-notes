@@ -40,11 +40,10 @@ func Configure(argv []string) bool {
 				case "no", "not", "notes":
 					Configuration |= ClassNotes
 					Context = "notes"
-					return true
+
 				case "re", "rec", "recent":
 					Configuration |= ClassRecent
 					Context = "recent"
-					return true
 				}
 
 			}
@@ -55,10 +54,9 @@ func Configure(argv []string) bool {
 				switch arg {
 				case "src", "source":
 					Configuration |= ClassSource
-					return true
+
 				case "tgt", "target":
 					Configuration |= ClassTarget
-					return true
 				}
 			}
 		case "enc", "encode", "upd", "update", "con", "contents", "tab", "tabulate":
@@ -69,31 +67,27 @@ func Configure(argv []string) bool {
 				case "enc", "encode":
 					Configuration |= ClassEncode
 					Operator = "encode"
-					return true
+
 				case "upd", "update":
 					Configuration |= ClassUpdate
 					Operator = "update"
-					return true
+
 				case "con", "contents":
 					Configuration |= ClassContents
 					Operator = "contents"
-					return true
+
 				case "tab", "tabulate":
 					Configuration |= ClassTabulate
 					Operator = "tabulate"
-					return true
 				}
 			}
 		default:
 			if 0 != (Configuration & Class_Context) &&
 				0 != (Configuration & Class_Transform) {
 
-				if nil == Operands {
+				Operands = argv[argx:]
 
-					Operands = argv[argx:]
-
-					return true
-				}
+				return true
 			}
 		}
 	}

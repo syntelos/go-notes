@@ -9,34 +9,25 @@ import (
 	"testing"
 )
 
-const TestSourceClassSVG FileTypeClass = (FileClassTable|FileTypeSVG)
 const TestSourceClassTXT FileTypeClass = (FileClassTable|FileTypeTXT)
 
 func TestSource(t *testing.T){
-	SourceDefine("tst")
+	if Configure([]string{"notes","encode","tst/notes","tst/txt"}) { // [TODO] (review)
+		SourceDefine(Operand(1))
 
-	fmt.Println("[TestSource]")
+		fmt.Printf("[TestSource] (%s)\n",Operand(1))
 
-	var svg uint32 = 0
-	for _, file := range SourceList(TestSourceClassSVG) {
-		svg += 1
-
-		fmt.Printf("[TestSource] %s\n",file)
-	}
-
-	if 2 == svg {
-
-		var txt uint32 = 0
+		var src uint32 = 0
 		for _, file := range SourceList(TestSourceClassTXT) {
-			txt += 1
+			src += 1
 
 			fmt.Printf("[TestSource] %s\n",file)
 		}
 
-		if 4 != txt {
-			t.Fatalf("[TestSource] Count TXT %d expected 4.  Classes %d.",svg,SourceClassCount())
+		if 4 != src {
+			t.Fatalf("[TestSource] Count TXT %d expected 4.",src)
 		}
 	} else {
-		t.Fatalf("[TestSource] Count SVG %d expected 2.  Classes %d.",svg,SourceClassCount())
+		t.Fatal("[TestSource] Failed to configure.")
 	}
 }

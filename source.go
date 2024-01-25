@@ -27,8 +27,11 @@ func sourceDefineWalker(path string, d fs.DirEntry, er error) error {
 			if lofil.IsValid() {
 
 				var locationList FileLocationList = sources[ixfil.typeclass]
+				if 0 == len(locationList) {
+					locationList = make(FileLocationList)
+				}
 
-				locationList = append(locationList,lofil)
+				locationList[lofil.FileIdentifier()] = lofil
 
 				sources[ixfil.typeclass] = locationList
 			}

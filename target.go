@@ -41,28 +41,26 @@ func TargetDefine() {
 	switch TargetOperation() {
 
 	case TargetOperationClassMonthly:
-
-		var unique map[string]FileLocation = make(map[string]FileLocation)
+		var unique FileCollectionList = make(FileCollectionList)
 		for _, fil := range SourceList(typeclass_tgt) {
 
-			var fil_yyyymm string = fil.YYYYMM()
-			var fil_hhmmss string = fil.YYYYMMDD_HHMMSS()
-			if 0 != len(fil_hhmmss) {
+			var fil_id FileId = fil.FileIdentifier()
+			var fil_ix FileIx = fil.FileIndex()
+			if fil_id.IsValid() && fil_ix.IsValid() {
 
-				var inf FileLocation = unique[fil_yyyymm]
+				var inf FileLocation = unique[fil_ix]
 				if inf.IsValid() {
 
-					var inf_hhmmss string = inf.YYYYMMDD_HHMMSS()
-					if 0 != len(fil_hhmmss) {
-						if fil_hhmmss > inf_hhmmss {
+					var inf_id FileId = inf.FileIdentifier()
+					var inf_ix FileIx = inf.FileIndex()
+					if inf_id.IsValid() && inf_ix.IsValid() {
+						if inf_id > fil_id {
 
-							unique[fil_yyyymm] = fil
+							unique[fil_ix] = inf
 						}
-					} else {
-						unique[fil_yyyymm] = fil
 					}
 				} else {
-					unique[fil_yyyymm] = fil
+					unique[fil_ix] = fil
 				}
 			}
 		}
@@ -71,7 +69,11 @@ func TargetDefine() {
 		for _, file := range unique {
 			list = targets[file.typeclass]
 
-			list = append(list,file)
+			if 0 == len(list) {
+				list = make(FileLocationList)
+			}
+
+			list[file.FileIdentifier()] = file
 
 			targets[file.typeclass] = list
 		}
@@ -83,7 +85,11 @@ func TargetDefine() {
 
 			list = targets[to.typeclass]
 
-			list = append(list,to)
+			if 0 == len(list) {
+				list = make(FileLocationList)
+			}
+
+			list[to.FileIdentifier()] = to
 
 			targets[to.typeclass] = list
 		}
