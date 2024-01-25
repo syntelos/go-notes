@@ -25,7 +25,8 @@ const Class_Transform = (ClassEncode|ClassUpdate|ClassContents|ClassTabulate)
 
 var Configuration Class
 
-func ClassDefine(argv []string) bool {
+func Configure(argv []string) bool {
+	Configuration = 0
 	for _, arg := range argv {
 		switch arg {
 		case "no", "not", "notes", "re", "rec", "recent":
@@ -79,14 +80,48 @@ func ClassDefine(argv []string) bool {
 	return false
 }
 
-func ClassContext() Class {
+func ConfigurationContext() Class {
 	return (Configuration & Class_Context)
 }
 
-func ClassOperation() Class {
+func ConfigurationOperation() Class {
 	return (Configuration & Class_Operation)
 }
 
-func ClassTransform() Class {
+func ConfigurationTransform() Class {
 	return (Configuration & Class_Transform)
+}
+
+func ConfigurationSource() FileTypeClass {
+
+	switch ConfigurationContext() {
+
+	case ClassNotes:
+
+		return FileClassTable|FileTypeTXT
+
+	case ClassRecent:
+
+		return FileClassIndex|FileTypeJSN
+
+	default:
+		return 0
+	}
+}
+
+func ConfigurationTarget() FileTypeClass {
+
+	switch ConfigurationContext() {
+
+	case ClassNotes:
+
+		return FileClassTable|FileTypeSVG
+
+	case ClassRecent:
+
+		return FileClassIndex|FileTypeJSN
+
+	default:
+		return 0
+	}
 }

@@ -4,6 +4,6 @@
  */
 package wwweb
 
-func TargetList() (empty []string) {
+func TargetList(typeclass FileTypeClass) (empty FileLocationList) {
 	return empty
 }

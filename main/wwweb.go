@@ -28,9 +28,10 @@ Synopsis
 
 Description
 
-    The "wwweb" application manager has "notes" and "recent"
-    transformation contexts.  The "notes" applet produces
-    SVG textboxes from TXT preformatted text.  The "recent"
+    The "wwweb" application has "notes" and "recent"
+    transformation contexts for producing "wwweb notes"
+    online content.  The "notes" applet produces SVG
+    textboxes from TXT preformatted text.  The "recent"
     applet produces JSON indeces from a Google Drive file
     listing of PDF files.
 
@@ -47,18 +48,7 @@ Description
       <tgt>/<YYYY>/<MM>/<tablename>-<YYYY><MM><DD>.svg
       <tgt>/<YYYY>/<MM>/<tablename>-<YYYY><MM><DD>.png
 
-  Source
-
-      Given one of more directories, or individual files,
-      collect sources filtered by filename (*.txt) and
-      tablename (e.g. "politics-*.txt", or
-      "sociology-*.txt").
-
-  Target
-
-      WWWeb JSON, SVG.
-
-  Note Bene
+  Operators
 
       The operational symbols are recognized by short and
       long character symbols.
@@ -79,17 +69,17 @@ Description
 
 func main(){
 
-	if wwweb.ClassDefine(os.Args[1:]) {
+	if wwweb.Configure(os.Args[1:]) {
 
-		switch wwweb.ClassOperation() {
+		switch wwweb.ConfigurationOperation() {
 
 		case wwweb.ClassSource:
-			for _, src := range wwweb.SourceList() {
+			for _, src := range wwweb.SourceList(wwweb.ConfigurationSource()) {
 				fmt.Println(src)
 			}
 			os.Exit(0)
 		case wwweb.ClassTarget:
-			for _, tgt := range wwweb.TargetList() {
+			for _, tgt := range wwweb.TargetList(wwweb.ConfigurationTarget()) {
 				fmt.Println(tgt)
 			}
 			os.Exit(0)
