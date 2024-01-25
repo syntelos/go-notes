@@ -23,11 +23,14 @@ const Class_Context = (ClassRecent|ClassNotes)
 const Class_Operation = (ClassSource|ClassTarget)
 const Class_Transform = (ClassEncode|ClassUpdate|ClassContents|ClassTabulate)
 
-var Configuration Class
+var Configuration Class = 0
+var Context string
+var Operator string
+var Operands []string = nil
 
 func Configure(argv []string) bool {
 	Configuration = 0
-	for _, arg := range argv {
+	for argx, arg := range argv {
 		switch arg {
 		case "no", "not", "notes", "re", "rec", "recent":
 			if 0 != (Configuration & Class_Context) {
@@ -36,9 +39,11 @@ func Configure(argv []string) bool {
 				switch arg {
 				case "no", "not", "notes":
 					Configuration |= ClassNotes
+					Context = "notes"
 					return true
 				case "re", "rec", "recent":
 					Configuration |= ClassRecent
+					Context = "recent"
 					return true
 				}
 
@@ -63,15 +68,30 @@ func Configure(argv []string) bool {
 				switch arg {
 				case "enc", "encode":
 					Configuration |= ClassEncode
+					Operator = "encode"
 					return true
 				case "upd", "update":
 					Configuration |= ClassUpdate
+					Operator = "update"
 					return true
 				case "con", "contents":
 					Configuration |= ClassContents
+					Operator = "contents"
 					return true
 				case "tab", "tabulate":
 					Configuration |= ClassTabulate
+					Operator = "tabulate"
+					return true
+				}
+			}
+		default:
+			if 0 != (Configuration & Class_Context) &&
+				0 != (Configuration & Class_Transform) {
+
+				if nil == Operands {
+
+					Operands = argv[argx:]
+
 					return true
 				}
 			}
@@ -92,7 +112,7 @@ func ConfigurationTransform() Class {
 	return (Configuration & Class_Transform)
 }
 
-func ConfigurationSource() FileTypeClass {
+func ConfigurationSource() FileTypeClass { // [TODO] (review)
 
 	switch ConfigurationContext() {
 
@@ -109,7 +129,7 @@ func ConfigurationSource() FileTypeClass {
 	}
 }
 
-func ConfigurationTarget() FileTypeClass {
+func ConfigurationTarget() FileTypeClass { // [TODO] (review)
 
 	switch ConfigurationContext() {
 
@@ -123,5 +143,20 @@ func ConfigurationTarget() FileTypeClass {
 
 	default:
 		return 0
+	}
+}
+
+func HaveOperand(index int) bool {
+
+	return index < len(Operands)
+}
+
+func Operand(index int) string {
+
+	if index < len(Operands) {
+
+		return Operands[index]
+	} else {
+		return ""
 	}
 }

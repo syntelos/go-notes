@@ -15,11 +15,13 @@ const TestSourceClassTXT FileTypeClass = (FileClassTable|FileTypeTXT)
 func TestSource(t *testing.T){
 	SourceDefine("tst")
 
+	fmt.Println("[TestSource]")
+
 	var svg uint32 = 0
 	for _, file := range SourceList(TestSourceClassSVG) {
 		svg += 1
 
-		fmt.Println(file)
+		fmt.Printf("[TestSource] %s\n",file)
 	}
 
 	if 2 == svg {
@@ -28,7 +30,7 @@ func TestSource(t *testing.T){
 		for _, file := range SourceList(TestSourceClassTXT) {
 			txt += 1
 
-			fmt.Println(file)
+			fmt.Printf("[TestSource] %s\n",file)
 		}
 
 		if 4 != txt {

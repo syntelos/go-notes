@@ -224,3 +224,69 @@ func (this FileLocation) IsValid() bool {
 func (this FileLocation) String() string {
 	return this.location
 }
+
+func (this FileLocation) YYYYMM() string {
+
+	if 6 <= len(this.datetime) {
+		return this.datetime[0:6]
+	} else {
+		return ""
+	}
+}
+
+func (this FileLocation) YYYYMMDD() string {
+
+	if 8 <= len(this.datetime) {
+		return this.datetime[0:8]
+	} else {
+		return ""
+	}
+}
+
+func (this FileLocation) YYYYMMDD_HHMMSS() string {
+
+	if 15 <= len(this.datetime) && '_' == this.datetime[8] {
+		return this.datetime[0:15]
+	} else {
+		return ""
+	}
+}
+
+func (this FileLocation) HHMMSS() string {
+
+	if 15 <= len(this.datetime) && '_' == this.datetime[8] {
+		return this.datetime[10:15]
+	} else {
+		return ""
+	}
+}
+
+func (this FileLocation) Transform(to FileTypeClass) (empty FileLocation) {
+	var from FileTypeClass = (this.typeclass & FileType)
+	to = (to & FileType)
+	if from == to {
+
+		return this
+
+	} else {
+		var fext int = strings.LastIndexByte(this.location,'.')
+		var to_string string
+		switch (to) {
+		case FileTypeTXT:
+			to_string = this.location[0:fext]+".txt"
+		case FileTypeJSN:
+			to_string = this.location[0:fext]+".json"
+		case FileTypeHTL:
+			to_string = this.location[0:fext]+".html"
+		case FileTypeSVG:
+			to_string = this.location[0:fext]+".svg"
+		case FileTypePNG:
+			to_string = this.location[0:fext]+".png"
+		case FileTypeJPG:
+			to_string = this.location[0:fext]+".jpeg"
+		default:
+			return empty
+		}
+		return FileClassify(to_string).Condense()
+	}
+}
