@@ -34,7 +34,7 @@ func TargetOperation() TargetOperationClass { // [TODO] (review)
 
 }
 
-func TargetDefine() {
+func TargetDefine() bool {
 	var typeclass_tgt FileTypeClass = ConfigurationTarget()
 	var typeclass_src FileTypeClass = ConfigurationSource()
 
@@ -77,6 +77,7 @@ func TargetDefine() {
 
 			targets[file.typeclass] = list
 		}
+		return true
 
 	case TargetOperationClassPeer:
 		var list FileLocationList
@@ -93,6 +94,8 @@ func TargetDefine() {
 
 			targets[to.typeclass] = list
 		}
-
+		return true
+	default:
+		return false
 	}
 }

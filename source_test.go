@@ -12,8 +12,7 @@ import (
 const TestSourceClassTXT FileTypeClass = (FileClassTable|FileTypeTXT)
 
 func TestSource(t *testing.T){
-	if Configure([]string{"notes","encode","tst/notes","tst/txt"}) { // [TODO] (review)
-		SourceDefine(Operand(1))
+	if Configure([]string{"notes","encode","tst/notes","tst/txt"}) {
 
 		fmt.Printf("[TestSource] (%s)\n",Operand(1))
 

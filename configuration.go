@@ -87,7 +87,7 @@ func Configure(argv []string) bool {
 
 				Operands = argv[argx:]
 
-				return true
+				return SourceDefine() && TargetDefine()
 			}
 		}
 	}

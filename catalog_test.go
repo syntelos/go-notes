@@ -9,18 +9,16 @@ import (
 	"testing"
 )
 
-const TestCatalogClassSVG FileTypeClass = (FileClassTable|FileTypeSVG)
+const TestCatalogClassTXT FileTypeClass = (FileClassTable|FileTypeTXT)
 
 func TestCatalog(t *testing.T){
-	if Configure([]string{"notes","encode","tst/notes","tst/txt"}) { // [TODO] (review)
-		SourceDefine(Operand(1))
-		TargetDefine()
+	if Configure([]string{"notes","encode","tst/notes","tst/txt"}) {
 
 		fmt.Printf("[TestCatalog] (%s)\n",Operand(1))
 
 		var tgt uint32 = 0
 		var cat Catalog
-		for _, file := range TargetList(TestCatalogClassSVG) {
+		for _, file := range TargetList(TestCatalogClassTXT) {
 			tgt += 1
 
 			cat = file.FileCatalog()
@@ -30,7 +28,7 @@ func TestCatalog(t *testing.T){
 
 		if 4 != tgt {
 
-			t.Fatalf("[TestCatalog] Count SVG %d expected 4.",tgt)
+			t.Fatalf("[TestCatalog] Count TXT %d expected 4.",tgt)
 		}
 	} else {
 		t.Fatal("[TestCatalog] Failed to configure.")

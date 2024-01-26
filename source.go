@@ -40,11 +40,31 @@ func sourceDefineWalker(path string, d fs.DirEntry, er error) error {
 	return nil
 }
 
-func SourceDefine(tgt string) {
+func SourceDefine() bool {
 
-	var dir fs.FS = os.DirFS(".")
+	if HaveOperand(1) {
 
-	fs.WalkDir(dir,tgt,sourceDefineWalker)
+		var src string = Operand(1)
+
+		var dir fs.FS = os.DirFS(".")
+
+		fs.WalkDir(dir,src,sourceDefineWalker)
+
+		return true
+
+	} else if HaveOperand(0) {
+
+		var tgt string = Operand(0)
+
+		var dir fs.FS = os.DirFS(".")
+
+		fs.WalkDir(dir,tgt,sourceDefineWalker)
+
+		return true
+
+	} else {
+		return false
+	}
 }
 
 func SourceClassCount() uint8 {
