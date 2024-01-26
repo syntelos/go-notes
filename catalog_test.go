@@ -12,6 +12,7 @@ import (
 const TestCatalogClassTXT FileTypeClass = (FileClassTable|FileTypeTXT)
 
 func TestCatalog(t *testing.T){
+
 	if Configure([]string{"notes","encode","tst/notes","tst/txt"}) {
 
 		fmt.Printf("[TestCatalog] (%s)\n",Operand(1))

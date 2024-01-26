@@ -42,25 +42,26 @@ func TargetDefine() bool {
 
 	case TargetOperationClassMonthly:
 		var unique FileCollectionList = make(FileCollectionList)
-		for _, fil := range SourceList(typeclass_tgt) {
+		for _, from := range SourceList(typeclass_src) {
+			var to FileLocation = from.Transform(typeclass_tgt)
 
-			var fil_id FileId = fil.FileIdentifier()
-			var fil_ix FileIx = fil.FileIndex()
-			if fil_id.IsValid() && fil_ix.IsValid() {
+			var to_id FileId = to.FileIdentifier()
+			var to_ix FileIx = to.FileIndex()
+			if to_id.IsValid() && to_ix.IsValid() {
 
-				var inf FileLocation = unique[fil_ix]
-				if inf.IsValid() {
+				var ck FileLocation = unique[to_ix]
+				if ck.IsValid() {
 
-					var inf_id FileId = inf.FileIdentifier()
-					var inf_ix FileIx = inf.FileIndex()
-					if inf_id.IsValid() && inf_ix.IsValid() {
-						if inf_id > fil_id {
+					var ck_id FileId = ck.FileIdentifier()
+					var ck_ix FileIx = ck.FileIndex()
+					if ck_id.IsValid() && ck_ix.IsValid() {
+						if to_id > ck_id {
 
-							unique[fil_ix] = inf
+							unique[to_ix] = to
 						}
 					}
 				} else {
-					unique[fil_ix] = fil
+					unique[to_ix] = to
 				}
 			}
 		}
