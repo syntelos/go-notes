@@ -23,10 +23,10 @@ func TargetOperation() TargetOperationClass { // [TODO] (review)
 	switch ConfigurationContext() {
 
 	case ClassNotes:
-		return TargetOperationClassMonthly
+		return TargetOperationClassPeer
 
 	case ClassRecent:
-		return TargetOperationClassPeer
+		return TargetOperationClassMonthly
 
 	default:
 		return 0

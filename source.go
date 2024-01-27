@@ -62,6 +62,16 @@ func SourceDefine() bool {
 
 		return true
 
+	} else if HaveContext() {
+
+		var tgt string = Context
+
+		var dir fs.FS = os.DirFS(".")
+
+		fs.WalkDir(dir,tgt,sourceDefineWalker)
+
+		return true
+
 	} else {
 		return false
 	}

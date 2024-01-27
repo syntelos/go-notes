@@ -7,6 +7,7 @@ package wwweb
 import (
 	"fmt"
 	"os"
+	"path"
 	"strings"
 )
 
@@ -120,7 +121,9 @@ func FileClassify(location string) (index FileIndex) {
 			if 0 < x {
 				var cc CC = 0
 				var ch byte
-
+				/*
+				 * Collection
+				 */
 				scan:for ; 0 < x; x-- {
 					ch = index.location[x]
 					switch ch {
@@ -152,42 +155,43 @@ func FileClassify(location string) (index FileIndex) {
 						}
 					}
 				}
-
+				/*
+				 * Analysis
+				 */
+				var fclass FileTypeClass
 				switch index.cc_head {
-				case CCLetter, CCNumber:
+				case CCLetter:
+					if -1 != index.ix_date && CCNumber == index.cc_date {
 
-					if -1 != index.ix_fext && CCLetter == index.cc_fext {
-						var begin int = (index.ix_fext+1)
-						var fext string = location[begin:]
-						switch fext {
-						case "txt":
-							index.typeclass |= FileTypeTXT
-						case "json":
-							index.typeclass |= FileTypeJSN
-						case "html":
-							index.typeclass |= FileTypeHTL
-						case "svg":
-							index.typeclass |= FileTypeSVG
-						case "png":
-							index.typeclass |= FileTypePNG
-						case "jpg", "jpeg":
-							index.typeclass |= FileTypeJPG
-						}
+						fclass = FileClassTable
 					}
+				case CCNumber:
+					if -1 == index.ix_date && CCNone == index.cc_date {
 
-					switch index.cc_head {
-					case CCLetter:
-						if -1 != index.ix_date && CCNumber == index.cc_date {
-
-							index.typeclass |= FileClassTable
-						}
-					case CCNumber:
-						if -1 == index.ix_date && CCNone == index.cc_date {
-
-							index.typeclass |= FileClassIndex
-						}		
+						fclass = FileClassIndex
 					}
 				}
+				var ftype FileTypeClass
+				if -1 != index.ix_fext && CCLetter == index.cc_fext {
+					var begin int = (index.ix_fext+1)
+					var fext string = location[begin:]
+					switch fext {
+					case "txt":
+						ftype = FileTypeTXT
+					case "json":
+						ftype = FileTypeJSN
+					case "html":
+						ftype = FileTypeHTL
+					case "svg":
+						ftype = FileTypeSVG
+					case "png":
+						ftype = FileTypePNG
+					case "jpg", "jpeg":
+						ftype = FileTypeJPG
+					}
+				}
+				var typeclass FileTypeClass = (fclass|ftype)
+				index.typeclass = typeclass
 			}
 		}
 	}
@@ -209,17 +213,20 @@ func (this FileIndex) Condense() (that FileLocation) {
 				var begin, end int = this.ix_head+1, this.ix_fext
 				that.datetime = string(this.location[begin:end])
 				that.dirname = string(this.location[:begin])
-				that.basename = string(this.location[begin:])
+				that.basename = string(this.location[begin:end])
 			}
 		case FileClassTable:
 			if 0 < this.ix_head && 0 < this.ix_date {
 				var begin, end int = this.ix_head+1, this.ix_date
 				that.tablename = string(this.location[begin:end])
 				that.dirname = string(this.location[:begin])
-				that.basename = string(this.location[begin:])
-				if 0 < this.ix_date && 0 < this.ix_fext {
-					var begin, end int = this.ix_date+1, this.ix_fext
-					that.datetime = string(this.location[begin:end])
+				if 0 < this.ix_fext {
+					end = this.ix_fext
+					that.basename = string(this.location[begin:end])
+					if 0 < this.ix_date {
+						var begin, end int = this.ix_date+1, this.ix_fext
+						that.datetime = string(this.location[begin:end])
+					}
 				}
 			}
 		}
@@ -272,9 +279,27 @@ func (this FileLocation) BaseName() string {
 	return this.basename
 }
 
+func (this FileLocation) YYYY() string {
+
+	if 15 <= len(this.datetime) && '_' == this.datetime[8] {
+		return this.datetime[0:4]
+	} else {
+		return ""
+	}
+}
+
+func (this FileLocation) MM() string {
+
+	if 15 <= len(this.datetime) && '_' == this.datetime[8] {
+		return this.datetime[4:6]
+	} else {
+		return ""
+	}
+}
+
 func (this FileLocation) YYYYMM() string {
 
-	if 6 <= len(this.datetime) {
+	if 15 <= len(this.datetime) && '_' == this.datetime[8] {
 		return this.datetime[0:6]
 	} else {
 		return ""
@@ -283,7 +308,7 @@ func (this FileLocation) YYYYMM() string {
 
 func (this FileLocation) YYYYMMDD() string {
 
-	if 8 <= len(this.datetime) {
+	if 15 <= len(this.datetime) && '_' == this.datetime[8] {
 		return this.datetime[0:8]
 	} else {
 		return ""
@@ -378,21 +403,22 @@ func (this FileLocation) Target(to FileTypeClass) (empty FileLocation) {
 		return this
 
 	} else {
-		var fext int = strings.LastIndexByte(this.location,'.')
+		var infix string = path.Join(this.YYYY(),this.MM())
+		var prefix string = path.Join(Context, infix, this.basename)
 		var to_string string
 		switch (to) {
 		case FileTypeTXT:
-			to_string = this.location[0:fext]+".txt"
+			to_string = prefix+".txt"
 		case FileTypeJSN:
-			to_string = this.location[0:fext]+".json"
+			to_string = prefix+".json"
 		case FileTypeHTL:
-			to_string = this.location[0:fext]+".html"
+			to_string = prefix+".html"
 		case FileTypeSVG:
-			to_string = this.location[0:fext]+".svg"
+			to_string = prefix+".svg"
 		case FileTypePNG:
-			to_string = this.location[0:fext]+".png"
+			to_string = prefix+".png"
 		case FileTypeJPG:
-			to_string = this.location[0:fext]+".jpeg"
+			to_string = prefix+".jpeg"
 		default:
 			return empty
 		}

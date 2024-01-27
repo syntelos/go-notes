@@ -14,53 +14,62 @@ func usage(){
 	fmt.Println(`
 Synopsis
 
-    wwweb [no|re] src ...     -- List input of ...
+      wwweb <cx> <op> <tgt> [src]
 
-    wwweb [no|re] tgt ...     -- List output of ...
-
-    wwweb [no|re] enc <t> <s> -- Produce TGT from SRC.
-
-    wwweb [no|re] upd <tgt>   -- Produce TGT from DATA.
-
-    wwweb [no|re] con <tgt>   -- Produce TGT from DATA.
-
-    wwweb [no|re] tab <tgt>   -- Produce TGT from DATA.
+      wwweb <cx> (src|tgt) <op> <tgt> [src]
 
 Description
 
-    The "wwweb" application has "notes" and "recent"
-    transformation contexts for producing "wwweb notes"
-    online content.  The "notes" applet produces SVG
-    textboxes from TXT preformatted text.  The "recent"
-    applet produces JSON indeces from a Google Drive file
-    listing of PDF files.
+    The wwweb production manager has principal
+    transformation contexts ("notes" and "recent") for
+    producing "wwweb notes" and "recent documents" online.
+    The "notes" applet produces SVG textboxes from TXT
+    preformatted text.  The "recent" applet produces JSON
+    indeces from a Google Drive file listing of PDF files.
 
     The WWWeb directory structure is
 
-      <tgt>/<YYYY>/<MM>
+      <CX>/<YYYY>/<MM>
 
-    having index JSON
+    having catalog indeces
 
-      <tgt>/<YYYY>/<MM>/<YYYY><MM><DD>.json
+      <CX>/<YYYY>/<MM>/<YYYY><MM><DD>.json
 
-    and embed targets
+    and table records
 
-      <tgt>/<YYYY>/<MM>/<tablename>-<YYYY><MM><DD>.svg
-      <tgt>/<YYYY>/<MM>/<tablename>-<YYYY><MM><DD>.png
+      <CX>/<YYYY>/<MM>/<TABLENAME>-<YYYY><MM><DD>.svg
+      <CX>/<YYYY>/<MM>/<TABLENAME>-<YYYY><MM><DD>.svg
+
+    A catalog index relates to a table record by the tabular
+    intersection of association in identity, location, and
+    content.  The abstract catalog table includes the
+    catalog index and table record.  The table record
+    expresses the visual representation of the catalog table
+    in the union of material information.
+
+  Contexts
+
+    The conventional symbols are recognized by short and
+    long character symbols.
+
+      "not", "notes"          -- TGT <SVG> SRC <TXT>
+      "rec", "recent"         -- TGT <JSN> SRC <GDR>
 
   Operators
 
-      The operational symbols are recognized by short and
-      long character symbols.
+      "src", "source"         -- List sources of <op> ...
+      "tgt", "target"         -- List targets of <op> ...
+      "enc", "encode"         -- Encode <src> into <tgt>
+      "upd", "update"         -- Update <tgt>
+      "con", "contents"       -- Contents of <src> to <tgt>
+      "tab", "tabulate"       -- Tabulation of <src> to <t>
 
-        "no" "not" "notes"
-        "re" "rec" "recent"
-        "src" "source"
-        "tgt" "target"
-        "enc" "encode"
-        "upd" "update"
-        "con" "contents"
-        "tab" "tabulate"
+  Operands
+
+    The target operand is a production destination, and is
+    always first.  The source operand is a content location,
+    and is second when present.  Operands are directories
+    and files.
 
 `)
 	os.Exit(1)

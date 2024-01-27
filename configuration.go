@@ -4,6 +4,8 @@
  */
 package wwweb
 
+import "io/fs"
+
 type Class uint16
 
 const (
@@ -30,64 +32,78 @@ var Operands []string = nil
 
 func Configure(argv []string) bool {
 	Configuration = 0
-	for argx, arg := range argv {
-		switch arg {
-		case "no", "not", "notes", "re", "rec", "recent":
-			if 0 != (Configuration & Class_Context) {
-				return false
-			} else {
-				switch arg {
-				case "no", "not", "notes":
-					Configuration |= ClassNotes
-					Context = "notes"
-
-				case "re", "rec", "recent":
-					Configuration |= ClassRecent
-					Context = "recent"
-				}
-
-			}
-		case "src", "source", "tgt", "target":
-			if 0 != (Configuration & Class_Operation) {
-				return false
-			} else {
-				switch arg {
-				case "src", "source":
-					Configuration |= ClassSource
-
-				case "tgt", "target":
-					Configuration |= ClassTarget
-				}
-			}
-		case "enc", "encode", "upd", "update", "con", "contents", "tab", "tabulate":
-			if 0 != (Configuration & Class_Transform) {
-				return false
-			} else {
-				switch arg {
-				case "enc", "encode":
-					Configuration |= ClassEncode
-					Operator = "encode"
-
-				case "upd", "update":
-					Configuration |= ClassUpdate
-					Operator = "update"
-
-				case "con", "contents":
-					Configuration |= ClassContents
-					Operator = "contents"
-
-				case "tab", "tabulate":
-					Configuration |= ClassTabulate
-					Operator = "tabulate"
-				}
-			}
+	var argc int = len(argv)
+	if 3 <= argc {
+		var argx int = 0
+		/*
+		 * Extensible contextual wwweb root target
+		 * directory.
+		 */
+		var cx string = argv[argx]
+		switch cx {
+		case "not", "notes":
+			Configuration |= ClassNotes
+			Context = "notes"
+		case "rec", "recent":
+			Configuration |= ClassRecent
+			Context = "recent"
 		default:
-			if 0 != (Configuration & Class_Context) &&
-				0 != (Configuration & Class_Transform) {
+			if fs.ValidPath(cx) {
+				Configuration |= ClassNotes
+				Context = cx
+			} else {
+				return false
+			}
+		}
+		argx += 1
+		/*
+		 * Operational wwweb production argumentation.
+		 */
+		for rix, arg := range argv[argx:] {
+			switch arg {
 
-				Operands = argv[argx:]
+			case "src", "source", "tgt", "target":
+				if 0 != (Configuration & Class_Operation) {
+					return false
+				} else {
+					switch arg {
+					case "src", "source":
+						Configuration |= ClassSource
 
-				return SourceDefine() && TargetDefine()
+					case "tgt", "target":
+						Configuration |= ClassTarget
+					}
+				}
+			case "enc", "encode", "upd", "update", "con", "contents", "tab", "tabulate":
+				if 0 != (Configuration & Class_Transform) {
+					return false
+				} else {
+					switch arg {
+					case "enc", "encode":
+						Configuration |= ClassEncode
+						Operator = "encode"
+
+					case "upd", "update":
+						Configuration |= ClassUpdate
+						Operator = "update"
+
+					case "con", "contents":
+						Configuration |= ClassContents
+						Operator = "contents"
+
+					case "tab", "tabulate":
+						Configuration |= ClassTabulate
+						Operator = "tabulate"
+					}
+				}
+			default:
+				if 0 != (Configuration & Class_Context) &&
+					0 != (Configuration & Class_Transform) {
+
+					Operands = argv[rix+argx:]
+
+					return SourceDefine() && TargetDefine()
+				}
 			}
 		}
 	}
@@ -104,6 +120,10 @@ func ConfigurationOperation() Class {
 
 func ConfigurationTransform() Class {
 	return (Configuration & Class_Transform)
+}
+
+func ConfigurationContextDirectory() string {
+	return Context
 }
 
 func ConfigurationSource() FileTypeClass { // [TODO] (review)
@@ -137,6 +157,15 @@ func ConfigurationTarget() FileTypeClass { // [TODO] (review)
 
 	default:
 		return 0
+	}
+}
+
+func HaveContext() bool {
+	if 0 != (Configuration & Class_Context) && 0 != len(Context) {
+
+		return true
+	} else {
+		return false
 	}
 }
 

@@ -30,7 +30,7 @@ func (this FileLocation) FileCatalog() (that Catalog) {
 	that.icon = "syntelos-catalog"
 	that.path = location
 	that.link = string(table.Path())
-	that.name = this.BaseName()
+	that.name = this.basename
 	that.embed = location
 
 	return that
