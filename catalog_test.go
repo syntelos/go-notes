@@ -9,8 +9,6 @@ import (
 	"testing"
 )
 
-const TestCatalogClassTXT FileTypeClass = (FileClassTable|FileTypeTXT)
-
 func TestCatalog(t *testing.T){
 
 	if Configure([]string{"notes","encode","tst/notes","tst/txt"}) {
@@ -19,7 +17,7 @@ func TestCatalog(t *testing.T){
 
 		var tgt uint32 = 0
 		var cat Catalog
-		for _, file := range TargetList(TestCatalogClassTXT) {
+		for _, file := range TargetList(ConfigurationTarget()) {
 			tgt += 1
 
 			cat = file.FileCatalog()

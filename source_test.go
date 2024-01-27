@@ -9,8 +9,6 @@ import (
 	"testing"
 )
 
-const TestSourceClassTXT FileTypeClass = (FileClassTable|FileTypeTXT)
-
 func TestSource(t *testing.T){
 
 	if Configure([]string{"notes","encode","tst/notes","tst/txt"}) {
@@ -18,7 +16,7 @@ func TestSource(t *testing.T){
 		fmt.Printf("[TestSource] (%s)\n",Operand(1))
 
 		var src uint32 = 0
-		for _, file := range SourceList(TestSourceClassTXT) {
+		for _, file := range SourceList(ConfigurationSource()) {
 			src += 1
 
 			fmt.Printf("[TestSource] %s\n",file)

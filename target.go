@@ -38,6 +38,12 @@ func TargetDefine() bool {
 	var typeclass_tgt FileTypeClass = ConfigurationTarget()
 	var typeclass_src FileTypeClass = ConfigurationSource()
 
+	var list FileLocationList = targets[typeclass_tgt]
+	if 0 == len(list) {
+		list = make(FileLocationList)
+		targets[typeclass_tgt] = list
+	}
+
 	switch TargetOperation() {
 
 	case TargetOperationClassMonthly:
@@ -65,35 +71,31 @@ func TargetDefine() bool {
 				}
 			}
 		}
+		/*
+		 * Map into targets set.
+		 */
+		for _, to := range unique {
 
-		var list FileLocationList
-		for _, file := range unique {
-			list = targets[file.typeclass]
+			list = targets[typeclass_tgt]
 
-			if 0 == len(list) {
-				list = make(FileLocationList)
-			}
+			list[to.FileIdentifier()] = to
 
-			list[file.FileIdentifier()] = file
-
-			targets[file.typeclass] = list
+			targets[typeclass_tgt] = list
 		}
 		return true
 
 	case TargetOperationClassPeer:
-		var list FileLocationList
+		/*
+		 * Map into targets set.
+		 */
 		for _, from := range SourceList(typeclass_src) {
 			var to FileLocation = from.Target(typeclass_tgt)
 
-			list = targets[to.typeclass]
-
-			if 0 == len(list) {
-				list = make(FileLocationList)
-			}
+			list = targets[typeclass_tgt]
 
 			list[to.FileIdentifier()] = to
 
-			targets[to.typeclass] = list
+			targets[typeclass_tgt] = list
 		}
 		return true
 	default:
