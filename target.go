@@ -43,7 +43,7 @@ func TargetDefine() bool {
 	case TargetOperationClassMonthly:
 		var unique FileCollectionList = make(FileCollectionList)
 		for _, from := range SourceList(typeclass_src) {
-			var to FileLocation = from.Transform(typeclass_tgt)
+			var to FileLocation = from.Target(typeclass_tgt)
 
 			var to_id FileId = to.FileIdentifier()
 			var to_ix FileIx = to.FileIndex()
@@ -83,7 +83,7 @@ func TargetDefine() bool {
 	case TargetOperationClassPeer:
 		var list FileLocationList
 		for _, from := range SourceList(typeclass_src) {
-			var to FileLocation = from.Transform(typeclass_tgt)
+			var to FileLocation = from.Target(typeclass_tgt)
 
 			list = targets[to.typeclass]
 

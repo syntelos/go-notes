@@ -370,7 +370,7 @@ func (this FileLocation) TableTabulate() string {
 	}
 }
 
-func (this FileLocation) Transform(to FileTypeClass) (empty FileLocation) {
+func (this FileLocation) Target(to FileTypeClass) (empty FileLocation) {
 	var from FileTypeClass = (this.typeclass & FileType)
 	to = (to & FileType)
 	if from == to {
