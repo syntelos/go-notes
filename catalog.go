@@ -28,8 +28,8 @@ func (this FileLocation) FileCatalog() (that Catalog) {
 
 	that.id = this.YYYYMMDD_HHMMSS()
 	that.icon = "syntelos-catalog"
-	that.path = location
-	that.link = string(table.Path())
+	that.path = string(table.Path())
+	that.link = string(table.Link())
 	that.name = this.basename
 	that.embed = location
 
