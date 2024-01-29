@@ -58,6 +58,11 @@ func Configure(argv []string) bool {
 		argx += 1
 		/*
 		 * Operational wwweb production argumentation.
+		 *
+		 * This algorithm assures that operands
+		 * follow operators, but is ambivalent to
+		 * the ordering of multiple operators
+		 * (i.e. "source encode", "target update").
 		 */
 		for rix, arg := range argv[argx:] {
 			switch arg {
