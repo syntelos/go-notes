@@ -10,5 +10,74 @@ type Coder interface {
 }
 
 func DataTransform() bool {
-	return false
+
+	switch ConfigurationContext() {
+
+	case ClassNotes:
+		switch ConfigurationTransform() {
+
+		case ClassEncode:
+
+			for _, file := range TargetList(ConfigurationTarget()) {
+				file.NotesEncode()
+			}
+			return true
+
+		case ClassUpdate:
+			for _, file := range TargetList(ConfigurationTarget()) {
+				file.NotesUpdate()
+			}
+			return true
+
+		case ClassContents:
+			for _, file := range TargetList(ConfigurationTarget()) {
+				file.NotesContents()
+			}
+			return true
+
+		case ClassTabulate:
+			for _, file := range TargetList(ConfigurationTarget()) {
+				file.NotesTabulate()
+			}
+			return true
+
+		default:
+			return false
+		}
+
+	case ClassRecent:
+		switch ConfigurationTransform() {
+
+		case ClassEncode:
+
+			for _, file := range TargetList(ConfigurationTarget()) {
+				file.RecentEncode()
+			}
+			return true
+
+		case ClassUpdate:
+			for _, file := range TargetList(ConfigurationTarget()) {
+				file.RecentUpdate()
+			}
+			return true
+
+		case ClassContents:
+			for _, file := range TargetList(ConfigurationTarget()) {
+				file.RecentContents()
+			}
+			return true
+
+		case ClassTabulate:
+			for _, file := range TargetList(ConfigurationTarget()) {
+				file.RecentTabulate()
+			}
+			return true
+
+		default:
+			return false
+		}
+
+	default:
+		return false
+	}
 }
