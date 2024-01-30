@@ -404,7 +404,7 @@ func (this FileLocation) Target(to FileTypeClass) (empty FileLocation) {
 
 	} else {
 		var infix string = path.Join(this.YYYY(),this.MM())
-		var prefix string = path.Join(Context, infix, this.basename)
+		var prefix string = path.Join(OperandTarget(), infix, this.basename)
 		var to_string string
 		switch (to) {
 		case FileTypeTXT:
@@ -470,4 +470,40 @@ func (this FileLocation) Write(content []byte) {
 			file.Close()
 		}
 	}
+}
+/*
+ * Given a file or directory, derive a list of files,
+ * conserving relative and absolute path names.
+ */
+func FileList(src string) (list []string) {
+	var finf os.FileInfo
+	var dli []os.DirEntry
+	var err error
+	finf, err = os.Stat(src)
+	if nil == err {
+
+		if finf.IsDir() {
+			dli, err = os.ReadDir(src)
+			if nil == err {
+				for _, dent := range dli {
+
+					if dent.IsDir() {
+						var name = path.Join(src,dent.Name())
+						var slist []string = FileList(name)
+						for _, sln := range slist {
+
+							list = append(list,sln)
+						}
+					} else {
+						var name = path.Join(src,dent.Name())
+
+						list = append(list,name)
+					}
+				}
+			}
+		} else {
+			list = append(list,src)
+		}
+	}
+	return list
 }

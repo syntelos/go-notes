@@ -4,40 +4,11 @@
  */
 package wwweb
 
-import (
-	"io/fs"
-	"os"
-)
-
 var sources map[FileTypeClass]FileLocationList = make(map[FileTypeClass]FileLocationList)
 
 func SourceList(typeclass FileTypeClass) FileLocationList {
 
 	return sources[typeclass]
-}
-
-func sourceDefineWalker(path string, d fs.DirEntry, er error) error {
-
-	if nil != d && !d.IsDir() {
-
-		var ixfil FileIndex = FileClassify(path)
-		if ixfil.IsValid() {
-
-			var lofil FileLocation = ixfil.Condense()
-			if lofil.IsValid() {
-
-				var locationList FileLocationList = sources[ixfil.typeclass]
-				if 0 == len(locationList) {
-					locationList = make(FileLocationList)
-				}
-
-				locationList[lofil.FileIdentifier()] = lofil
-
-				sources[ixfil.typeclass] = locationList
-			}
-		}
-	}
-	return nil
 }
 
 func SourceDefine() bool {
@@ -46,30 +17,81 @@ func SourceDefine() bool {
 
 		var src string = Operand(1)
 
-		var dir fs.FS = os.DirFS(".")
+		var walk []string = FileList(src)
 
-		fs.WalkDir(dir,src,sourceDefineWalker)
+		for _, file := range walk {
 
+			var ixfil FileIndex = FileClassify(file)
+			if ixfil.IsValid() {
+
+				var lofil FileLocation = ixfil.Condense()
+				if lofil.IsValid() {
+
+					var locationList FileLocationList = sources[ixfil.typeclass]
+					if 0 == len(locationList) {
+						locationList = make(FileLocationList)
+					}
+
+					locationList[lofil.FileIdentifier()] = lofil
+
+					sources[ixfil.typeclass] = locationList
+				}
+			}
+		}
 		return true
 
 	} else if HaveOperand(0) {
 
 		var tgt string = Operand(0)
 
-		var dir fs.FS = os.DirFS(".")
+		var walk []string = FileList(tgt)
 
-		fs.WalkDir(dir,tgt,sourceDefineWalker)
+		for _, file := range walk {
 
+			var ixfil FileIndex = FileClassify(file)
+			if ixfil.IsValid() {
+
+				var lofil FileLocation = ixfil.Condense()
+				if lofil.IsValid() {
+
+					var locationList FileLocationList = sources[ixfil.typeclass]
+					if 0 == len(locationList) {
+						locationList = make(FileLocationList)
+					}
+
+					locationList[lofil.FileIdentifier()] = lofil
+
+					sources[ixfil.typeclass] = locationList
+				}
+			}
+		}
 		return true
 
 	} else if HaveContext() {
 
 		var tgt string = Context
 
-		var dir fs.FS = os.DirFS(".")
+		var walk []string = FileList(tgt)
 
-		fs.WalkDir(dir,tgt,sourceDefineWalker)
+		for _, file := range walk {
 
+			var ixfil FileIndex = FileClassify(file)
+			if ixfil.IsValid() {
+
+				var lofil FileLocation = ixfil.Condense()
+				if lofil.IsValid() {
+
+					var locationList FileLocationList = sources[ixfil.typeclass]
+					if 0 == len(locationList) {
+						locationList = make(FileLocationList)
+					}
+
+					locationList[lofil.FileIdentifier()] = lofil
+
+					sources[ixfil.typeclass] = locationList
+				}
+			}
+		}
 		return true
 
 	} else {

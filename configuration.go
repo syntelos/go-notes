@@ -188,3 +188,13 @@ func Operand(index int) string {
 		return ""
 	}
 }
+
+func OperandTarget() string {
+
+	if HaveOperand(0) {
+
+		return Operand(0)
+	} else {
+		return Context
+	}
+}
