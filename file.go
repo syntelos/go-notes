@@ -17,7 +17,17 @@ type IO interface {
 }
 
 type FileLocation struct {
+	/*
+	 * Type class of location
+	 */
 	typeclass FileTypeClass
+	/*
+	 * Source of derivation
+	 */
+	source string
+	/*
+	 * Location & components
+	 */
 	dirname, basename, tablename, datetime, location string
 }
 
@@ -279,6 +289,11 @@ func (this FileLocation) BaseName() string {
 	return this.basename
 }
 
+func (this FileLocation) HasDatetime() bool {
+
+	return 15 <= len(this.datetime) && '_' == this.datetime[8]
+}
+
 func (this FileLocation) YYYY() string {
 
 	if 15 <= len(this.datetime) && '_' == this.datetime[8] {
@@ -394,7 +409,9 @@ func (this FileLocation) TableTabulate() string {
 		return ""
 	}
 }
-
+/*
+ * File type class derivation with target location.
+ */
 func (this FileLocation) Target(to FileTypeClass) (empty FileLocation) {
 	var from FileTypeClass = (this.typeclass & FileType)
 	to = (to & FileType)
@@ -402,7 +419,10 @@ func (this FileLocation) Target(to FileTypeClass) (empty FileLocation) {
 
 		return this
 
-	} else {
+	} else if this.HasDatetime() {
+		/*
+		 * Express target state.
+		 */
 		var infix string = path.Join(this.YYYY(),this.MM())
 		var prefix string = path.Join(OperandTarget(), infix, this.basename)
 		var to_string string
@@ -422,8 +442,80 @@ func (this FileLocation) Target(to FileTypeClass) (empty FileLocation) {
 		default:
 			return empty
 		}
-		return FileClassify(to_string).Condense()
+		/*
+		 * Classify and condense target location.
+		 */
+		var target FileLocation = FileClassify(to_string).Condense()
+		/*
+		 * Conserve target source.
+		 */
+		target.source = this.source
+
+		return target
+	} else {
+		return empty
 	}
+}
+/*
+ * File type class derivation within source location.
+ */
+func (this FileLocation) Source(to FileTypeClass) (empty FileLocation) {
+	var tgt FileTypeClass = (this.typeclass & FileType)
+	to = (to & FileType)
+	if tgt == to {
+
+		return this
+
+	} else if 0 != len(this.source) {
+		/*
+		 * Classify and condense target location.
+		 */
+		var index FileIndex = FileClassify(this.source)
+
+		var src FileTypeClass = (index.typeclass & FileType)
+		if src == to {
+
+			return index.Condense()
+
+		} else {
+			/*
+			 * Express derivative state.
+			 */
+			var bax, fex int = index.ix_head, index.ix_fext
+			if -1 < bax && -1 < fex {
+				var prefix = this.location[0:fex]
+
+				var to_string string
+				switch (to) {
+				case FileTypeTXT:
+					to_string = prefix+".txt"
+				case FileTypeJSN:
+					to_string = prefix+".json"
+				case FileTypeHTL:
+					to_string = prefix+".html"
+				case FileTypeSVG:
+					to_string = prefix+".svg"
+				case FileTypePNG:
+					to_string = prefix+".png"
+				case FileTypeJPG:
+					to_string = prefix+".jpeg"
+				default:
+					return empty
+				}
+				/*
+				 * Classify and condense derivative.
+				 */
+				var derivative FileLocation = FileClassify(to_string).Condense()
+				/*
+				 * Conserve derivative source.
+				 */
+				derivative.source = this.source
+
+				return derivative
+			}
+		}
+	}
+	return empty
 }
 
 func (this FileLocation) Read() []byte {
@@ -470,6 +562,34 @@ func (this FileLocation) Write(content []byte) {
 			file.Close()
 		}
 	}
+}
+
+func PathSplit(path string) (base, fext int) {
+	{
+		base = -1
+		fext = -1
+	}
+
+	var z int = len(path)
+	if 0 < z {
+		var y int = (z-1)
+		if 0 < y {
+			var x int = (y-1)
+			var ch byte
+
+			scan:for ; 0 < x; x-- {
+				ch = path[x]
+				switch ch {
+				case '/':
+					base = x
+					break scan
+				case '.':
+					fext = x
+				}
+			}
+		}
+	}
+	return base, fext
 }
 /*
  * Given a file or directory, derive a list of files,

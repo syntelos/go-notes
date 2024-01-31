@@ -7,8 +7,11 @@ target := $(gob_dir)/wwweb
 $(target): main/wwweb.go $(sources)
 	go build -o $@ $<
 
-table.go: doc/source_table.txt doc/table_generate.go
-	go run $< $@ 
+table.go: doc/table_generate.go doc/source_table.txt
+	go run $<
+
+page.go: doc/page_generate.go doc/page.svg doc/catalog.svg 
+	go run $<
 
 clean:
 	$(RM) $(target)
