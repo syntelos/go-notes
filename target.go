@@ -18,7 +18,7 @@ const (
 	TargetOperationClassPeer    TargetOperationClass = 0b01000000
 )
 
-func TargetOperation() TargetOperationClass { // [TODO] (review)
+func TargetOperation() TargetOperationClass {
 
 	switch ConfigurationContext() {
 

@@ -131,7 +131,7 @@ func ConfigurationContextDirectory() string {
 	return Context
 }
 
-func ConfigurationSource() FileTypeClass { // [TODO] (review)
+func ConfigurationSource() FileTypeClass {
 
 	switch ConfigurationContext() {
 
@@ -148,7 +148,7 @@ func ConfigurationSource() FileTypeClass { // [TODO] (review)
 	}
 }
 
-func ConfigurationTarget() FileTypeClass { // [TODO] (review)
+func ConfigurationTarget() FileTypeClass {
 
 	switch ConfigurationContext() {
 
