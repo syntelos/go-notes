@@ -33,13 +33,16 @@ func (this FileLocation) NotesEncode() {
 
 					if title {
 						svg.Write(line.Encode("title",px,py))
-						svg.WriteByte('\n')
 
 						title = false
+
+					} else if line.IsLink() {
+
+						svg.Write(line.Encode("link",px,py))
 					} else {
 						svg.Write(line.Encode("text",px,py))
-						svg.WriteByte('\n')
 					}
+					svg.WriteByte('\n')
 				}
 				py += bhi
 			}
@@ -63,7 +66,7 @@ func (this FileLocation) NotesTabulate() {
 }
 /*
  * Note text is preformatted plain text.  Lines are wrapped
- * to presentation width by line terminals (i.e. '\n',
+ * to presentation width by unix line terminals (i.e. '\n',
  * 0x0A).  Lines may be associated to link URLs with a
  * terminal tab (i.e. '\t' 0x09) separator.  The first line
  * is employed as a title.  Paragraphs are separated by
@@ -118,15 +121,35 @@ func (this *Note) Read(file FileLocation) bool {
 		var line, link []byte
 
 		for ; x < z; x++ {
-			ch = source[ch]
+			ch = source[x]
 			switch ch {
 
-			case '\t':
-				tab = x
-				if nil == line || 0 == len(line) && begin < tab {
-
-					line = source[begin:tab]
+			case ' ':
+				if x == begin {
+					/*
+					 * Truncate line prefix whitespace.
+					 */
+					begin += 1
 				}
+
+			case '\t':
+				if x == begin {
+					/*
+					 * Truncate line prefix whitespace.
+					 */
+					begin += 1
+
+				} else {
+					tab = x
+					if nil == line || 0 == len(line) && begin < tab {
+
+						line = source[begin:tab]
+						link = nil
+					}
+				}
+
+			case '\r':
+				return false // (format error)
 
 			case '\n':
 				end = x
@@ -137,9 +160,9 @@ func (this *Note) Read(file FileLocation) bool {
 
 						link = source[begin:end]
 
-						var text NoteText = NoteText{line,link}
+						var hypertext NoteText = NoteText{line,link}
 
-						this.hyperlines = append(this.hyperlines,text)
+						this.hyperlines = append(this.hyperlines,hypertext)
 
 						line = nil
 						link = nil
@@ -149,11 +172,19 @@ func (this *Note) Read(file FileLocation) bool {
 				} else if begin < end {
 					line = source[begin:end]
 
-					var text NoteText = NoteText{line,nil}
+					var plaintext NoteText = NoteText{line,nil}
 
-					this.hyperlines = append(this.hyperlines,text)
+					this.hyperlines = append(this.hyperlines,plaintext)
 
 					line = nil
+					link = nil
+				} else {
+					var newline NoteText = NoteText{[]byte{},[]byte{}}
+
+					this.hyperlines = append(this.hyperlines,newline)
+
+					line = nil
+					link = nil
 				}
 				begin = (end+1)
 			}
