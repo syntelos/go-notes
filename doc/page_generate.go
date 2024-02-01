@@ -188,7 +188,10 @@ func main(){
  */
 package wwweb
 
-import "bytes"
+import (
+	"bufio"
+	"bytes"
+)
 
 type Text []byte
 
@@ -284,8 +287,27 @@ func (this Page) Encode() []byte {
         var w bytes.Buffer
 	for _, txt := range this {
 		w.Write(txt)
+		w.WriteByte('\n')
 	}
 	return w.Bytes()
+}
+
+func (this Page) Decode(src []byte) {
+
+	var buffer *bytes.Buffer = bytes.NewBuffer(src)
+	var reader *bufio.Reader = bufio.NewReaderSize(buffer,len(src))
+
+	var inl []byte
+	var isp bool
+	var er error
+
+	inl, isp, er = reader.ReadLine()
+	for nil != er || isp {
+
+		var line Text = inl
+		this = append(this,line)
+		inl, isp, er = reader.ReadLine()
+	}
 }
 `)
 

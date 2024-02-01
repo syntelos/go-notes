@@ -447,9 +447,11 @@ func (this FileLocation) Target(to FileTypeClass) (empty FileLocation) {
 		 */
 		var target FileLocation = FileClassify(to_string).Condense()
 		/*
-		 * Conserve target source.
+		 * Conserve target source.  The operand
+		 * source location is conserved by copying
+		 * this location to the target source field.
 		 */
-		target.source = this.source
+		target.source = this.location
 
 		return target
 	} else {
@@ -457,7 +459,9 @@ func (this FileLocation) Target(to FileTypeClass) (empty FileLocation) {
 	}
 }
 /*
- * File type class derivation within source location.
+ * File type class derivation within source location enabled
+ * by the conservation of source operand location under
+ * location transformations.
  */
 func (this FileLocation) Source(to FileTypeClass) (empty FileLocation) {
 	var tgt FileTypeClass = (this.typeclass & FileType)
@@ -475,8 +479,19 @@ func (this FileLocation) Source(to FileTypeClass) (empty FileLocation) {
 		var src FileTypeClass = (index.typeclass & FileType)
 		if src == to {
 
-			return index.Condense()
-
+			var source FileLocation = index.Condense()
+			/*
+			 * Source semantics conserve main
+			 * operand source location.  In this
+			 * case, a target is not a source as
+			 * conservative of source semantics.
+			 * The return value is a source as
+			 * located in the operand source
+			 * location, so the source field of
+			 * the file location data structure
+			 * is empty.
+			 */
+			return source
 		} else {
 			/*
 			 * Express derivative state.

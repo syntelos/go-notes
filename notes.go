@@ -6,22 +6,49 @@ package wwweb
 
 import (
 	"bytes"
+	"fmt"
 )
 
-func (this FileLocation) NotesEncode() { // [TODO]
+func (this FileLocation) NotesEncode() {
 	var tgt FileLocation = this
 	var src FileLocation = this.Source(ConfigurationSource())
 	if tgt.IsValid() && src.IsValid() {
-		var source Note
-		if source.Read(src) {
-			var wb bytes.Buffer
+		var txt Note
+		if txt.Read(src) {
+			var svg bytes.Buffer
+			/*
+			 * Head
+			 */
+			svg.Write(page_head.Encode())
+			/*
+			 * Body
+			 */
+			var title bool = true
+			const bhi int = 18
+			var px, py int = 30, 50
 
-			wb.Write(page_head.Encode())
+			for _, line := range txt.hyperlines {
 
+				if line.IsText() {
 
-			wb.Write(page_tail.Encode())
+					if title {
+						svg.Write(line.Encode("title",px,py))
+						svg.WriteByte('\n')
 
-			tgt.Write(wb.Bytes())
+						title = false
+					} else {
+						svg.Write(line.Encode("text",px,py))
+						svg.WriteByte('\n')
+					}
+				}
+				py += bhi
+			}
+			/*
+			 * Tail
+			 */
+			svg.Write(page_tail.Encode())
+
+			tgt.Write(svg.Bytes())
 		}
 	}
 }
@@ -52,13 +79,37 @@ func (this NoteText) IsText() bool {
 }
 
 func (this NoteText) IsLink() bool {
-	return 0 != len(this.text) && 0 != len(this.link)
+	return 0 != len(this.link)
 }
 
-type Note []NoteText
+func (this NoteText) Encode(c string, x int, y int) (empty []byte) {
+	if this.IsText() {
+		if this.IsLink() {
 
+			var str string = fmt.Sprintf("  <a href=\"%s\"><text class=\"%s\" x=\"%d\" y=\"%d\">%s</text></a>",string(this.link),c,x,y,string(this.text))
 
-func (this Note) Read(file FileLocation) bool {
+			return []byte(str)
+
+		} else {
+
+			var str string = fmt.Sprintf("  <text class=\"%s\" x=\"%d\" y=\"%d\">%s</text>",c,x,y,string(this.text))
+
+			return []byte(str)
+		}
+	} else {
+		return empty
+	}
+}
+/*
+ * Note text documents employ tabs and lines to encode
+ * a trivial hypertext format.
+ */
+type Note struct {
+	location FileLocation
+	hyperlines []NoteText
+}
+
+func (this *Note) Read(file FileLocation) bool {
 	var source []byte = file.Read()
 	var z int = len(source)
 	if 0 < z {
@@ -72,7 +123,8 @@ func (this Note) Read(file FileLocation) bool {
 
 			case '\t':
 				tab = x
-				if nil == line || 0 == len(line) {
+				if nil == line || 0 == len(line) && begin < tab {
+
 					line = source[begin:tab]
 				}
 
@@ -80,32 +132,36 @@ func (this Note) Read(file FileLocation) bool {
 				end = x
 				if -1 != tab {
 					begin = (tab+1)
-					if nil == link || 0 == len(link) {
+					if (nil == link || 0 == len(link)) &&
+					   (nil != line && 0 != len(line)) {
 
-						if nil != line && 0 != len(line) {
+						link = source[begin:end]
 
-							link = source[begin:end]
+						var text NoteText = NoteText{line,link}
 
-							var text NoteText = NoteText{line,link}
+						this.hyperlines = append(this.hyperlines,text)
 
-							this = append(this,text)
-
-							line = nil
-							link = nil
-						}
-						tab = -1
+						line = nil
+						link = nil
 					}
+					tab = -1
+
 				} else if begin < end {
 					line = source[begin:end]
 
 					var text NoteText = NoteText{line,nil}
 
-					this = append(this,text)
+					this.hyperlines = append(this.hyperlines,text)
 
 					line = nil
 				}
 				begin = (end+1)
 			}
+		}
+
+		if 0 != len(this.hyperlines) {
+			this.location = file
+			return true
 		}
 	}
 	return false

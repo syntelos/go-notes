@@ -4,7 +4,7 @@
  */
 package wwweb
 
-func (this FileLocation) RecentEncode() { // [TODO]
+func (this FileLocation) RecentEncode() {
 }
 
 func (this FileLocation) RecentUpdate() { // [TODO]
