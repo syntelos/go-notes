@@ -13,7 +13,7 @@ func (this FileLocation) NotesEncode() {
 	var tgt FileLocation = this
 	var src FileLocation = this.Source(ConfigurationSource())
 	if tgt.IsValid() && src.IsValid() {
-		var txt Note
+		var txt Note = Note{this,[]NoteText{}}
 		if txt.Read(src) {
 			var svg bytes.Buffer
 			/*
@@ -128,7 +128,7 @@ func (this *Note) Read(file FileLocation) bool {
 					line = source[begin:tab]
 				}
 
-			case '\r', '\n':
+			case '\n':
 				end = x
 				if -1 != tab {
 					begin = (tab+1)
@@ -159,10 +159,8 @@ func (this *Note) Read(file FileLocation) bool {
 			}
 		}
 
-		if 0 != len(this.hyperlines) {
-			this.location = file
-			return true
-		}
+		return 0 != len(this.hyperlines)
+	} else {
+		return false
 	}
-	return false
 }
