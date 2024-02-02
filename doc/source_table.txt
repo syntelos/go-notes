@@ -11,6 +11,7 @@ individualism	/syntelos /science /anthropology /individualism	https://drive.goog
 instrumentality	/syntelos /science /anthropology /instrumentality	https://drive.google.com/drive/folders/1YqybUMCurpLc0WdTOuUjew7EujYGFDuG
 intellectuality	/syntelos /science /anthropology /intellectuality	https://drive.google.com/drive/folders/1_zMHs6uHkF4UzlIywjqwfv9FmZyGO5rT
 journey		/syntelos /science /anthropology /morality	https://drive.google.com/drive/folders/1eLNmCSFIH21y7bWB61QVxw0S3VV9RuZI
+language	/syntelos /science /anthropology /language	https://drive.google.com/drive/folders/1B5PyRFZDxYQnqBP39kO1C-BlV7O2PD46
 liberalism	/syntelos /science /anthropology /liberalism	https://drive.google.com/drive/folders/1OczHAQbfNIOwBzhqwCFoCPPQM_eDsQ1J
 literacy	/syntelos /science /anthropology /literacy	https://drive.google.com/drive/folders/1KeSxi5xwUFB-D51PolHoGXEfZ2fLvwMo
 logic	/syntelos /logic	https://drive.google.com/drive/folders/1YIQWS_9QQwhX0TGkliZ5bXVN74nqAPI8

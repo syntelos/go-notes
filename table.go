@@ -24,6 +24,7 @@ const (
 	TableNameInstrumentality	TableName	= "instrumentality"
 	TableNameIntellectuality	TableName	= "intellectuality"
 	TableNameJourney	TableName	= "journey"
+	TableNameLanguage	TableName	= "language"
 	TableNameLiberalism	TableName	= "liberalism"
 	TableNameLiteracy	TableName	= "literacy"
 	TableNameLogic	TableName	= "logic"
@@ -63,6 +64,7 @@ const (
 	TablePathInstrumentality	TablePath	= "/syntelos /science /anthropology /instrumentality"
 	TablePathIntellectuality	TablePath	= "/syntelos /science /anthropology /intellectuality"
 	TablePathJourney	TablePath	= ""
+	TablePathLanguage	TablePath	= "/syntelos /science /anthropology /language"
 	TablePathLiberalism	TablePath	= "/syntelos /science /anthropology /liberalism"
 	TablePathLiteracy	TablePath	= "/syntelos /science /anthropology /literacy"
 	TablePathLogic	TablePath	= "/syntelos /logic"
@@ -102,6 +104,7 @@ const (
 	TableLinkInstrumentality	TableLink	= "https://drive.google.com/drive/folders/1YqybUMCurpLc0WdTOuUjew7EujYGFDuG"
 	TableLinkIntellectuality	TableLink	= "https://drive.google.com/drive/folders/1_zMHs6uHkF4UzlIywjqwfv9FmZyGO5rT"
 	TableLinkJourney	TableLink	= "/syntelos /science /anthropology /morality"
+	TableLinkLanguage	TableLink	= "https://drive.google.com/drive/folders/1B5PyRFZDxYQnqBP39kO1C-BlV7O2PD46"
 	TableLinkLiberalism	TableLink	= "https://drive.google.com/drive/folders/1OczHAQbfNIOwBzhqwCFoCPPQM_eDsQ1J"
 	TableLinkLiteracy	TableLink	= "https://drive.google.com/drive/folders/1KeSxi5xwUFB-D51PolHoGXEfZ2fLvwMo"
 	TableLinkLogic	TableLink	= "https://drive.google.com/drive/folders/1YIQWS_9QQwhX0TGkliZ5bXVN74nqAPI8"
@@ -167,6 +170,8 @@ func (this TableName) Path() TablePath {
 		return TablePathIntellectuality
 	case TableNameJourney:
 		return TablePathJourney
+	case TableNameLanguage:
+		return TablePathLanguage
 	case TableNameLiberalism:
 		return TablePathLiberalism
 	case TableNameLiteracy:
@@ -252,6 +257,8 @@ func (this TableName) Link() TableLink {
 		return TableLinkIntellectuality
 	case TableNameJourney:
 		return TableLinkJourney
+	case TableNameLanguage:
+		return TableLinkLanguage
 	case TableNameLiberalism:
 		return TableLinkLiberalism
 	case TableNameLiteracy:

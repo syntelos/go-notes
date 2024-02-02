@@ -137,11 +137,17 @@ func ConfigurationSource() FileTypeClass {
 
 	case ClassNotes:
 
-		return FileClassTable|FileTypeTXT
+		switch ConfigurationTransform() {
 
-	case ClassRecent:
+		case ClassEncode:
+			return FileClassTable|FileTypeTXT
 
-		return FileClassIndex|FileTypeJSN
+		case ClassUpdate:
+			return FileClassTable|FileTypeSVG
+
+		default:
+			return 0
+		}
 
 	default:
 		return 0
@@ -154,11 +160,30 @@ func ConfigurationTarget() FileTypeClass {
 
 	case ClassNotes:
 
-		return FileClassTable|FileTypeSVG
+		switch ConfigurationTransform() {
+
+		case ClassEncode:
+			return FileClassTable|FileTypeSVG
+
+		case ClassUpdate:
+			return FileClassTable|FileTypeJSN
+
+		default:
+			return 0
+		}
+
 
 	case ClassRecent:
 
-		return FileClassIndex|FileTypeJSN
+		switch ConfigurationTransform() {
+
+		case ClassUpdate:
+			return FileClassIndex|FileTypeJSN
+
+		default:
+			return 0
+		}
+
 
 	default:
 		return 0

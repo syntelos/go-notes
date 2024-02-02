@@ -56,7 +56,35 @@ func (this FileLocation) NotesEncode() {
 	}
 }
 
-func (this FileLocation) NotesUpdate() { // [TODO]
+func (this FileLocation) NotesUpdate() {
+	var tgt FileLocation = this
+	/*
+	 * Do not overwrite existing target
+	 */
+	if tgt.IsValid() && tgt.NotExists() {
+		var membership FileIx = tgt.FileIndex()
+		/*
+		 * Include source list as ordered members of {FileIx} `dirname`
+		 */
+		var src []FileLocation
+		{
+			for _, rev := range SourceList(ConfigurationSource()) {
+				var rel FileIx = rev.FileIndex()
+				if rel == membership {
+
+					src = append(src,rev)
+				}
+			}
+			src = FileSort(src)
+		}
+
+		if 0 < len(src) {
+
+			var cat Index = CatalogIndex(src)
+
+			tgt.Write(cat.Encode())
+		}
+	}
 }
 
 func (this FileLocation) NotesContents() {

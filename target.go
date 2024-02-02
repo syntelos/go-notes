@@ -20,12 +20,12 @@ const (
 
 func TargetOperation() TargetOperationClass {
 
-	switch ConfigurationContext() {
+	switch ConfigurationTransform() {
 
-	case ClassNotes:
+	case ClassEncode:
 		return TargetOperationClassPeer
 
-	case ClassRecent:
+	case ClassUpdate, ClassContents, ClassTabulate:
 		return TargetOperationClassMonthly
 
 	default:

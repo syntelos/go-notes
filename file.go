@@ -533,6 +533,30 @@ func (this FileLocation) Source(to FileTypeClass) (empty FileLocation) {
 	return empty
 }
 
+func (this FileLocation) Exists() bool {
+	var finf os.FileInfo
+	var er error
+
+	finf, er = os.Stat(this.location)
+	if nil == er {
+		return 0 < finf.Size()
+	} else {
+		return false
+	}
+}
+
+func (this FileLocation) NotExists() bool {
+	var finf os.FileInfo
+	var er error
+
+	finf, er = os.Stat(this.location)
+	if nil == er {
+		return 1 > finf.Size()
+	} else {
+		return true
+	}
+}
+
 func (this FileLocation) Read() []byte {
 	var file *os.File
 	var er error
@@ -577,6 +601,43 @@ func (this FileLocation) Write(content []byte) {
 			file.Close()
 		}
 	}
+}
+
+func (this FileLocationList) List() (list []FileLocation) {
+	for _, file := range this {
+
+		list = append(list,file)
+	}
+	return list
+}
+/*
+ * Index order is key descending sort product order.
+ */
+func FileSort(this []FileLocation) (array []FileLocation) {
+	array = this
+
+	var a, b int = 0, len(array)
+	var x, y FileLocation
+	/*
+	 * Partition sort adapted from GOST
+	 */
+	for i := a + 1; i < b; i++ {
+
+		for j := i; j > a; j-- {
+
+			x = array[j]
+			y = array[j-1]
+
+			if x.FileIdentifier() > y.FileIdentifier() {
+
+				array[j] = y
+				array[j-1] = x
+			} else {
+				break
+			}
+		}
+	}
+	return array	
 }
 
 func PathSplit(path string) (base, fext int) {

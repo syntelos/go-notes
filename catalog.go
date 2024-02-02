@@ -16,6 +16,13 @@ type Index []Catalog
 type Catalog struct {
 	id, icon, path, link, name, embed string
 }
+
+func CatalogIndex(this []FileLocation) (that Index) {
+	for _, file := range this {
+		that = append(that,file.FileCatalog())
+	}
+	return that
+}
 /*
  * Structural analogue to File#TableAnchor: <ID> =
  * <YYYYMMDD_HHMMSS>.
