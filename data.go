@@ -41,6 +41,12 @@ func DataTransform() bool {
 			}
 			return true
 
+		case ClassFetch:
+			for _, file := range TargetList(ConfigurationTarget()) {
+				file.NotesFetch()
+			}
+			return true
+
 		default:
 			return false
 		}
@@ -70,6 +76,12 @@ func DataTransform() bool {
 		case ClassTabulate:
 			for _, file := range TargetList(ConfigurationTarget()) {
 				file.RecentTabulate()
+			}
+			return true
+
+		case ClassFetch:
+			for _, file := range TargetList(ConfigurationTarget()) {
+				file.RecentFetch()
 			}
 			return true
 

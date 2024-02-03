@@ -62,7 +62,8 @@ Description
       "enc", "encode"         -- Encode <src> into <tgt>
       "upd", "update"         -- Update <tgt>
       "con", "contents"       -- Contents of <src> to <tgt>
-      "tab", "tabulate"       -- Tabulation of <src> to <t>
+      "tab", "tabulate"       -- Tabulation of <src> to <tg>
+      "get", "fetch"          -- Retrieval of <GDR> to <tgt>
 
   Operands
 

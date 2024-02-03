@@ -19,10 +19,11 @@ type Catalog struct {
 
 func CatalogIndex(this []FileLocation) (that Index) {
 	for _, file := range this {
-		that = append(that,file.FileCatalog())
+		that = append(that, file.FileCatalog())
 	}
 	return that
 }
+
 /*
  * Structural analogue to File#TableAnchor: <ID> =
  * <YYYYMMDD_HHMMSS>.
@@ -51,11 +52,11 @@ func (this Catalog) String() string {
         "link": "%s",
         "name": "%s",
         "embed": "%s"
-    }`,this.id,this.icon,this.path,this.link,this.name,this.embed)
+    }`, this.id, this.icon, this.path, this.link, this.name, this.embed)
 }
 
 func (this Catalog) LineString() string {
-	return fmt.Sprintf(`{ "id": "%s", "icon": "%s", "path": "%s", "link": "%s", "name": "%s", "embed": "%s" }`,this.id,this.icon,this.path,this.link,this.name,this.embed)
+	return fmt.Sprintf(`{ "id": "%s", "icon": "%s", "path": "%s", "link": "%s", "name": "%s", "embed": "%s" }`, this.id, this.icon, this.path, this.link, this.name, this.embed)
 }
 
 func (this Catalog) Encode() []byte {
@@ -64,7 +65,7 @@ func (this Catalog) Encode() []byte {
 }
 
 func (this Catalog) Decode(content []byte) {
-	var rdr json.Reader = json.NewReader("",content)
+	var rdr json.Reader = json.NewReader("", content)
 	if rdr.IsNotEmpty() {
 
 		var object json.Reader = rdr.HeadObject()
@@ -109,7 +110,6 @@ func (this Catalog) Decode(content []byte) {
 	}
 }
 
-
 func (this Index) String() string {
 	var str strings.Builder
 
@@ -141,7 +141,7 @@ func (this Index) Encode() []byte {
 }
 
 func (this Index) Decode(content []byte) {
-	var rdr json.Reader = json.NewReader("",content)
+	var rdr json.Reader = json.NewReader("", content)
 	if rdr.IsNotEmpty() {
 
 		var array json.Reader = rdr.HeadArray()

@@ -4,14 +4,102 @@
  */
 package wwweb
 
-func (this FileLocation) RecentEncode() {
+import (
+	goauth "github.com/syntelos/go-auth"
+	json "github.com/syntelos/go-json"
+	"golang.org/x/oauth2"
+	"io"
+	"net/http"
+)
+/*
+ * RFC 3986 HTTP/S String.
+ */
+type URL = string
+/*
+ * drive:files#list
+ */
+const GdriveSource URL = "https://www.googleapis.com/drive/v3/files?corpora=allDrives&orderBy=recency&includeItemsFromAllDrives=true&supportsAllDrives=true&mimeType=application%2Fpdf"
+/*
+ * Write catalog TABLE|JSON targets from ABSTRACT|GDR fetch
+ * source.
+ */
+func (this FileLocation) RecentEncode() { // [TODO]
 }
+/*
+ * Write catalog INDEX|JSON target from catalog TABLE|JSON
+ * sources.
+ */
+func (this FileLocation) RecentUpdate() {
+	var tgt FileLocation = this
+	/*
+	 * Do not overwrite existing target
+	 */
+	if tgt.IsValid() && tgt.NotExists() {
+		var membership FileIx = tgt.FileIndex()
+		/*
+		 * Include source list as ordered members of {FileIx} `dirname`
+		 */
+		var src []FileLocation
+		{
+			for _, rev := range SourceList(ConfigurationSource()) {
+				var rel FileIx = rev.FileIndex()
+				if rel == membership {
 
-func (this FileLocation) RecentUpdate() { // [TODO]
+					src = append(src, rev)
+				}
+			}
+			src = FileSort(src)
+		}
+
+		if 0 < len(src) {
+
+			var cat Index = CatalogIndex(src)
+
+			tgt.Write(cat.Encode())
+		}
+	}
 }
 
 func (this FileLocation) RecentContents() {
 }
 
 func (this FileLocation) RecentTabulate() {
+}
+/*
+ * Write TABLE|JSON target from Google Drive PDF files list.
+ */
+func (this FileLocation) RecentFetch() {
+	var GdriveScopes []string = []string{"drive"}
+
+	var token *oauth2.Token = goauth.Token(GdriveScopes)
+	if nil != token {
+		var b io.Reader
+		var q *http.Request
+		var p *http.Response
+		var r error
+
+		q, r = http.NewRequest("GET", GdriveSource, b)
+		if nil == r {
+			q.Close = true
+
+			token.SetAuthHeader(q)
+
+			p, r = http.DefaultClient.Do(q)
+			if nil == r && 200 == p.StatusCode && 0 < p.ContentLength {
+
+				var c []byte
+				c, r = io.ReadAll(p.Body)
+
+				if p.ContentLength == int64(len(c)) {
+					var doc json.Reader = json.NewReader(GdriveSource, c)
+					var obj json.Reader = doc.HeadObject()
+
+					if obj.IsNotEmpty() && doc.Contains(obj) {
+
+						this.Write(c)
+					}
+				}
+			}
+		}
+	}
 }

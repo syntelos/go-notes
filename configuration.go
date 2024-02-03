@@ -9,7 +9,7 @@ import "io/fs"
 type Class uint16
 
 const (
-	ClassNotes   Class  = 0b0100000000000000
+	ClassNotes    Class = 0b0100000000000000
 	ClassRecent   Class = 0b0010000000000000
 
 	ClassSource   Class = 0b0001000000000000
@@ -19,11 +19,12 @@ const (
 	ClassUpdate   Class = 0b0000001000000000
 	ClassContents Class = 0b0000000100000000
 	ClassTabulate Class = 0b0000000010000000
+	ClassFetch    Class = 0b0000000001000000
 )
 
-const Class_Context = (ClassRecent|ClassNotes)
-const Class_Operation = (ClassSource|ClassTarget)
-const Class_Transform = (ClassEncode|ClassUpdate|ClassContents|ClassTabulate)
+const Class_Context = (ClassRecent | ClassNotes)
+const Class_Operation = (ClassSource | ClassTarget)
+const Class_Transform = (ClassEncode | ClassUpdate | ClassContents | ClassTabulate | ClassFetch)
 
 var Configuration Class = 0
 var Context string
@@ -79,7 +80,7 @@ func Configure(argv []string) bool {
 						Configuration |= ClassTarget
 					}
 				}
-			case "enc", "encode", "upd", "update", "con", "contents", "tab", "tabulate":
+			case "enc", "encode", "upd", "update", "con", "contents", "tab", "tabulate", "get", "fet", "fetch":
 				if 0 != (Configuration & Class_Transform) {
 					return false
 				} else {
@@ -99,11 +100,15 @@ func Configure(argv []string) bool {
 					case "tab", "tabulate":
 						Configuration |= ClassTabulate
 						Operator = "tabulate"
+
+					case "get", "fet", "fetch":
+						Configuration |= ClassFetch
+						Operator = "fetch"
 					}
 				}
 			default:
-				if 0 != (Configuration & Class_Context) &&
-					0 != (Configuration & Class_Transform) {
+				if 0 != (Configuration&Class_Context) &&
+					0 != (Configuration&Class_Transform) {
 
 					Operands = argv[rix+argx:]
 
@@ -140,10 +145,27 @@ func ConfigurationSource() FileTypeClass {
 		switch ConfigurationTransform() {
 
 		case ClassEncode:
-			return FileClassTable|FileTypeTXT
+			return FileClassTable | FileTypeTXT
 
 		case ClassUpdate:
-			return FileClassTable|FileTypeSVG
+			return FileClassTable | FileTypeSVG
+
+		default:
+			return 0
+		}
+
+	case ClassRecent:
+
+		switch ConfigurationTransform() {
+
+		case ClassEncode:
+			return FileClassTable | FileTypeJSN
+
+		case ClassUpdate:
+			return FileClassIndex | FileTypeJSN
+
+		case ClassFetch:
+			return FileClassAbstract
 
 		default:
 			return 0
@@ -163,27 +185,31 @@ func ConfigurationTarget() FileTypeClass {
 		switch ConfigurationTransform() {
 
 		case ClassEncode:
-			return FileClassTable|FileTypeSVG
+			return FileClassTable | FileTypeSVG
 
 		case ClassUpdate:
-			return FileClassTable|FileTypeJSN
+			return FileClassTable | FileTypeJSN
 
 		default:
 			return 0
 		}
-
 
 	case ClassRecent:
 
 		switch ConfigurationTransform() {
 
+		case ClassEncode:
+			return FileClassTable | FileTypeJSN
+
 		case ClassUpdate:
-			return FileClassIndex|FileTypeJSN
+			return FileClassIndex | FileTypeJSN
+
+		case ClassFetch:
+			return FileClassTable | FileTypeJSN
 
 		default:
 			return 0
 		}
-
 
 	default:
 		return 0
@@ -191,7 +217,7 @@ func ConfigurationTarget() FileTypeClass {
 }
 
 func HaveContext() bool {
-	if 0 != (Configuration & Class_Context) && 0 != len(Context) {
+	if 0 != (Configuration&Class_Context) && 0 != len(Context) {
 
 		return true
 	} else {

@@ -9,11 +9,11 @@ import (
 	"testing"
 )
 
-func TestCatalog(t *testing.T){
+func TestCatalog(t *testing.T) {
 
-	if Configure([]string{"notes","encode","tst/notes","tst/txt"}) {
+	if Configure([]string{"notes", "encode", "tst/notes", "tst/txt"}) {
 
-		fmt.Printf("[TestCatalog] (%s)\n",Operand(1))
+		fmt.Printf("[TestCatalog] (%s)\n", Operand(1))
 
 		var tgt uint32 = 0
 		var cat Catalog
@@ -22,12 +22,12 @@ func TestCatalog(t *testing.T){
 
 			cat = file.FileCatalog()
 
-			fmt.Printf("[TestCatalog] %s\n",cat.LineString())
+			fmt.Printf("[TestCatalog] %s\n", cat.LineString())
 		}
 
 		if 4 != tgt {
 
-			t.Fatalf("[TestCatalog] Count TXT %d expected 4.",tgt)
+			t.Fatalf("[TestCatalog] Count TXT %d expected 4.", tgt)
 		}
 	} else {
 		t.Fatal("[TestCatalog] Failed to configure.")

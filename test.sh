@@ -1,5 +1,4 @@
 #!/bin/bash
-set -x
 
 function usage {
     cat<<EOF>&2

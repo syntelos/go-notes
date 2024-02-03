@@ -39,26 +39,27 @@ type FileId string
 
 type FileLocationList map[FileId]FileLocation
 
-type FileTypeClass uint8
+type FileTypeClass uint16
 
 const (
-	FileClassIndex FileTypeClass = 0b10000000
-	FileClassTable FileTypeClass = 0b01000000
+	FileClassAbstract FileTypeClass = 0b1000000000000000
+	FileClassIndex    FileTypeClass = 0b0100000000000000
+	FileClassTable    FileTypeClass = 0b0010000000000000
 
-	FileTypeTXT    FileTypeClass = 0b00100000
-	FileTypeJSN    FileTypeClass = 0b00010000
-	FileTypeHTL    FileTypeClass = 0b00001000
-	FileTypeSVG    FileTypeClass = 0b00000100
-	FileTypePNG    FileTypeClass = 0b00000010
-	FileTypeJPG    FileTypeClass = 0b00000001
+	FileTypeTXT       FileTypeClass = 0b0000000000100000
+	FileTypeJSN       FileTypeClass = 0b0000000000010000
+	FileTypeHTL       FileTypeClass = 0b0000000000001000
+	FileTypeSVG       FileTypeClass = 0b0000000000000100
+	FileTypePNG       FileTypeClass = 0b0000000000000010
+	FileTypeJPG       FileTypeClass = 0b0000000000000001
 )
 
 const (
-	FileClass FileTypeClass = (FileClassIndex|FileClassTable)
-	FileType  FileTypeClass = (FileTypeTXT|FileTypeJSN|FileTypeHTL|FileTypeSVG|FileTypePNG|FileTypeJPG)
+	FileClass FileTypeClass = (FileClassAbstract | FileClassIndex | FileClassTable)
+	FileType  FileTypeClass = (FileTypeTXT | FileTypeJSN | FileTypeHTL | FileTypeSVG | FileTypePNG | FileTypeJPG)
 )
 
-var FileTypeClassList []FileTypeClass = []FileTypeClass{FileClassIndex,FileClassTable,FileTypeTXT,FileTypeJSN,FileTypeHTL,FileTypeSVG,FileTypePNG,FileTypeJPG}
+var FileTypeClassList []FileTypeClass = []FileTypeClass{FileClassIndex, FileClassTable, FileTypeTXT, FileTypeJSN, FileTypeHTL, FileTypeSVG, FileTypePNG, FileTypeJPG}
 
 type CC uint8
 
@@ -70,10 +71,10 @@ const (
 )
 
 type FileIndex struct {
-	location []byte
+	location                  []byte
 	ix_head, ix_date, ix_fext int
 	cc_head, cc_date, cc_fext CC
-	typeclass FileTypeClass
+	typeclass                 FileTypeClass
 }
 
 func (this FileTypeClass) BitString() string {
@@ -125,16 +126,17 @@ func FileClassify(location string) (index FileIndex) {
 
 	var z int = len(location)
 	if 0 < z {
-		var y int = (z-1)
+		var y int = (z - 1)
 		if 0 < y {
-			var x int = (y-1)
+			var x int = (y - 1)
 			if 0 < x {
 				var cc CC = 0
 				var ch byte
 				/*
 				 * Collection
 				 */
-				scan:for ; 0 < x; x-- {
+			scan:
+				for ; 0 < x; x-- {
 					ch = index.location[x]
 					switch ch {
 					case '/':
@@ -183,7 +185,7 @@ func FileClassify(location string) (index FileIndex) {
 				}
 				var ftype FileTypeClass
 				if -1 != index.ix_fext && CCLetter == index.cc_fext {
-					var begin int = (index.ix_fext+1)
+					var begin int = (index.ix_fext + 1)
 					var fext string = location[begin:]
 					switch fext {
 					case "txt":
@@ -200,7 +202,7 @@ func FileClassify(location string) (index FileIndex) {
 						ftype = FileTypeJPG
 					}
 				}
-				var typeclass FileTypeClass = (fclass|ftype)
+				var typeclass FileTypeClass = (fclass | ftype)
 				index.typeclass = typeclass
 			}
 		}
@@ -217,24 +219,24 @@ func (this FileIndex) Condense() (that FileLocation) {
 		that.typeclass = this.typeclass
 		that.location = string(this.location)
 
-		switch (this.typeclass & FileClass) {
+		switch this.typeclass & FileClass {
 		case FileClassIndex:
 			if 0 < this.ix_head && 0 < this.ix_fext {
-				var begin, end int = this.ix_head+1, this.ix_fext
+				var begin, end int = this.ix_head + 1, this.ix_fext
 				that.datetime = string(this.location[begin:end])
 				that.dirname = string(this.location[:begin])
 				that.basename = string(this.location[begin:end])
 			}
 		case FileClassTable:
 			if 0 < this.ix_head && 0 < this.ix_date {
-				var begin, end int = this.ix_head+1, this.ix_date
+				var begin, end int = this.ix_head + 1, this.ix_date
 				that.tablename = string(this.location[begin:end])
 				that.dirname = string(this.location[:begin])
 				if 0 < this.ix_fext {
 					end = this.ix_fext
 					that.basename = string(this.location[begin:end])
 					if 0 < this.ix_date {
-						var begin, end int = this.ix_date+1, this.ix_fext
+						var begin, end int = this.ix_date + 1, this.ix_fext
 						that.datetime = string(this.location[begin:end])
 					}
 				}
@@ -251,13 +253,25 @@ func (this FileIndex) String() string {
 func (this FileLocation) IsValid() bool {
 	return 0 != this.typeclass
 }
+/*
+ * Innumerable network data source.
+ */
+func (this FileLocation) IsAbstractClass() bool {
+	return (FileClassAbstract == (this.typeclass & FileClassAbstract))
+}
+/*
+ * Enumerable file data source.
+ */
+func (this FileLocation) IsNotAbstractClass() bool {
+	return (FileClassAbstract != (this.typeclass & FileClassAbstract))
+}
 
 func (this FileLocation) IsIndexClass() bool {
-	return (FileClassIndex != (this.typeclass & FileClassIndex))
+	return (FileClassIndex == (this.typeclass & FileClassIndex))
 }
 
 func (this FileLocation) IsTableClass() bool {
-	return (FileClassTable != (this.typeclass & FileClassTable))
+	return (FileClassTable == (this.typeclass & FileClassTable))
 }
 
 func (this FileLocation) String() string {
@@ -347,6 +361,7 @@ func (this FileLocation) HHMMSS() string {
 		return ""
 	}
 }
+
 /*
  * <ID> := <YYYYMMDD_HHMMSS>
  */
@@ -369,6 +384,7 @@ func (this FileId) IsValid() bool {
 		return false
 	}
 }
+
 /*
  * <IX> := <YYYYMM>
  */
@@ -386,13 +402,14 @@ func (this FileLocation) FileIndex() FileIx {
 func (this FileIx) IsValid() bool {
 	return 6 == len(this)
 }
+
 /*
  * Structural analogue to Catalog#FileCatalog: <ID> =
  * <YYYYMMDD_HHMMSS>.
  */
 func (this FileLocation) TableAnchor() string {
 	if this.IsTableClass() {
-		return string(this.tablename)+"/"+string(this.YYYYMMDD())+"/"+this.YYYYMMDD_HHMMSS()
+		return string(this.tablename) + "/" + string(this.YYYYMMDD()) + "/" + this.YYYYMMDD_HHMMSS()
 	} else {
 		return ""
 	}
@@ -404,11 +421,12 @@ func (this FileLocation) TableTabulate() string {
 		var anchor string = this.TableAnchor()
 		var catalog Catalog = this.FileCatalog()
 
-		return fmt.Sprintf("%s\t%s\t%s\t%s\t%s\t%s\t%s",anchor,catalog.id,catalog.icon,catalog.path,catalog.link,catalog.name,catalog.embed)
+		return fmt.Sprintf("%s\t%s\t%s\t%s\t%s\t%s\t%s", anchor, catalog.id, catalog.icon, catalog.path, catalog.link, catalog.name, catalog.embed)
 	} else {
 		return ""
 	}
 }
+
 /*
  * File type class derivation with target location.
  */
@@ -423,22 +441,22 @@ func (this FileLocation) Target(to FileTypeClass) (empty FileLocation) {
 		/*
 		 * Express target state.
 		 */
-		var infix string = path.Join(this.YYYY(),this.MM())
+		var infix string = path.Join(this.YYYY(), this.MM())
 		var prefix string = path.Join(OperandTarget(), infix, this.basename)
 		var to_string string
-		switch (to) {
+		switch to {
 		case FileTypeTXT:
-			to_string = prefix+".txt"
+			to_string = prefix + ".txt"
 		case FileTypeJSN:
-			to_string = prefix+".json"
+			to_string = prefix + ".json"
 		case FileTypeHTL:
-			to_string = prefix+".html"
+			to_string = prefix + ".html"
 		case FileTypeSVG:
-			to_string = prefix+".svg"
+			to_string = prefix + ".svg"
 		case FileTypePNG:
-			to_string = prefix+".png"
+			to_string = prefix + ".png"
 		case FileTypeJPG:
-			to_string = prefix+".jpeg"
+			to_string = prefix + ".jpeg"
 		default:
 			return empty
 		}
@@ -458,6 +476,7 @@ func (this FileLocation) Target(to FileTypeClass) (empty FileLocation) {
 		return empty
 	}
 }
+
 /*
  * File type class derivation within source location enabled
  * by the conservation of source operand location under
@@ -501,19 +520,19 @@ func (this FileLocation) Source(to FileTypeClass) (empty FileLocation) {
 				var prefix = this.location[0:fex]
 
 				var to_string string
-				switch (to) {
+				switch to {
 				case FileTypeTXT:
-					to_string = prefix+".txt"
+					to_string = prefix + ".txt"
 				case FileTypeJSN:
-					to_string = prefix+".json"
+					to_string = prefix + ".json"
 				case FileTypeHTL:
-					to_string = prefix+".html"
+					to_string = prefix + ".html"
 				case FileTypeSVG:
-					to_string = prefix+".svg"
+					to_string = prefix + ".svg"
 				case FileTypePNG:
-					to_string = prefix+".png"
+					to_string = prefix + ".png"
 				case FileTypeJPG:
-					to_string = prefix+".jpeg"
+					to_string = prefix + ".jpeg"
 				default:
 					return empty
 				}
@@ -563,13 +582,16 @@ func (this FileLocation) Read() []byte {
 
 	file, er = os.Open(this.location)
 	if nil == er {
+
 		var info os.FileInfo
 		info, er = file.Stat()
 		if nil == er {
+
 			var size int64 = info.Size()
 			if 0 < size && size < 0x7FFFFFFF {
+
 				var z uint32 = uint32(size)
-				var b []byte = make([]byte,z)
+				var b []byte = make([]byte, z)
 				var n int
 				n, er = file.Read(b)
 				if nil == er && n == int(z) {
@@ -593,6 +615,8 @@ func (this FileLocation) Write(content []byte) {
 		var file *os.File
 		var er error
 
+		os.MkdirAll(this.dirname,0755) 
+
 		file, er = os.Create(this.location)
 		if nil == er {
 
@@ -606,10 +630,11 @@ func (this FileLocation) Write(content []byte) {
 func (this FileLocationList) List() (list []FileLocation) {
 	for _, file := range this {
 
-		list = append(list,file)
+		list = append(list, file)
 	}
 	return list
 }
+
 /*
  * Index order is key descending sort product order.
  */
@@ -637,7 +662,7 @@ func FileSort(this []FileLocation) (array []FileLocation) {
 			}
 		}
 	}
-	return array	
+	return array
 }
 
 func PathSplit(path string) (base, fext int) {
@@ -648,12 +673,13 @@ func PathSplit(path string) (base, fext int) {
 
 	var z int = len(path)
 	if 0 < z {
-		var y int = (z-1)
+		var y int = (z - 1)
 		if 0 < y {
-			var x int = (y-1)
+			var x int = (y - 1)
 			var ch byte
 
-			scan:for ; 0 < x; x-- {
+		scan:
+			for ; 0 < x; x-- {
 				ch = path[x]
 				switch ch {
 				case '/':
@@ -667,6 +693,7 @@ func PathSplit(path string) (base, fext int) {
 	}
 	return base, fext
 }
+
 /*
  * Given a file or directory, derive a list of files,
  * conserving relative and absolute path names.
@@ -684,21 +711,21 @@ func FileList(src string) (list []string) {
 				for _, dent := range dli {
 
 					if dent.IsDir() {
-						var name = path.Join(src,dent.Name())
+						var name = path.Join(src, dent.Name())
 						var slist []string = FileList(name)
 						for _, sln := range slist {
 
-							list = append(list,sln)
+							list = append(list, sln)
 						}
 					} else {
-						var name = path.Join(src,dent.Name())
+						var name = path.Join(src, dent.Name())
 
-						list = append(list,name)
+						list = append(list, name)
 					}
 				}
 			}
 		} else {
-			list = append(list,src)
+			list = append(list, src)
 		}
 	}
 	return list

@@ -108,7 +108,7 @@ func SourceClassList() (list []FileTypeClass) {
 
 	for cl, _ := range sources {
 
-		list = append(list,cl)
+		list = append(list, cl)
 	}
 	return list
 }

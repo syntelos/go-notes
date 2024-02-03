@@ -8,12 +8,15 @@ import (
 	"bytes"
 	"fmt"
 )
-
+/*
+ * Encode SRC TXT to TGT SVG as the "notes textbox" found in
+ * PAGE.
+ */
 func (this FileLocation) NotesEncode() {
 	var tgt FileLocation = this
 	var src FileLocation = this.Source(ConfigurationSource())
 	if tgt.IsValid() && src.IsValid() {
-		var txt Note = Note{this,[]NoteText{}}
+		var txt Note = Note{this, []NoteText{}}
 		if txt.Read(src) {
 			var svg bytes.Buffer
 			/*
@@ -32,15 +35,15 @@ func (this FileLocation) NotesEncode() {
 				if line.IsText() {
 
 					if title {
-						svg.Write(line.Encode("title",px,py))
+						svg.Write(line.Encode("title", px, py))
 
 						title = false
 
 					} else if line.IsLink() {
 
-						svg.Write(line.Encode("link",px,py))
+						svg.Write(line.Encode("link", px, py))
 					} else {
-						svg.Write(line.Encode("text",px,py))
+						svg.Write(line.Encode("text", px, py))
 					}
 					svg.WriteByte('\n')
 				}
@@ -55,7 +58,10 @@ func (this FileLocation) NotesEncode() {
 		}
 	}
 }
-
+/*
+ * Write TGT JSN catalog index for SRC SVG filtered and
+ * ordered.
+ */
 func (this FileLocation) NotesUpdate() {
 	var tgt FileLocation = this
 	/*
@@ -72,7 +78,7 @@ func (this FileLocation) NotesUpdate() {
 				var rel FileIx = rev.FileIndex()
 				if rel == membership {
 
-					src = append(src,rev)
+					src = append(src, rev)
 				}
 			}
 			src = FileSort(src)
@@ -92,6 +98,10 @@ func (this FileLocation) NotesContents() {
 
 func (this FileLocation) NotesTabulate() {
 }
+
+func (this FileLocation) NotesFetch() {
+}
+
 /*
  * Note text is preformatted plain text.  Lines are wrapped
  * to presentation width by unix line terminals (i.e. '\n',
@@ -117,13 +127,13 @@ func (this NoteText) Encode(c string, x int, y int) (empty []byte) {
 	if this.IsText() {
 		if this.IsLink() {
 
-			var str string = fmt.Sprintf("  <a href=\"%s\"><text class=\"%s\" x=\"%d\" y=\"%d\">%s</text></a>",string(this.link),c,x,y,string(this.text))
+			var str string = fmt.Sprintf("  <a href=\"%s\"><text class=\"%s\" x=\"%d\" y=\"%d\">%s</text></a>", string(this.link), c, x, y, string(this.text))
 
 			return []byte(str)
 
 		} else {
 
-			var str string = fmt.Sprintf("  <text class=\"%s\" x=\"%d\" y=\"%d\">%s</text>",c,x,y,string(this.text))
+			var str string = fmt.Sprintf("  <text class=\"%s\" x=\"%d\" y=\"%d\">%s</text>", c, x, y, string(this.text))
 
 			return []byte(str)
 		}
@@ -131,12 +141,13 @@ func (this NoteText) Encode(c string, x int, y int) (empty []byte) {
 		return empty
 	}
 }
+
 /*
  * Note text documents employ tabs and lines to encode
  * a trivial hypertext format.
  */
 type Note struct {
-	location FileLocation
+	location   FileLocation
 	hyperlines []NoteText
 }
 
@@ -182,15 +193,15 @@ func (this *Note) Read(file FileLocation) bool {
 			case '\n':
 				end = x
 				if -1 != tab {
-					begin = (tab+1)
+					begin = (tab + 1)
 					if (nil == link || 0 == len(link)) &&
-					   (nil != line && 0 != len(line)) {
+						(nil != line && 0 != len(line)) {
 
 						link = source[begin:end]
 
-						var hypertext NoteText = NoteText{line,link}
+						var hypertext NoteText = NoteText{line, link}
 
-						this.hyperlines = append(this.hyperlines,hypertext)
+						this.hyperlines = append(this.hyperlines, hypertext)
 
 						line = nil
 						link = nil
@@ -200,21 +211,21 @@ func (this *Note) Read(file FileLocation) bool {
 				} else if begin < end {
 					line = source[begin:end]
 
-					var plaintext NoteText = NoteText{line,nil}
+					var plaintext NoteText = NoteText{line, nil}
 
-					this.hyperlines = append(this.hyperlines,plaintext)
+					this.hyperlines = append(this.hyperlines, plaintext)
 
 					line = nil
 					link = nil
 				} else {
-					var newline NoteText = NoteText{[]byte{},[]byte{}}
+					var newline NoteText = NoteText{[]byte{}, []byte{}}
 
-					this.hyperlines = append(this.hyperlines,newline)
+					this.hyperlines = append(this.hyperlines, newline)
 
 					line = nil
 					link = nil
 				}
-				begin = (end+1)
+				begin = (end + 1)
 			}
 		}
 
