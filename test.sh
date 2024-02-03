@@ -4,17 +4,13 @@ function usage {
     cat<<EOF>&2
 Synopsis
 
-    $0 notes encode
+    $0 all
 
-    $0 notes update
+    $0 notes
 
 Description
 
-    Perform test validation over 'tst' directory.
-
-    When the 'tst/notes' directory is not present, Notes
-    Encode is performed before Notes Update to populate the
-    directory in a successful performance.
+    Perform test validation over files in 'tst' directory.
 
 EOF
     exit 1
@@ -35,17 +31,17 @@ function notes_encode {
 		    cat -n ${tgt}
 		else
 		    2>&1 echo "$0 error: missing '${tgt}'."
-		    exit 1
+		    return 1
 		fi
 	    done
-	    exit 0
+	    return 0
 	else
 	    2>&1 echo "$0 error from 'wwweb notes enc tst/notes tst/txt'."
-	    exit 1
+	    return 1
 	fi
     else
 	2>&1 echo "$0 error from 'wwweb notes tgt enc tst/notes tst/txt'."
-	exit 1
+	return 1
     fi
 }
 
@@ -64,48 +60,48 @@ function notes_update {
 		    cat -n ${tgt}
 		else
 		    2>&1 echo "$0 error: missing '${tgt}'."
-		    exit 1
+		    return 1
 		fi
 	    done
-	    exit 0
+	    return 0
 	else
 	    2>&1 echo "$0 error from 'wwweb notes upd tst/notes'."
-	    exit 1
+	    return 1
 	fi
     else
 	2>&1 echo "$0 error from 'wwweb notes tgt upd tst/notes'."
+	return 1
+    fi
+}
+
+function test_notes {
+    rm -rf tst/notes
+
+    if notes_encode
+    then
+	if notes_update
+	then
+	    exit 0
+	else
+	    exit 1
+	fi
+    else
 	exit 1
     fi
 }
 
 #
-if [ 2 -eq $# ]
+if [ 1 -eq $# ]
 then
     case ${1} in
-	notes)
-	    case ${2} in
-		encode)
-		    if notes_encode
-		    then
-			exit 0
-		    else
-			exit 1
-		    fi
-		    ;;
-		update)
-		    if notes_update
-		    then
-			exit 0
-		    else
-			exit 1
-		    fi
-		    ;;
-
-		*)
-		    usage $0
-		    ;;
-	    esac
-	;;
+	notes|all)
+	    if test_notes
+	    then
+		exit 0
+	    else
+		exit 1
+	    fi
+	    ;;
 
 	*)
 	    usage $0

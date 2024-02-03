@@ -5,7 +5,6 @@
 package wwweb
 
 import (
-	"bytes"
 	"fmt"
 	json "github.com/syntelos/go-json"
 	"strings"
@@ -115,7 +114,12 @@ func (this Index) String() string {
 
 	str.WriteString(`[
 `)
-	for _, catalog := range this {
+	for ix, catalog := range this {
+
+		if 0 != ix {
+
+			str.WriteString(",\n")
+		}
 
 		str.WriteString(catalog.String())
 	}
@@ -126,18 +130,8 @@ func (this Index) String() string {
 }
 
 func (this Index) Encode() []byte {
-	var doc bytes.Buffer
 
-	doc.WriteString(`[
-`)
-	for _, catalog := range this {
-
-		doc.WriteString(catalog.String())
-	}
-	doc.WriteString(`
-]
-`)
-	return doc.Bytes()
+	return []byte(this.String())
 }
 
 func (this Index) Decode(content []byte) {
