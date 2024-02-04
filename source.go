@@ -12,89 +12,93 @@ func SourceList(typeclass FileTypeClass) FileLocationList {
 }
 
 func SourceDefine() bool {
+	var tgt, src string
 
 	if HaveOperand(1) {
-
-		var src string = Operand(1)
-
-		var walk []string = FileList(src)
-
-		for _, file := range walk {
-
-			var ixfil FileIndex = FileClassify(file)
-			if ixfil.IsValid() {
-
-				var lofil FileLocation = ixfil.Condense()
-				if lofil.IsValid() {
-
-					var locationList FileLocationList = sources[ixfil.typeclass]
-					if 0 == len(locationList) {
-						locationList = make(FileLocationList)
-					}
-
-					locationList[lofil.FileIdentifier()] = lofil
-
-					sources[ixfil.typeclass] = locationList
-				}
-			}
-		}
-		return true
-
+		tgt = Operand(0)
+		src = Operand(1)
 	} else if HaveOperand(0) {
-
-		var tgt string = Operand(0)
-
-		var walk []string = FileList(tgt)
-
-		for _, file := range walk {
-
-			var ixfil FileIndex = FileClassify(file)
-			if ixfil.IsValid() {
-
-				var lofil FileLocation = ixfil.Condense()
-				if lofil.IsValid() {
-
-					var locationList FileLocationList = sources[ixfil.typeclass]
-					if 0 == len(locationList) {
-						locationList = make(FileLocationList)
-					}
-
-					locationList[lofil.FileIdentifier()] = lofil
-
-					sources[ixfil.typeclass] = locationList
-				}
-			}
-		}
-		return true
-
+		tgt = Operand(0)
 	} else if HaveContext() {
+		tgt = Context
+	} else {
+		return false
+	}
 
-		var tgt string = Context
 
-		var walk []string = FileList(tgt)
+	switch ConfigurationContext() {
 
-		for _, file := range walk {
+	case ClassNotes:
+		var walk []string
 
-			var ixfil FileIndex = FileClassify(file)
-			if ixfil.IsValid() {
+		if HaveOperand(1) {
 
-				var lofil FileLocation = ixfil.Condense()
-				if lofil.IsValid() {
+			walk = FileList(src)
 
-					var locationList FileLocationList = sources[ixfil.typeclass]
-					if 0 == len(locationList) {
-						locationList = make(FileLocationList)
+		} else if HaveOperand(0) {
+
+			walk = FileList(tgt)
+
+		} else if HaveContext() {
+
+			walk = FileList(tgt)
+		}
+
+		if 0 != len(walk){
+
+			for _, file := range walk {
+
+				var ixfil FileIndex = FileClassify(file)
+				if ixfil.IsValid() {
+
+					var lofil FileLocation = ixfil.Condense()
+					if lofil.IsValid() {
+
+						var locationList FileLocationList = sources[ixfil.typeclass]
+						if 0 == len(locationList) {
+							locationList = make(FileLocationList)
+						}
+
+						locationList[lofil.FileIdentifier()] = lofil
+
+						sources[ixfil.typeclass] = locationList
 					}
-
-					locationList[lofil.FileIdentifier()] = lofil
-
-					sources[ixfil.typeclass] = locationList
 				}
 			}
+			return true
+		} else {
+			return false
+		}
+
+	case ClassRecent:
+
+		switch ConfigurationTransform() {
+
+		case ClassEncode:
+			return false // [TODO]
+		case ClassUpdate:
+			return false // [TODO]
+
+		case ClassFetch:
+			var source FileLocation = RecentFetchSource(tgt)
+			if source.IsValid() {
+
+				var locationList FileLocationList = sources[source.typeclass]
+				if 0 == len(locationList) {
+					locationList = make(FileLocationList)
+				}
+
+				locationList[source.FileIdentifier()] = source
+
+				sources[source.typeclass] = locationList
+			}
+			return true
+		default:
+			return false
 		}
 		return true
 
-	} else {
+	default:
 		return false
 	}
 }

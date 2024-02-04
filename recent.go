@@ -10,11 +10,14 @@ import (
 	"golang.org/x/oauth2"
 	"io"
 	"net/http"
+	"path"
 )
 /*
  * RFC 3986 HTTP/S String.
  */
 type URL = string
+
+const GdriveSourceTableName TableName = TableName("google_drive_file_list")
 /*
  * drive:files#list
  */
@@ -102,4 +105,31 @@ func (this FileLocation) RecentFetch() {
 			}
 		}
 	}
+}
+
+func RecentFetchTarget(tgt string) (that FileLocation) {
+	that = recentFetchFile(tgt)
+	that.typeclass = (FileClassTable|FileTypeJSN)
+	return that
+}
+
+func RecentFetchSource(tgt string) (that FileLocation) {
+	that = recentFetchFile(tgt)
+	that.typeclass = (FileClassAbstract|FileTypeJSN)
+	return that
+}
+
+func recentFetchFile(tgt string) (that FileLocation) {
+	var cla FileTypeClass = FileTypeJSN
+
+	var src string = GdriveSource
+	var tab TableName = GdriveSourceTableName
+	var dat DateTime = NewDateTime()
+	var dir, bas, loc string
+	{
+		dir = path.Join(tgt,dat.YYYY(),dat.MM())
+		bas = string(tab)+"-"+string(dat)
+		loc = path.Join(dir,bas)+".json"
+	}
+	return FileLocation{cla,src,dir,bas,loc,tab,dat}
 }

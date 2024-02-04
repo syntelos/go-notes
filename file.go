@@ -28,7 +28,11 @@ type FileLocation struct {
 	/*
 	 * Location & components
 	 */
-	dirname, basename, tablename, datetime, location string
+	dirname, basename, location string
+
+	tablename TableName
+
+	datetime DateTime
 }
 
 type FileIx string
@@ -223,21 +227,21 @@ func (this FileIndex) Condense() (that FileLocation) {
 		case FileClassIndex:
 			if 0 < this.ix_head && 0 < this.ix_fext {
 				var begin, end int = this.ix_head + 1, this.ix_fext
-				that.datetime = string(this.location[begin:end])
+				that.datetime = DateTime(string(this.location[begin:end]))
 				that.dirname = string(this.location[:begin])
 				that.basename = string(this.location[begin:end])
 			}
 		case FileClassTable:
 			if 0 < this.ix_head && 0 < this.ix_date {
 				var begin, end int = this.ix_head + 1, this.ix_date
-				that.tablename = string(this.location[begin:end])
+				that.tablename = TableName(string(this.location[begin:end]))
 				that.dirname = string(this.location[:begin])
 				if 0 < this.ix_fext {
 					end = this.ix_fext
 					that.basename = string(this.location[begin:end])
 					if 0 < this.ix_date {
 						var begin, end int = this.ix_date + 1, this.ix_fext
-						that.datetime = string(this.location[begin:end])
+						that.datetime = DateTime(string(this.location[begin:end]))
 					}
 				}
 			}
@@ -305,72 +309,51 @@ func (this FileLocation) BaseName() string {
 
 func (this FileLocation) HasDatetime() bool {
 
-	return 15 <= len(this.datetime) && '_' == this.datetime[8]
+	return this.datetime.IsValid()
 }
 
 func (this FileLocation) YYYY() string {
 
-	if 15 <= len(this.datetime) && '_' == this.datetime[8] {
-		return this.datetime[0:4]
-	} else {
-		return ""
-	}
+	return this.datetime.YYYY()
 }
 
 func (this FileLocation) MM() string {
 
-	if 15 <= len(this.datetime) && '_' == this.datetime[8] {
-		return this.datetime[4:6]
-	} else {
-		return ""
-	}
+	return this.datetime.MM()
 }
 
 func (this FileLocation) YYYYMM() string {
 
-	if 15 <= len(this.datetime) && '_' == this.datetime[8] {
-		return this.datetime[0:6]
-	} else {
-		return ""
-	}
+	return this.datetime.YYYYMM()
 }
 
 func (this FileLocation) YYYYMMDD() string {
 
-	if 15 <= len(this.datetime) && '_' == this.datetime[8] {
-		return this.datetime[0:8]
-	} else {
-		return ""
-	}
+	return this.datetime.YYYYMMDD()
 }
 
 func (this FileLocation) YYYYMMDD_HHMMSS() string {
 
-	if 15 <= len(this.datetime) && '_' == this.datetime[8] {
-		return this.datetime[0:15]
-	} else {
-		return ""
-	}
+	return this.datetime.YYYYMMDD_HHMMSS()
 }
 
 func (this FileLocation) HHMMSS() string {
 
-	if 15 <= len(this.datetime) && '_' == this.datetime[8] {
-		return this.datetime[10:15]
-	} else {
-		return ""
-	}
+	return this.datetime.HHMMSS()
 }
 
 /*
  * <ID> := <YYYYMMDD_HHMMSS>
  */
 func (this FileLocation) FileIdentifier() FileId {
-	var end int = len(this.datetime)
-	if 15 <= end && '_' == this.datetime[8] {
-		return FileId(this.datetime[0:15])
-	} else if 8 <= end {
-		return FileId(this.datetime[0:8])
+
+	if this.datetime.IsLong() {
+
+		return FileId(this.YYYYMMDD_HHMMSS())
+
+	} else if this.datetime.IsShort() {
+
+		return FileId(this.YYYYMM())
 	} else {
 		return FileId("")
 	}
@@ -389,11 +372,11 @@ func (this FileId) IsValid() bool {
  * <IX> := <YYYYMM>
  */
 func (this FileLocation) FileIndex() FileIx {
-	var end int = len(this.datetime)
-	if 15 <= end && '_' == this.datetime[8] {
-		return FileIx(this.datetime[0:6])
-	} else if 8 <= end {
-		return FileIx(this.datetime[0:6])
+
+	if this.datetime.IsValid() {
+
+		return FileIx(this.datetime.YYYYMM())
+
 	} else {
 		return FileIx("")
 	}
