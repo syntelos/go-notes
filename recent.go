@@ -10,6 +10,7 @@ import (
 	"golang.org/x/oauth2"
 	"io"
 	"net/http"
+	"os"
 	"path"
 )
 /*
@@ -69,37 +70,53 @@ func (this FileLocation) RecentContents() {
 func (this FileLocation) RecentTabulate() {
 }
 /*
- * Write TABLE|JSON target from Google Drive PDF files list.
+ * Write TABLE|JSON target from SRC (Google Drive PDF files
+ * list).
  */
 func (this FileLocation) RecentFetch() {
-	var GdriveScopes []string = []string{"drive"}
+	if HaveOperand(1) {
+		var src []byte
+		var err error
+		src, err = os.ReadFile(Operand(1))
+		if nil == err {
+			var doc json.Reader = json.NewReader(Operand(1), src)
+			var obj json.Reader = doc.HeadObject()
 
-	var token *oauth2.Token = goauth.Token(GdriveScopes)
-	if nil != token {
-		var b io.Reader
-		var q *http.Request
-		var p *http.Response
-		var r error
+			if obj.IsNotEmpty() && doc.Contains(obj) {
 
-		q, r = http.NewRequest("GET", GdriveSource, b)
-		if nil == r {
-			q.Close = true
+				this.Write(src)
+			}
+		}
+	} else {
+		var GdriveScopes []string = []string{"drive"}
 
-			token.SetAuthHeader(q)
+		var token *oauth2.Token = goauth.Token(GdriveScopes)
+		if nil != token {
+			var b io.Reader
+			var q *http.Request
+			var p *http.Response
+			var r error
 
-			p, r = http.DefaultClient.Do(q)
-			if nil == r && 200 == p.StatusCode && 0 < p.ContentLength {
+			q, r = http.NewRequest("GET", GdriveSource, b)
+			if nil == r {
+				q.Close = true
 
-				var c []byte
-				c, r = io.ReadAll(p.Body)
+				token.SetAuthHeader(q)
 
-				if p.ContentLength == int64(len(c)) {
-					var doc json.Reader = json.NewReader(GdriveSource, c)
-					var obj json.Reader = doc.HeadObject()
+				p, r = http.DefaultClient.Do(q)
+				if nil == r && 200 == p.StatusCode && 0 < p.ContentLength {
 
-					if obj.IsNotEmpty() && doc.Contains(obj) {
+					var c []byte
+					c, r = io.ReadAll(p.Body)
 
-						this.Write(c)
+					if p.ContentLength == int64(len(c)) {
+						var doc json.Reader = json.NewReader(GdriveSource, c)
+						var obj json.Reader = doc.HeadObject()
+
+						if obj.IsNotEmpty() && doc.Contains(obj) {
+
+							this.Write(c)
+						}
 					}
 				}
 			}
@@ -107,29 +124,53 @@ func (this FileLocation) RecentFetch() {
 	}
 }
 
-func RecentFetchTarget(tgt string) (that FileLocation) {
-	that = recentFetchFile(tgt)
-	that.typeclass = (FileClassTable|FileTypeJSN)
-	return that
-}
+func RecentFetchTarget() (invalid FileLocation) {
+	var tgt string = Operand(0)
+	if 0 != len(tgt) {
+		var fix FileIndex = FileClassify(tgt)
+		if fix.IsValid() {
 
-func RecentFetchSource(tgt string) (that FileLocation) {
-	that = recentFetchFile(tgt)
-	that.typeclass = (FileClassAbstract|FileTypeJSN)
-	return that
-}
+			return fix.Condense()
+		} else {
+			return invalid
+		}
+	} else {
+		var cla FileTypeClass = (FileClassTable|FileTypeJSN)
 
-func recentFetchFile(tgt string) (that FileLocation) {
-	var cla FileTypeClass = FileTypeJSN
-
-	var src string = GdriveSource
-	var tab TableName = GdriveSourceTableName
-	var dat DateTime = NewDateTime()
-	var dir, bas, loc string
-	{
-		dir = path.Join(tgt,dat.YYYY(),dat.MM())
-		bas = string(tab)+"-"+string(dat)
-		loc = path.Join(dir,bas)+".json"
+		var src string = GdriveSource
+		var tab TableName = GdriveSourceTableName
+		var dat DateTime = NewDateTime()
+		var dir, bas, loc string
+		{
+			dir = path.Join(tgt,dat.YYYY(),dat.MM())
+			bas = string(tab)+"-"+string(dat)
+			loc = path.Join(dir,bas)+".json"
+		}
+		return FileLocation{cla,src,dir,bas,loc,tab,dat}
 	}
-	return FileLocation{cla,src,dir,bas,loc,tab,dat}
+}
+
+func RecentFetchSource(tgt,src string) (invalid FileLocation) {
+	if 0 != len(src) {
+		var fix FileIndex = FileClassify(src)
+		if fix.IsValid() {
+
+			return fix.Condense()
+		} else {
+			return invalid
+		}
+	} else {
+		var cla FileTypeClass = (FileClassAbstract|FileTypeJSN)
+
+		var src string = GdriveSource
+		var tab TableName = GdriveSourceTableName
+		var dat DateTime = NewDateTime()
+		var dir, bas, loc string
+		{
+			dir = path.Join(tgt,dat.YYYY(),dat.MM())
+			bas = string(tab)+"-"+string(dat)
+			loc = path.Join(dir,bas)+".json"
+		}
+		return FileLocation{cla,src,dir,bas,loc,tab,dat}
+	}
 }

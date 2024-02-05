@@ -165,7 +165,7 @@ func ConfigurationSource() FileTypeClass {
 			return FileClassIndex | FileTypeJSN
 
 		case ClassFetch:
-			return FileClassAbstract
+			return FileClassTable | FileTypeJSN
 
 		default:
 			return 0

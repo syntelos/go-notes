@@ -14,27 +14,46 @@ func TargetList(typeclass FileTypeClass) FileLocationList {
 type TargetOperationClass uint8
 
 const (
-	TargetOperationClassMonthly TargetOperationClass = 0b10000000
-	TargetOperationClassPeer    TargetOperationClass = 0b01000000
+	TargetOperationNotesCollection TargetOperationClass = 0b10000000
+	TargetOperationNotesPeer       TargetOperationClass = 0b01000000
+	TargetOperationRecentFetch     TargetOperationClass = 0b00100000
 )
 
 func TargetOperation() TargetOperationClass {
+	switch ConfigurationContext() {
 
-	switch ConfigurationTransform() {
+	case ClassNotes:
+		switch ConfigurationTransform() {
 
-	case ClassEncode:
-		return TargetOperationClassPeer
+		case ClassEncode:
+			return TargetOperationNotesPeer
 
-	case ClassUpdate, ClassContents, ClassTabulate:
-		return TargetOperationClassMonthly
+		case ClassUpdate, ClassContents, ClassTabulate:
+			return TargetOperationNotesCollection
+
+		default:
+			return 0
+		}
+
+	case ClassRecent:
+		switch ConfigurationTransform() {
+
+		case ClassFetch:
+			return TargetOperationRecentFetch
+
+		default:
+			return 0
+		}
 
 	default:
 		return 0
 	}
-
 }
 
 func TargetDefine() bool {
+	/*
+	 * Initialize
+	 */
 	var typeclass_tgt FileTypeClass = ConfigurationTarget()
 	var typeclass_src FileTypeClass = ConfigurationSource()
 
@@ -43,10 +62,12 @@ func TargetDefine() bool {
 		list = make(FileLocationList)
 		targets[typeclass_tgt] = list
 	}
-
+	/*
+	 * Collect projection
+	 */
 	switch TargetOperation() {
 
-	case TargetOperationClassMonthly:
+	case TargetOperationNotesCollection:
 		var unique FileCollectionList = make(FileCollectionList)
 		for _, from := range SourceList(typeclass_src) {
 			var to FileLocation = from.Target(typeclass_tgt)
@@ -84,7 +105,7 @@ func TargetDefine() bool {
 		}
 		return true
 
-	case TargetOperationClassPeer:
+	case TargetOperationNotesPeer:
 		/*
 		 * Map into targets set.
 		 */
@@ -98,6 +119,21 @@ func TargetDefine() bool {
 			targets[typeclass_tgt] = list
 		}
 		return true
+
+	case TargetOperationRecentFetch:
+		var to FileLocation = RecentFetchTarget()
+		if typeclass_tgt == to.typeclass {
+
+			list = targets[typeclass_tgt]
+
+			list[to.FileIdentifier()] = to
+
+			targets[typeclass_tgt] = list
+
+			return true
+		} else {
+			return false
+		}
 	default:
 		return false
 	}

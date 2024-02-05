@@ -80,7 +80,7 @@ func SourceDefine() bool {
 			return false // [TODO]
 
 		case ClassFetch:
-			var source FileLocation = RecentFetchSource(tgt)
+			var source FileLocation = RecentFetchSource(tgt,src)
 			if source.IsValid() {
 
 				var locationList FileLocationList = sources[source.typeclass]
