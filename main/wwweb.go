@@ -53,7 +53,11 @@ Description
     long character symbols.
 
       "not", "notes"          -- TGT <SVG> SRC <TXT>
-      "rec", "recent"         -- TGT <JSN> SRC <GDR>
+                              -- Req. "encode", & "update".
+
+      "rec", "recent"         -- TGT <JSN> SRC <GDR?>
+                              -- Req. "fetch", "encode", &
+                              -- "update".
 
   Operators
 
@@ -63,15 +67,15 @@ Description
       "upd", "update"         -- Update <tgt>
       "con", "contents"       -- Contents of <src> to <tgt>
       "tab", "tabulate"       -- Tabulation of <src> to <tg>
-      "get", "fetch"          -- Retrieval of <GDR> to <tgt>
+      "get", "fetch"          -- Retrieval of <SRC> to <tgt>
 
   Operands
 
     The target operand is a production destination, and is
     always first.  The source operand is a content location,
     and is second when present.  Operands are directories
-    and files.
-
+    and files.  The "recent fetch" source is a file when
+    present (for testing), and Google Drive when absent.
 `)
 	os.Exit(1)
 }
