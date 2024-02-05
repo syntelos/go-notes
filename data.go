@@ -4,11 +4,6 @@
  */
 package wwweb
 
-type Coder interface {
-	Decode([]byte)
-	Encode() []byte
-}
-
 func DataTransform() bool {
 
 	switch ConfigurationContext() {

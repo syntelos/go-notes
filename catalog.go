@@ -10,13 +10,13 @@ import (
 	"strings"
 )
 
-type Index []Catalog
+type CatalogIndex []Catalog
 
 type Catalog struct {
 	id, icon, path, link, name, embed string
 }
 
-func CatalogIndex(this []FileLocation) (that Index) {
+func MakeCatalogIndex(this []FileLocation) (that CatalogIndex) {
 	for _, file := range this {
 		that = append(that, file.FileCatalog())
 	}
@@ -109,7 +109,17 @@ func (this Catalog) Decode(content []byte) {
 	}
 }
 
-func (this Index) String() string {
+func (this FileLocation) CatalogRead() (that Catalog) {
+
+	return that // [TODO] (CatalogRead)
+}
+
+func (this FileLocation) CatalogWrite(cat Catalog) {
+
+	// [TODO] (CatalogWrite)
+}
+
+func (this CatalogIndex) String() string {
 	var str strings.Builder
 
 	str.WriteString(`[
@@ -129,12 +139,12 @@ func (this Index) String() string {
 	return str.String()
 }
 
-func (this Index) Encode() []byte {
+func (this CatalogIndex) Encode() []byte {
 
 	return []byte(this.String())
 }
 
-func (this Index) Decode(content []byte) {
+func (this CatalogIndex) Decode(content []byte) {
 	var rdr json.Reader = json.NewReader("", content)
 	if rdr.IsNotEmpty() {
 
@@ -153,4 +163,16 @@ func (this Index) Decode(content []byte) {
 		}
 	}
 
+}
+
+func (this FileLocation) CatalogIndexRead() (that CatalogIndex) {
+
+	that.Decode(this.Read())
+
+	return that
+}
+
+func (this FileLocation) CatalogIndexWrite(that CatalogIndex) {
+
+	this.Write(that.Encode())
 }

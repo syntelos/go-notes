@@ -57,9 +57,9 @@ func (this FileLocation) RecentUpdate() {
 
 		if 0 < len(src) {
 
-			var cat Index = CatalogIndex(src)
+			var cat CatalogIndex = MakeCatalogIndex(src)
 
-			tgt.Write(cat.Encode())
+			tgt.CatalogIndexWrite(cat)
 		}
 	}
 }

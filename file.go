@@ -11,11 +11,6 @@ import (
 	"strings"
 )
 
-type IO interface {
-	Read() []byte
-	Write([]byte)
-}
-
 type FileLocation struct {
 	/*
 	 * Type class of location
